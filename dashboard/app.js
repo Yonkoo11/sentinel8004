@@ -84,8 +84,10 @@
       });
     });
 
+    const scanDate = data.scannedAt ? new Date(data.scannedAt).toLocaleString() : '';
+    const scanMode = data.scanMode || '';
     document.getElementById('scan-meta').textContent =
-      data.scannedAt ? new Date(data.scannedAt).toLocaleString() : '';
+      scanDate + (scanMode ? ` · ${scanMode}` : '');
   } catch (e) {
     document.getElementById('agent-table').innerHTML =
       `<tr><td colspan="5" class="px-5 py-12 text-center text-gray-500">
