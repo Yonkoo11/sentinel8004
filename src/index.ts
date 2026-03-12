@@ -85,14 +85,25 @@ async function scan(args: string[]) {
       const ownerProfileMap = buildOwnerProfiles(agents);
       console.log(`Owner profiles built: ${ownerProfileMap.size} unique owners`);
 
+      // Smart mode: only run expensive L2/L3 on agents with metadata
+      const smart = args.includes('--smart');
+      if (smart) {
+        console.log('Smart mode: L2/L3 only for agents with metadata');
+      }
+
       // Score each agent sequentially (L2/L3 make network calls)
       for (let i = 0; i < agents.length; i++) {
         const agent = agents[i];
         const progress = `[${i + 1}/${agents.length}]`;
+
+        // In smart mode, skip expensive layers for agents without metadata
+        const agentSkipLiveness = skipLiveness || (smart && !agent.metadata);
+        const agentSkipOnchain = skipOnchain || (smart && !agent.metadata);
+
         try {
           const report = await scoreAgent(agent, ownerProfileMap, {
-            skipLiveness,
-            skipOnchain,
+            skipLiveness: agentSkipLiveness,
+            skipOnchain: agentSkipOnchain,
           });
           reports.push(report);
           const flagCount = report.layers.reduce((sum, l) => sum + l.flags.length, 0);
@@ -246,7 +257,7 @@ switch (command) {
     break;
   default:
     console.log('Usage: tsx src/index.ts <scan|info|write|serve>');
-    console.log('  scan [--max N] [--start N] [--layer1] [--skip-metadata] [--skip-liveness] [--skip-onchain]');
+    console.log('  scan [--max N] [--start N] [--layer1] [--smart] [--skip-metadata] [--skip-liveness] [--skip-onchain]');
     console.log('  info                 Show total agent count');
     console.log('  write [--dry-run]    Write scores to chain');
     console.log('  serve                Start MCP server');

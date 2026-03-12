@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AgentGuard — ERC-8004 Trust Scanner</title>
+  <meta name="description" content="Autonomous trust scoring for all 1,835+ AI agents on Celo's ERC-8004 registry">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -12,93 +13,169 @@
         extend: {
           colors: {
             celo: { green: '#35D07F', gold: '#FBCC5C', dark: '#2E3338' },
+            surface: { 1: '#0a0a0f', 2: '#111118', 3: '#1a1a24', 4: '#22222e' },
           },
         },
       },
     }
   </script>
   <style>
-    body { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
-    .score-bar { transition: width 0.6s ease-out; }
-    .agent-row:hover { background: rgba(53, 208, 127, 0.05); }
-    .expand-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-    .expand-content.open { max-height: 600px; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .score-bar { transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .agent-row { transition: background 0.15s ease; }
+    .agent-row:hover { background: rgba(53, 208, 127, 0.04); }
+    .expand-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.3s ease; }
+    .expand-content.open { grid-template-rows: 1fr; }
+    .expand-inner { overflow: hidden; }
+    .glow { box-shadow: 0 0 20px rgba(53, 208, 127, 0.08); }
+    .stat-card { position: relative; overflow: hidden; }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(53,208,127,0.3), transparent);
+    }
+    .distribution-bar { transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    #search:focus { box-shadow: 0 0 0 1px rgba(53,208,127,0.5); }
   </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen">
-  <header class="border-b border-gray-800 px-6 py-4">
+<body class="bg-surface-1 text-gray-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-white/5 px-6 py-5">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div>
-        <h1 class="text-xl font-bold text-celo-green">AgentGuard</h1>
-        <p class="text-xs text-gray-500 mt-1">ERC-8004 Trust Scanner for Celo</p>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-celo-green/10 border border-celo-green/20 flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1L14.5 4.75V11.25L8 15L1.5 11.25V4.75L8 1Z" stroke="#35D07F" stroke-width="1.5" fill="none"/>
+            <path d="M8 5.5L11 7.25V10.75L8 12.5L5 10.75V7.25L8 5.5Z" fill="#35D07F" opacity="0.3"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-semibold tracking-tight">AgentGuard</h1>
+          <p class="text-[11px] text-gray-500 tracking-wide uppercase">ERC-8004 Trust Scanner</p>
+        </div>
       </div>
-      <div class="text-xs text-gray-600" id="scan-meta"></div>
+      <div class="flex items-center gap-4">
+        <div class="text-xs text-gray-600 mono" id="scan-meta"></div>
+        <a href="https://github.com/Yonkoo11/agentguard" target="_blank" class="text-gray-500 hover:text-gray-300 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-6 py-6">
-    <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-        <div class="text-2xl font-bold" id="stat-total">—</div>
-        <div class="text-xs text-gray-500">Agents Scanned</div>
-      </div>
-      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-        <div class="text-2xl font-bold text-celo-green" id="stat-avg">—</div>
-        <div class="text-xs text-gray-500">Avg Score</div>
-      </div>
-      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-        <div class="text-2xl font-bold text-red-400" id="stat-flagged">—</div>
-        <div class="text-xs text-gray-500">Flagged (&lt;30)</div>
-      </div>
-      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
-        <div class="text-2xl font-bold text-celo-gold" id="stat-owners">—</div>
-        <div class="text-xs text-gray-500">Unique Owners</div>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Hero insight -->
+    <div class="mb-8 p-6 rounded-xl bg-surface-2 border border-white/5 glow">
+      <div class="flex flex-col md:flex-row md:items-center gap-6">
+        <div class="flex-1">
+          <div class="text-sm text-gray-400 mb-1">Key Finding</div>
+          <div class="text-2xl font-bold mb-2">
+            <span class="text-red-400" id="hero-spam-pct">—</span> of agents are spam
+          </div>
+          <p class="text-sm text-gray-500 leading-relaxed" id="hero-desc">
+            Scanning all agents on Celo's ERC-8004 IdentityRegistry...
+          </p>
+        </div>
+        <!-- Score distribution mini-chart -->
+        <div class="flex items-end gap-1 h-16" id="distribution-chart"></div>
       </div>
     </div>
 
+    <!-- Stats grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+      <div class="stat-card bg-surface-2 border border-white/5 rounded-lg p-4">
+        <div class="text-2xl font-bold mono" id="stat-total">--</div>
+        <div class="text-[11px] text-gray-500 mt-1">Agents Scanned</div>
+      </div>
+      <div class="stat-card bg-surface-2 border border-white/5 rounded-lg p-4">
+        <div class="text-2xl font-bold mono text-celo-green" id="stat-trusted">--</div>
+        <div class="text-[11px] text-gray-500 mt-1">Trusted (70+)</div>
+      </div>
+      <div class="stat-card bg-surface-2 border border-white/5 rounded-lg p-4">
+        <div class="text-2xl font-bold mono text-celo-gold" id="stat-fair">--</div>
+        <div class="text-[11px] text-gray-500 mt-1">Fair (30-69)</div>
+      </div>
+      <div class="stat-card bg-surface-2 border border-white/5 rounded-lg p-4">
+        <div class="text-2xl font-bold mono text-red-400" id="stat-flagged">--</div>
+        <div class="text-[11px] text-gray-500 mt-1">Flagged (&lt;30)</div>
+      </div>
+      <div class="stat-card bg-surface-2 border border-white/5 rounded-lg p-4">
+        <div class="text-2xl font-bold mono text-gray-400" id="stat-owners">--</div>
+        <div class="text-[11px] text-gray-500 mt-1">Unique Owners</div>
+      </div>
+    </div>
+
+    <!-- Top flags -->
+    <div class="flex flex-wrap gap-2 mb-6" id="flag-pills"></div>
+
     <!-- Controls -->
-    <div class="flex flex-wrap gap-3 mb-4">
-      <input type="text" id="search" placeholder="Search by name or owner..."
-        class="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm w-64 focus:border-celo-green focus:outline-none">
-      <select id="score-filter" class="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm">
+    <div class="flex flex-wrap gap-3 mb-4 items-center">
+      <div class="relative flex-1 max-w-sm">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" id="search" placeholder="Search by name, owner, or flag..."
+          class="w-full bg-surface-2 border border-white/5 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-celo-green/50 transition-all">
+      </div>
+      <select id="score-filter" class="bg-surface-2 border border-white/5 rounded-lg px-3 py-2 text-sm">
         <option value="all">All Scores</option>
-        <option value="high">70+ (Good)</option>
+        <option value="high">70+ (Trusted)</option>
         <option value="mid">30-69 (Fair)</option>
-        <option value="low">0-29 (Poor)</option>
+        <option value="low">0-29 (Flagged)</option>
       </select>
-      <select id="sort-by" class="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm">
-        <option value="score-desc">Score ↓</option>
-        <option value="score-asc">Score ↑</option>
-        <option value="id-asc">ID ↑</option>
-        <option value="id-desc">ID ↓</option>
+      <select id="sort-by" class="bg-surface-2 border border-white/5 rounded-lg px-3 py-2 text-sm">
+        <option value="score-desc">Score: High to Low</option>
+        <option value="score-asc">Score: Low to High</option>
+        <option value="id-asc">Agent ID: Ascending</option>
+        <option value="id-desc">Agent ID: Descending</option>
         <option value="flags">Most Flags</option>
       </select>
     </div>
 
     <!-- Table -->
-    <div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+    <div class="bg-surface-2 border border-white/5 rounded-xl overflow-hidden">
       <table class="w-full text-sm">
         <thead>
-          <tr class="text-gray-500 text-xs border-b border-gray-800">
-            <th class="text-left px-4 py-3 w-16">ID</th>
-            <th class="text-left px-4 py-3">Name</th>
-            <th class="text-left px-4 py-3 hidden md:table-cell">Owner</th>
-            <th class="text-left px-4 py-3 w-48">Score</th>
-            <th class="text-left px-4 py-3 w-24">Flags</th>
+          <tr class="text-[11px] text-gray-500 uppercase tracking-wider border-b border-white/5">
+            <th class="text-left px-5 py-3 w-16">ID</th>
+            <th class="text-left px-5 py-3">Agent</th>
+            <th class="text-left px-5 py-3 hidden lg:table-cell">Owner</th>
+            <th class="text-left px-5 py-3 w-52">Trust Score</th>
+            <th class="text-left px-5 py-3 w-20">Flags</th>
           </tr>
         </thead>
-        <tbody id="agent-table"></tbody>
+        <tbody id="agent-table" class="divide-y divide-white/[0.03]"></tbody>
       </table>
     </div>
 
-    <div id="showing-count" class="text-xs text-gray-600 mt-3"></div>
+    <div class="flex items-center justify-between mt-4">
+      <div id="showing-count" class="text-xs text-gray-600"></div>
+      <div class="flex gap-2">
+        <button id="load-more" class="hidden text-xs bg-surface-3 border border-white/5 rounded px-3 py-1.5 hover:border-celo-green/30 transition-colors">
+          Load more
+        </button>
+      </div>
+    </div>
   </main>
 
-  <footer class="border-t border-gray-800 px-6 py-4 mt-12">
-    <div class="max-w-7xl mx-auto text-xs text-gray-600 flex justify-between">
-      <span>AgentGuard v0.1 — Autonomous ERC-8004 Trust Scoring</span>
-      <span>Built on <span class="text-celo-green">Celo</span></span>
+  <!-- Footer -->
+  <footer class="border-t border-white/5 px-6 py-6 mt-16">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between gap-4 text-xs text-gray-600">
+      <div>
+        <span class="text-gray-400">AgentGuard</span> — Autonomous ERC-8004 Trust Scoring Agent
+        <br class="sm:hidden">
+        <span class="hidden sm:inline"> · </span>
+        <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" class="hover:text-celo-green transition-colors">ReputationRegistry</a>
+        <span> · </span>
+        <a href="https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank" class="hover:text-celo-green transition-colors">IdentityRegistry</a>
+      </div>
+      <div>
+        Built on <span class="text-celo-green">Celo</span> · Scores written on-chain via ERC-8004
+      </div>
     </div>
   </footer>
 

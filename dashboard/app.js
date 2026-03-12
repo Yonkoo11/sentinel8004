@@ -1,6 +1,7 @@
 // AgentGuard Dashboard
 (async function () {
   let allReports = [];
+  let displayLimit = 100;
 
   try {
     const res = await fetch('data/scores.json');
@@ -8,24 +9,85 @@
     const data = await res.json();
     allReports = data.reports || [];
 
-    // Stats
-    document.getElementById('stat-total').textContent = allReports.length;
-    const avg = allReports.length > 0
-      ? Math.round(allReports.reduce((s, r) => s + r.compositeScore, 0) / allReports.length)
-      : 0;
-    document.getElementById('stat-avg').textContent = avg;
-    document.getElementById('stat-flagged').textContent =
-      allReports.filter(r => r.compositeScore < 30).length;
-
+    // Compute stats
+    const total = allReports.length;
+    const trusted = allReports.filter(r => r.compositeScore >= 70).length;
+    const fair = allReports.filter(r => r.compositeScore >= 30 && r.compositeScore < 70).length;
+    const flagged = allReports.filter(r => r.compositeScore < 30).length;
     const owners = new Set(allReports.map(r => r.owner));
-    document.getElementById('stat-owners').textContent = owners.size;
+    const avg = total > 0 ? Math.round(allReports.reduce((s, r) => s + r.compositeScore, 0) / total) : 0;
+
+    document.getElementById('stat-total').textContent = total.toLocaleString();
+    document.getElementById('stat-trusted').textContent = trusted.toLocaleString();
+    document.getElementById('stat-fair').textContent = fair.toLocaleString();
+    document.getElementById('stat-flagged').textContent = flagged.toLocaleString();
+    document.getElementById('stat-owners').textContent = owners.size.toLocaleString();
+
+    // Hero
+    const spamPct = total > 0 ? ((flagged / total) * 100).toFixed(1) + '%' : '--';
+    document.getElementById('hero-spam-pct').textContent = spamPct;
+    document.getElementById('hero-desc').textContent =
+      `Out of ${total.toLocaleString()} agents on Celo's IdentityRegistry, ${flagged.toLocaleString()} score below 30/100. ` +
+      `Only ${trusted} agents pass all trust checks. Average score: ${avg}/100. ` +
+      `${owners.size} unique owner addresses.`;
+
+    // Distribution chart (10 buckets of 10)
+    const buckets = Array(10).fill(0);
+    for (const r of allReports) {
+      const idx = Math.min(9, Math.floor(r.compositeScore / 10));
+      buckets[idx]++;
+    }
+    const maxBucket = Math.max(...buckets, 1);
+    const chart = document.getElementById('distribution-chart');
+    const colors = ['#ef4444','#ef4444','#ef4444','#f59e0b','#f59e0b','#f59e0b','#f59e0b','#35D07F','#35D07F','#35D07F'];
+    chart.innerHTML = buckets.map((count, i) => {
+      const pct = (count / maxBucket) * 100;
+      const label = `${i*10}-${i*10+9}: ${count}`;
+      return `<div class="flex flex-col items-center gap-1" title="${label}">
+        <div class="w-5 rounded-t distribution-bar" style="height:${Math.max(2, pct)}%;background:${colors[i]};opacity:0.7"></div>
+        <div class="text-[9px] text-gray-600 mono">${i*10}</div>
+      </div>`;
+    }).join('');
+
+    // Flag pills
+    const allFlags = {};
+    for (const r of allReports) {
+      for (const layer of (r.layers || [])) {
+        for (const flag of (layer.flags || [])) {
+          const key = flag.split(':')[0];
+          allFlags[key] = (allFlags[key] || 0) + 1;
+        }
+      }
+    }
+    const flagPills = document.getElementById('flag-pills');
+    const sortedFlags = Object.entries(allFlags).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    flagPills.innerHTML = sortedFlags.map(([flag, count]) => {
+      const isRed = ['MASS_REGISTRATION', 'METADATA_CLONE', 'AUTO_NAMING', 'UNLIMITED_APPROVALS'].includes(flag);
+      const cls = isRed
+        ? 'bg-red-950/50 text-red-400 border-red-900/50'
+        : 'bg-surface-3 text-gray-400 border-white/5';
+      return `<button class="text-[11px] px-2.5 py-1 rounded-full border ${cls} hover:opacity-80 transition-opacity flag-pill" data-flag="${flag}">
+        ${flag.replace(/_/g, ' ')} <span class="text-gray-600 ml-1">${count.toLocaleString()}</span>
+      </button>`;
+    }).join('');
+
+    // Flag pill click filters
+    flagPills.querySelectorAll('.flag-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const flag = pill.dataset.flag;
+        document.getElementById('search').value = flag;
+        render();
+      });
+    });
+
     document.getElementById('scan-meta').textContent =
-      `Scanned ${data.scannedAt ? new Date(data.scannedAt).toLocaleString() : 'N/A'}`;
+      data.scannedAt ? new Date(data.scannedAt).toLocaleString() : '';
   } catch (e) {
     document.getElementById('agent-table').innerHTML =
-      `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">
-        Failed to load data. Run the scanner and generate-dashboard script first.<br>
-        <code class="text-xs mt-2 block">npx tsx scripts/generate-dashboard.ts</code>
+      `<tr><td colspan="5" class="px-5 py-12 text-center text-gray-500">
+        <div class="text-lg mb-2">No scan data found</div>
+        <div class="text-xs">Run the scanner first:</div>
+        <code class="text-[11px] mt-2 block mono text-gray-400">npx tsx src/index.ts scan && npx tsx scripts/generate-dashboard.ts</code>
       </td></tr>`;
     return;
   }
@@ -33,11 +95,12 @@
   const search = document.getElementById('search');
   const scoreFilter = document.getElementById('score-filter');
   const sortBy = document.getElementById('sort-by');
+  const loadMore = document.getElementById('load-more');
 
-  function scoreBadgeColor(score) {
-    if (score >= 70) return 'bg-green-900/50 text-green-400 border-green-800';
-    if (score >= 30) return 'bg-yellow-900/50 text-yellow-400 border-yellow-800';
-    return 'bg-red-900/50 text-red-400 border-red-800';
+  function scoreBadge(score) {
+    if (score >= 70) return { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/20' };
+    if (score >= 30) return { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20' };
+    return { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20' };
   }
 
   function scoreBarColor(score) {
@@ -60,8 +123,13 @@
     const sort = sortBy.value;
 
     let filtered = allReports.filter(r => {
-      if (q && !(r.name || '').toLowerCase().includes(q) && !r.owner.toLowerCase().includes(q)) {
-        return false;
+      if (q) {
+        const flags = getFlags(r).join(' ').toLowerCase();
+        if (!(r.name || '').toLowerCase().includes(q) &&
+            !r.owner.toLowerCase().includes(q) &&
+            !flags.includes(q)) {
+          return false;
+        }
       }
       if (filter === 'high' && r.compositeScore < 70) return false;
       if (filter === 'mid' && (r.compositeScore < 30 || r.compositeScore >= 70)) return false;
@@ -78,55 +146,75 @@
       return 0;
     });
 
+    const showing = filtered.slice(0, displayLimit);
     const tbody = document.getElementById('agent-table');
     const rows = [];
 
-    for (const r of filtered.slice(0, 200)) {
+    for (const r of showing) {
       const flags = getFlags(r);
       const flagTypes = [...new Set(flags.map(f => f.split(':')[0]))];
-      const badgeClass = scoreBadgeColor(r.compositeScore);
+      const badge = scoreBadge(r.compositeScore);
       const barColor = scoreBarColor(r.compositeScore);
       const rowId = `row-${r.agentId}`;
 
       rows.push(`
-        <tr class="agent-row border-b border-gray-800/50 cursor-pointer" onclick="toggleExpand('${rowId}')">
-          <td class="px-4 py-3 text-gray-400">#${r.agentId}</td>
-          <td class="px-4 py-3 font-medium">${escapeHtml(r.name || 'Unknown')}</td>
-          <td class="px-4 py-3 text-gray-500 hidden md:table-cell font-mono text-xs">${truncAddr(r.owner)}</td>
-          <td class="px-4 py-3">
-            <div class="flex items-center gap-2">
-              <span class="text-xs px-2 py-0.5 rounded border ${badgeClass}">${r.compositeScore}</span>
-              <div class="flex-1 bg-gray-800 rounded-full h-1.5">
-                <div class="score-bar ${barColor} h-1.5 rounded-full" style="width: ${r.compositeScore}%"></div>
+        <tr class="agent-row cursor-pointer" onclick="toggleExpand('${rowId}')">
+          <td class="px-5 py-3 mono text-gray-500 text-xs">${r.agentId}</td>
+          <td class="px-5 py-3">
+            <div class="font-medium text-sm">${escapeHtml(r.name || 'Unknown')}</div>
+          </td>
+          <td class="px-5 py-3 hidden lg:table-cell">
+            <span class="mono text-xs text-gray-500">${truncAddr(r.owner)}</span>
+          </td>
+          <td class="px-5 py-3">
+            <div class="flex items-center gap-3">
+              <span class="mono text-xs font-medium w-7 ${badge.text}">${r.compositeScore}</span>
+              <div class="flex-1 bg-white/5 rounded-full h-1.5 overflow-hidden">
+                <div class="score-bar ${barColor} h-full rounded-full" style="width:${r.compositeScore}%"></div>
               </div>
             </div>
           </td>
-          <td class="px-4 py-3 text-xs text-gray-500">${flags.length > 0 ? flags.length : ''}</td>
+          <td class="px-5 py-3">
+            ${flags.length > 0
+              ? `<span class="mono text-xs text-red-400/70">${flags.length}</span>`
+              : '<span class="text-xs text-gray-700">--</span>'}
+          </td>
         </tr>
         <tr>
           <td colspan="5" class="p-0">
-            <div id="${rowId}" class="expand-content bg-gray-950/50">
-              <div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <div class="text-gray-500 mb-2">Layer Breakdown</div>
-                  ${(r.layers || []).map(l => `
-                    <div class="flex justify-between py-1 border-b border-gray-800/30">
-                      <span class="text-gray-400">${l.layer}</span>
-                      <span>${l.score}/${l.maxScore}</span>
-                    </div>
-                  `).join('')}
-                </div>
-                <div>
-                  ${flagTypes.length > 0 ? `
-                    <div class="text-gray-500 mb-2">Flags</div>
-                    ${flagTypes.map(f => `<span class="inline-block bg-red-900/30 text-red-400 border border-red-800/50 rounded px-2 py-0.5 mr-1 mb-1">${f}</span>`).join('')}
-                  ` : ''}
-                  <div class="text-gray-500 mt-3 mb-1">Owner</div>
-                  <div class="font-mono text-gray-400">${r.owner}</div>
-                  ${r.errors && r.errors.length > 0 ? `
-                    <div class="text-gray-500 mt-3 mb-1">Errors</div>
-                    ${r.errors.map(e => `<div class="text-red-400">${escapeHtml(e)}</div>`).join('')}
-                  ` : ''}
+            <div id="${rowId}" class="expand-content">
+              <div class="expand-inner">
+                <div class="px-6 py-5 bg-surface-1/50 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                  <div>
+                    <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Layer Breakdown</div>
+                    ${(r.layers || []).map(l => `
+                      <div class="flex items-center justify-between py-1.5">
+                        <span class="text-gray-400 capitalize">${l.layer}</span>
+                        <div class="flex items-center gap-2">
+                          <div class="w-16 bg-white/5 rounded-full h-1">
+                            <div class="${scoreBarColor(l.score / l.maxScore * 100)} h-full rounded-full" style="width:${(l.score/l.maxScore)*100}%"></div>
+                          </div>
+                          <span class="mono text-gray-300 w-10 text-right">${l.score}/${l.maxScore}</span>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                  <div>
+                    ${flagTypes.length > 0 ? `
+                      <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Risk Flags</div>
+                      <div class="flex flex-wrap gap-1.5">
+                        ${flagTypes.map(f => `<span class="bg-red-950/30 text-red-400/80 border border-red-900/30 rounded px-2 py-0.5 text-[10px]">${f}</span>`).join('')}
+                      </div>
+                    ` : '<div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">No Flags</div><div class="text-green-400/60 text-[11px]">Clean</div>'}
+                  </div>
+                  <div>
+                    <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Details</div>
+                    <div class="mono text-[11px] text-gray-400 break-all">${r.owner}</div>
+                    ${r.errors && r.errors.length > 0 ? `
+                      <div class="mt-3 text-[11px] text-gray-500 uppercase tracking-wider mb-1">Errors</div>
+                      ${r.errors.map(e => `<div class="text-red-400/70 text-[11px]">${escapeHtml(e)}</div>`).join('')}
+                    ` : ''}
+                  </div>
                 </div>
               </div>
             </div>
@@ -137,12 +225,20 @@
 
     tbody.innerHTML = rows.join('');
     document.getElementById('showing-count').textContent =
-      `Showing ${Math.min(filtered.length, 200)} of ${filtered.length} agents`;
+      `Showing ${showing.length} of ${filtered.length} agents`;
+
+    if (filtered.length > displayLimit) {
+      loadMore.classList.remove('hidden');
+      loadMore.textContent = `Load more (${filtered.length - displayLimit} remaining)`;
+    } else {
+      loadMore.classList.add('hidden');
+    }
   }
 
-  search.addEventListener('input', render);
-  scoreFilter.addEventListener('change', render);
+  search.addEventListener('input', () => { displayLimit = 100; render(); });
+  scoreFilter.addEventListener('change', () => { displayLimit = 100; render(); });
   sortBy.addEventListener('change', render);
+  loadMore.addEventListener('click', () => { displayLimit += 100; render(); });
 
   render();
 })();
