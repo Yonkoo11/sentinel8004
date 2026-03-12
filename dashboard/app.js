@@ -37,14 +37,15 @@
       const idx = Math.min(9, Math.floor(r.compositeScore / 10));
       buckets[idx]++;
     }
-    const maxBucket = Math.max(...buckets, 1);
+    const maxLog = Math.max(...buckets.map(b => b > 0 ? Math.log10(b + 1) : 0), 1);
     const chart = document.getElementById('distribution-chart');
     const colors = ['#ef4444','#ef4444','#ef4444','#f59e0b','#f59e0b','#f59e0b','#f59e0b','#35D07F','#35D07F','#35D07F'];
     chart.innerHTML = buckets.map((count, i) => {
-      const pct = (count / maxBucket) * 100;
-      const label = `${i*10}-${i*10+9}: ${count}`;
+      const h = count > 0 ? Math.max(8, (Math.log10(count + 1) / maxLog) * 64) : 2;
+      const label = `${i*10}-${i*10+9}: ${count.toLocaleString()} agents`;
       return `<div class="flex flex-col items-center gap-1" title="${label}">
-        <div class="w-5 rounded-t distribution-bar" style="height:${Math.max(2, pct)}%;background:${colors[i]};opacity:0.7"></div>
+        <div class="text-[9px] mono text-gray-500">${count > 0 ? count.toLocaleString() : ''}</div>
+        <div class="w-6 rounded-t" style="height:${h}px;background:${colors[i]};opacity:0.8"></div>
         <div class="text-[9px] text-gray-600 mono">${i*10}</div>
       </div>`;
     }).join('');
