@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentGuard — ERC-8004 Trust Scanner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            celo: { green: '#35D07F', gold: '#FBCC5C', dark: '#2E3338' },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    body { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
+    .score-bar { transition: width 0.6s ease-out; }
+    .agent-row:hover { background: rgba(53, 208, 127, 0.05); }
+    .expand-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .expand-content.open { max-height: 600px; }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+  <header class="border-b border-gray-800 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-celo-green">AgentGuard</h1>
+        <p class="text-xs text-gray-500 mt-1">ERC-8004 Trust Scanner for Celo</p>
+      </div>
+      <div class="text-xs text-gray-600" id="scan-meta"></div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-6">
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+        <div class="text-2xl font-bold" id="stat-total">—</div>
+        <div class="text-xs text-gray-500">Agents Scanned</div>
+      </div>
+      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+        <div class="text-2xl font-bold text-celo-green" id="stat-avg">—</div>
+        <div class="text-xs text-gray-500">Avg Score</div>
+      </div>
+      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+        <div class="text-2xl font-bold text-red-400" id="stat-flagged">—</div>
+        <div class="text-xs text-gray-500">Flagged (&lt;30)</div>
+      </div>
+      <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+        <div class="text-2xl font-bold text-celo-gold" id="stat-owners">—</div>
+        <div class="text-xs text-gray-500">Unique Owners</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-wrap gap-3 mb-4">
+      <input type="text" id="search" placeholder="Search by name or owner..."
+        class="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm w-64 focus:border-celo-green focus:outline-none">
+      <select id="score-filter" class="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm">
+        <option value="all">All Scores</option>
+        <option value="high">70+ (Good)</option>
+        <option value="mid">30-69 (Fair)</option>
+        <option value="low">0-29 (Poor)</option>
+      </select>
+      <select id="sort-by" class="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm">
+        <option value="score-desc">Score ↓</option>
+        <option value="score-asc">Score ↑</option>
+        <option value="id-asc">ID ↑</option>
+        <option value="id-desc">ID ↓</option>
+        <option value="flags">Most Flags</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-gray-500 text-xs border-b border-gray-800">
+            <th class="text-left px-4 py-3 w-16">ID</th>
+            <th class="text-left px-4 py-3">Name</th>
+            <th class="text-left px-4 py-3 hidden md:table-cell">Owner</th>
+            <th class="text-left px-4 py-3 w-48">Score</th>
+            <th class="text-left px-4 py-3 w-24">Flags</th>
+          </tr>
+        </thead>
+        <tbody id="agent-table"></tbody>
+      </table>
+    </div>
+
+    <div id="showing-count" class="text-xs text-gray-600 mt-3"></div>
+  </main>
+
+  <footer class="border-t border-gray-800 px-6 py-4 mt-12">
+    <div class="max-w-7xl mx-auto text-xs text-gray-600 flex justify-between">
+      <span>AgentGuard v0.1 — Autonomous ERC-8004 Trust Scoring</span>
+      <span>Built on <span class="text-celo-green">Celo</span></span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

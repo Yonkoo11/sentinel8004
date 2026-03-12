@@ -1,0 +1,2212 @@
+{
+  "totalAgents": 50,
+  "scannedAt": "2026-03-11T23:18:35.637Z",
+  "scanMode": "full",
+  "reports": [
+    {
+      "agentId": 2,
+      "owner": "0x1be93C700dDC596D701E8F2106B8F9166C625Adb",
+      "name": "Arca",
+      "compositeScore": 75,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Arca\"",
+            "+5 Has description (235 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 9 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "6/6 endpoints live",
+            "LIVE: https://arcabot.ai (200)",
+            "Domain verified: https://arcabot.ai",
+            "LIVE: https://arcabot.eth.limo/.well-known/agent-card.json (200)",
+            "LIVE: https://farcaster.xyz/arcabot.eth (200)",
+            "Domain verified: https://farcaster.xyz/arcabot.eth",
+            "LIVE: https://x.com/arcabotai (200)",
+            "Domain verified: https://x.com/arcabotai",
+            "LIVE: https://github.com/arcabotai (200)",
+            "LIVE: https://paragraph.com/@arcabot (200)",
+            "Domain verified: https://paragraph.com/@arcabot"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 4,
+      "owner": "0x1e67A381c93F34afAed8c1A7E5E35746f8bE2b23",
+      "name": "CeloFX (Legacy)",
+      "compositeScore": 75,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"CeloFX (Legacy)\"",
+            "+5 Has description (173 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://celofx.vercel.app (200)",
+            "Domain verified: https://celofx.vercel.app",
+            "LIVE: https://celofx.vercel.app/api/mcp (200)",
+            "Domain verified: https://celofx.vercel.app/api/mcp",
+            "LIVE: https://celofx.vercel.app/.well-known/agent-card.json (200)",
+            "Domain verified: https://celofx.vercel.app/.well-known/agent-card.json",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 10,
+      "owner": "0x6652AcDc623b7CCd52E115161d84b949bAf3a303",
+      "name": "CeloFX",
+      "compositeScore": 75,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"CeloFX\"",
+            "+5 Has description (204 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 7 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "7/7 endpoints live",
+            "LIVE: https://celofx.vercel.app (200)",
+            "Domain verified: https://celofx.vercel.app",
+            "LIVE: https://celofx.vercel.app/.well-known/agent.json (200)",
+            "Domain verified: https://celofx.vercel.app/.well-known/agent.json",
+            "LIVE: https://celofx.vercel.app/api/mcp (200)",
+            "Domain verified: https://celofx.vercel.app/api/mcp",
+            "LIVE: https://celofx.vercel.app/.well-known/agent-card.json (200)",
+            "Domain verified: https://celofx.vercel.app/.well-known/agent-card.json",
+            "LIVE: https://celofx.vercel.app/api/premium-signals (402)",
+            "Domain verified: https://celofx.vercel.app/api/premium-signals",
+            "LIVE: https://celofx.vercel.app/api/tee/attestation (200)",
+            "Domain verified: https://celofx.vercel.app/api/tee/attestation",
+            "LIVE: https://celofx.vercel.app/.well-known/oasf.json (200)",
+            "Domain verified: https://celofx.vercel.app/.well-known/oasf.json"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal",
+            "Metadata distinct from siblings (max 3% similarity)"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 14,
+      "owner": "0x6B6dd693686db9a31c3db0C3d8f3eE89F398d6fe",
+      "name": "PerkyJobs",
+      "compositeScore": 72,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 22,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"PerkyJobs\"",
+            "+5 Has description (68 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+0 No image"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://selfclaw.ai (200)",
+            "Domain verified: https://selfclaw.ai"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal",
+            "Metadata distinct from siblings (max 0% similarity)"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 20,
+      "owner": "0x1AfF9e9C763c1593C79134aE4434CE6309224b73",
+      "name": "tonyZe",
+      "compositeScore": 72,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 22,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"tonyZe\"",
+            "+5 Has description (68 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+0 No image"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://selfclaw.ai (200)",
+            "Domain verified: https://selfclaw.ai"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 17,
+      "owner": "0xeF4Acd50101C2afD14c2c213b30d8D8e9a91f0d2",
+      "name": "Loopuman",
+      "compositeScore": 70,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Loopuman\"",
+            "+5 Has description (215 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "5/5 endpoints live",
+            "LIVE: https://api.loopuman.com/.well-known/mcp.json (200)",
+            "LIVE: https://api.loopuman.com/.well-known/agent-card.json (200)",
+            "LIVE: https://api.loopuman.com/.well-known/oasf.json (200)",
+            "LIVE: https://loopuman.com (200)",
+            "LIVE: https://api.loopuman.com (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 13,
+      "owner": "0x6B6dd693686db9a31c3db0C3d8f3eE89F398d6fe",
+      "name": "PerkyJobs",
+      "compositeScore": 67,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 22,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"PerkyJobs\"",
+            "+5 Has description (68 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+0 No image"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://selfclaw.ai (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal",
+            "Metadata distinct from siblings (max 0% similarity)"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 1,
+      "owner": "0x6446aD9821021Eeb9f85B8a18B0153d58166d161",
+      "name": "Arron C. ",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Arron C. \"",
+            "+5 Has description (101 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 10,
+          "maxScore": 25,
+          "details": [
+            "1/2 endpoints live",
+            "LIVE: https://github.com/agntcy/oasf/ (200)",
+            "DEAD: https://fofoca.arrondesean.workers.dev/ (Timeout)"
+          ],
+          "flags": [
+            "DEAD_ENDPOINT:https://fofoca.arrondesean.workers.dev/"
+          ]
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 19,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "genesis",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"genesis\"",
+            "+5 Has description (328 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/fcb8ef06-7b04-47fa-923c-36986e914df3 (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "LIVE: https://agenthaus.space/api/agents/fcb8ef06-7b04-47fa-923c-36986e914df3/chat (400)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration",
+            "Metadata distinct from siblings (max 24% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 22,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "TradingMento",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"TradingMento\"",
+            "+5 Has description (298 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/ab239c5c-34f9-4198-bd36-df4e3082c49b (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "LIVE: https://agenthaus.space/api/agents/ab239c5c-34f9-4198-bd36-df4e3082c49b/chat (400)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration",
+            "Metadata distinct from siblings (max 19% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 23,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "Gnes",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Gnes\"",
+            "+5 Has description (299 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/4754f8d4-ce13-495a-90b1-f8ed6fdfe0f1 (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "LIVE: https://agenthaus.space/api/agents/4754f8d4-ce13-495a-90b1-f8ed6fdfe0f1/chat (400)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration",
+            "Metadata distinct from siblings (max 19% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 24,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "Mento Trader",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Mento Trader\"",
+            "+5 Has description (298 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/df0605fb-aed4-4d3c-bb10-307cf63fa41c (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "LIVE: https://agenthaus.space/api/agents/df0605fb-aed4-4d3c-bb10-307cf63fa41c/chat (400)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration",
+            "Metadata distinct from siblings (max 19% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 30,
+      "owner": "0x98F7E3Fc142CE7736956cd79d3F6b164C631A3D9",
+      "name": "ForexPro",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"ForexPro\"",
+            "+5 Has description (322 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/97645f95-7408-4adb-8f44-ac473b0a90f1 (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "LIVE: https://agenthaus.space/api/agents/97645f95-7408-4adb-8f44-ac473b0a90f1/chat (400)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 31,
+      "owner": "0x98F7E3Fc142CE7736956cd79d3F6b164C631A3D9",
+      "name": "ForexPro",
+      "compositeScore": 60,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"ForexPro\"",
+            "+5 Has description (322 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "4/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/97645f95-7408-4adb-8f44-ac473b0a90f1 (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "LIVE: https://agenthaus.space/api/agents/97645f95-7408-4adb-8f44-ac473b0a90f1/chat (400)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 18,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "fire agent",
+      "compositeScore": 55,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"fire agent\"",
+            "+5 Has description (150 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "3/4 endpoints live",
+            "LIVE: https://agenthaus.space/dashboard/agents/e9fa6bd0-8a96-4754-87e9-a290e19e401e (200)",
+            "LIVE: https://agenthaus.space (200)",
+            "DEAD: https://agenthaus.space/api/agents/e9fa6bd0-8a96-4754-87e9-a290e19e401e/chat (Timeout)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": [
+            "DEAD_ENDPOINT:https://agenthaus.space/api/agents/e9fa6bd0-8a96-4754-87e9-a290e19e401e/chat"
+          ]
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration",
+            "Metadata distinct from siblings (max 13% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 15,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "Sam Agents",
+      "compositeScore": 50,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Sam Agents\"",
+            "+5 Has description (292 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 5 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 10,
+          "maxScore": 25,
+          "details": [
+            "1/2 endpoints live",
+            "DEAD: https://agenthaus.space (Timeout)",
+            "LIVE: https://github.com/agntcy/oasf/ (200)"
+          ],
+          "flags": [
+            "DEAD_ENDPOINT:https://agenthaus.space"
+          ]
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration",
+            "Metadata distinct from siblings (max 24% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 7,
+      "owner": "0x2C7CE8dc27283beFD939adC894798A52c03A9AEB",
+      "name": "MyDay Guardian",
+      "compositeScore": 48,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 18,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"MyDay Guardian\"",
+            "+5 Has description (213 chars)",
+            "+1 Has type but non-standard: \"Agent\"",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 26,
+      "owner": "0x6652AcDc623b7CCd52E115161d84b949bAf3a303",
+      "name": "CeloFX (Deprecated)",
+      "compositeScore": 47,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"CeloFX (Deprecated)\"",
+            "+5 Has description (71 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+0 No services declared",
+            "+0 No image"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal",
+            "Metadata distinct from siblings (max 3% similarity)"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 21,
+      "owner": "0x4cf043A4f4d3B8b6EC92130dF5d9936383e3468B",
+      "name": "Musketeer-v2",
+      "compositeScore": 45,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Musketeer-v2\"",
+            "+5 Has description (92 chars)",
+            "+1 Has type but non-standard: \"Agent\"",
+            "+0 No services declared",
+            "+0 No image"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 25,
+      "owner": "0xf755C8b9a00193884f84c998dDDcfc8bcF85Ef61",
+      "name": "Agent",
+      "compositeScore": 45,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Agent\"",
+            "+5 Has description (21 chars)",
+            "+1 Has type but non-standard: \"Agent\"",
+            "+0 No services declared",
+            "+0 No image"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 37,
+      "owner": "0xbF0E0e7AfDe9B7F42f5D93D3aEBdE53aF14bBa70",
+      "name": "babycaicelo-1771131048",
+      "compositeScore": 37,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"babycaicelo-1771131048\"",
+            "+5 Has description (22 chars)",
+            "+0 Missing type field",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 47,
+      "owner": "0xbF0E0e7AfDe9B7F42f5D93D3aEBdE53aF14bBa70",
+      "name": "babycaicelo-1771159804",
+      "compositeScore": 37,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"babycaicelo-1771159804\"",
+            "+5 Has description (22 chars)",
+            "+0 Missing type field",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 3,
+      "owner": "0xE2b7ACdC0580e329E5998ff0948654FF495917DA",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP 404 from https://raw.githubusercontent.com/YOUR_USER/YOUR_REPO/main/agent-registration.json"
+      ]
+    },
+    {
+      "agentId": 5,
+      "owner": "0x5451bC61a58FfD5B6684a7EA1E2Ef0FDbd4ccBE6",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 6,
+      "owner": "0x5451bC61a58FfD5B6684a7EA1E2Ef0FDbd4ccBE6",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP 404 from https://selfclaw.ai/api/selfclaw/v1/agent/MCowBQYDK2VwAyEALxywF5SOgZ4jgoqOsU7hM2Oxg+Hj5KnWgUE+PgjafnI=/registration.json"
+      ]
+    },
+    {
+      "agentId": 12,
+      "owner": "0x1d41E0A61ec1c632BE4122dD17781E8F3580Db4E",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP 404 from https://raw.githubusercontent.com/darodriguez15/natillera-onchain/main/agent/registration.json"
+      ]
+    },
+    {
+      "agentId": 16,
+      "owner": "0x043E65ECb9cA363f245B5944Db129d0E7c97609F",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP 404 from https://miniapp-farcaster.vercel.app/.well-known/agent.json"
+      ]
+    },
+    {
+      "agentId": 32,
+      "owner": "0x0dc51dE02bEAb762afb9d10Ad0bE13b1cEA43A9F",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 34,
+      "owner": "0x12AC108e13c0C456F498a94ecFd44eD40473806c",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: This operation was aborted"
+      ]
+    },
+    {
+      "agentId": 35,
+      "owner": "0x65AF13bA694f0c150CD2E7c36b0b0DF04Ae53F18",
+      "name": "Unknown",
+      "compositeScore": 30,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: This operation was aborted"
+      ]
+    },
+    {
+      "agentId": 48,
+      "owner": "0xbF0E0e7AfDe9B7F42f5D93D3aEBdE53aF14bBa70",
+      "name": "babycaisubagent-5116",
+      "compositeScore": 27,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"babycaisubagent-5116\"",
+            "+5 Has description (22 chars)",
+            "+0 Missing type field",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)",
+            "-10 Automated naming pattern: \"babycaisubagent-5116\""
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5",
+            "AUTO_NAMING"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 49,
+      "owner": "0xbF0E0e7AfDe9B7F42f5D93D3aEBdE53aF14bBa70",
+      "name": "babycaisubagent-4659",
+      "compositeScore": 27,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"babycaisubagent-4659\"",
+            "+5 Has description (22 chars)",
+            "+0 Missing type field",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)",
+            "-10 Automated naming pattern: \"babycaisubagent-4659\""
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5",
+            "AUTO_NAMING"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 50,
+      "owner": "0xbF0E0e7AfDe9B7F42f5D93D3aEBdE53aF14bBa70",
+      "name": "babycaisubagent-1007",
+      "compositeScore": 24,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 14,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"babycaisubagent-1007\"",
+            "+2 Short description (18 chars)",
+            "+0 Missing type field",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration",
+            "Metadata distinct from siblings (max 0% similarity)",
+            "-10 Automated naming pattern: \"babycaisubagent-1007\""
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5",
+            "AUTO_NAMING"
+          ]
+        }
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 8,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP 404 from http://localhost:3000/api/agents/937dff3b-b19b-48df-92dd-4c27d8f20946/registration.json"
+      ]
+    },
+    {
+      "agentId": 9,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP 404 from http://localhost:3000/api/agents/e5345c82-a1df-49ac-900f-93ebc433722c/registration.json"
+      ]
+    },
+    {
+      "agentId": 11,
+      "owner": "0x53eaF4CD171842d8144e45211308e5D90B4b0088",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 9 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:9"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP 404 from http://localhost:3000/api/agents/60634277-c87d-41e1-b9b3-39da8b5cecfa/registration.json"
+      ]
+    },
+    {
+      "agentId": 27,
+      "owner": "0x98F7E3Fc142CE7736956cd79d3F6b164C631A3D9",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      ]
+    },
+    {
+      "agentId": 28,
+      "owner": "0x98F7E3Fc142CE7736956cd79d3F6b164C631A3D9",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      ]
+    },
+    {
+      "agentId": 29,
+      "owner": "0x98F7E3Fc142CE7736956cd79d3F6b164C631A3D9",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 5 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:5"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      ]
+    },
+    {
+      "agentId": 33,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 36,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 38,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 39,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 40,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 41,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 42,
+      "owner": "0xCd47D67E293668Be5Db280dAC290442B64880F78",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 7 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:7"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 43,
+      "owner": "0x5295ff97A7c55057aaee19bE71aaBB71F84b7fEE",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 4 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:4"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 44,
+      "owner": "0x5295ff97A7c55057aaee19bE71aaBB71F84b7fEE",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 4 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:4"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: fetch failed"
+      ]
+    },
+    {
+      "agentId": 45,
+      "owner": "0x5295ff97A7c55057aaee19bE71aaBB71F84b7fEE",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 4 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:4"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: This operation was aborted"
+      ]
+    },
+    {
+      "agentId": 46,
+      "owner": "0x5295ff97A7c55057aaee19bE71aaBB71F84b7fEE",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 5,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 4 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:4"
+          ]
+        }
+      ],
+      "errors": [
+        "HTTP fetch failed: This operation was aborted"
+      ]
+    }
+  ]
+}
