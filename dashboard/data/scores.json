@@ -2,6 +2,12 @@
   "totalAgents": 1838,
   "scannedAt": "2026-03-12T08:09:28.668Z",
   "scanMode": "full",
+  "onchainStats": {
+    "written": 0,
+    "total": 1838,
+    "writerAddress": "0xf9946775891a24462cD4ec885d0D4E2675C84355",
+    "contractAddress": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63"
+  },
   "reports": [
     {
       "agentId": 132,

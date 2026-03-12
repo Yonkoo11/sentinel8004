@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registry — AgentGuard</title>
+<meta name="description" content="Explore all 1,838 ERC-8004 AI agents on Celo with trust scores and risk flags.">
+<meta property="og:title" content="Agent Registry — AgentGuard">
+<meta property="og:description" content="Search, filter, and inspect every ERC-8004 AI agent on Celo.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* ── Page Header ── */
+  .page-header {
+    padding-top: calc(var(--nav-height) + var(--space-16));
+    padding-bottom: var(--space-12);
+    position: relative;
+  }
+  .page-header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Quick Stats Strip ── */
+  .quick-stats {
+    display: flex;
+    gap: var(--space-8);
+    padding: var(--space-4) 0;
+  }
+  .qs-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+  .qs-value {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .qs-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── Distribution (Proposal C horizontal bars) ── */
+  .dist-section {
+    padding: var(--space-6) 0;
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+  .dist-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 3px;
+  }
+  .dist-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    width: 44px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .dist-bar-track {
+    flex: 1;
+    height: 20px;
+    background: var(--bg-surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .dist-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0;
+    transition: width 1s var(--ease-out);
+  }
+  .dist-count {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+    width: 56px;
+    flex-shrink: 0;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+  .controls input, .controls select {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--text-primary);
+    font-family: var(--sans);
+    font-size: 13px;
+    outline: none;
+    transition: border-color var(--duration-fast) ease;
+  }
+  .controls input:focus, .controls select:focus {
+    border-color: var(--border-hover);
+  }
+  .controls input {
+    flex: 1;
+    min-width: 200px;
+  }
+  .controls select { cursor: pointer; }
+  .showing-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  /* ── Table ── */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: var(--nav-height);
+    background: var(--bg-base);
+    z-index: 20;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background var(--duration-fast) ease;
+  }
+  tbody tr:hover { background: rgba(53, 208, 127, 0.03); }
+  tbody tr[data-expand]:focus-visible {
+    outline: 2px solid var(--celo);
+    outline-offset: -2px;
+    background: rgba(53, 208, 127, 0.03);
+  }
+  td {
+    padding: 11px var(--space-4);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  .agent-name { font-weight: 500; }
+  .agent-owner { color: var(--text-muted); font-size: 12px; }
+
+  .score-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .score-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    width: 24px;
+  }
+  .score-bar-track {
+    width: 60px;
+    height: 4px;
+    background: var(--bg-elevated);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  /* ── Expand ── */
+  .expand-wrap {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s var(--ease-out);
+  }
+  .expand-wrap.open { max-height: 500px; }
+  .expand-inner {
+    padding: var(--space-4) var(--space-4) var(--space-5);
+    background: var(--bg-surface);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-6);
+    font-size: 12px;
+  }
+  .detail-heading {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+  .layer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    color: var(--text-secondary);
+  }
+  .flag-chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--red-dim);
+    color: var(--red);
+    margin: 2px 4px 2px 0;
+  }
+  .celoscan-link {
+    color: var(--celo);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .celoscan-link:hover { text-decoration: underline; }
+
+  .load-more-btn {
+    display: block;
+    margin: var(--space-4) auto 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 10px 28px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+  }
+  .load-more-btn:hover {
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .controls { flex-direction: column; }
+    .controls input { min-width: 100%; }
+    .expand-inner { grid-template-columns: 1fr; }
+    .quick-stats { flex-wrap: wrap; gap: var(--space-4); }
+    .page-header-inner { flex-direction: column; align-items: flex-start; }
+    td:nth-child(3), th:nth-child(3) { display: none; }
+    td { padding: 8px var(--space-3); font-size: 12px; }
+  }
+</style>
+</head>
+<body data-page="registry">
+<a href="#agent-table" class="skip-link">Skip to registry</a>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-left">
+    <a href="index.html" class="nav-wordmark">AgentGuard</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link" data-page="home">Home</a>
+      <a href="registry.html" class="nav-link" data-page="registry">Registry</a>
+      <a href="methodology.html" class="nav-link" data-page="methodology">Methodology</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-meta" id="scan-date"></span>
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" class="nav-cta">Verify on CeloScan</a>
+  </div>
+</nav>
+
+<!-- Page -->
+<div class="container" style="position: relative;">
+
+  <!-- Header -->
+  <div class="page-header section section-green" style="padding-bottom: var(--space-12);">
+    <div class="blob-container">
+      <div class="blob blob-green" style="top: -30%; left: 10%; width: 500px; height: 500px;"></div>
+      <div class="blob blob-blue-sm" style="top: 20%; right: 5%;"></div>
+    </div>
+    <div class="page-header-inner">
+      <div>
+        <div class="heading-md reveal">Agent Registry</div>
+        <p class="body-sm reveal reveal-d1 mt-2">Search, filter, and inspect every ERC-8004 agent on Celo.</p>
+      </div>
+      <div class="quick-stats reveal reveal-d2">
+        <div class="qs-item">
+          <span class="qs-value text-primary" id="qs-total">0</span>
+          <span class="qs-label">total</span>
+        </div>
+        <div class="qs-item">
+          <span class="qs-value text-celo" id="qs-trusted">0</span>
+          <span class="qs-label">trusted</span>
+        </div>
+        <div class="qs-item">
+          <span class="qs-value text-yellow" id="qs-fair">0</span>
+          <span class="qs-label">fair</span>
+        </div>
+        <div class="qs-item">
+          <span class="qs-value text-red" id="qs-flagged">0</span>
+          <span class="qs-label">flagged</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Distribution -->
+  <div class="dist-section reveal" id="distribution">
+    <div class="label mb-4">Score Distribution</div>
+    <div id="dist-chart"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls reveal">
+    <input type="text" id="search" placeholder="Search name, address, or flag (e.g. MASS_REGISTRATION)...">
+    <select id="score-filter">
+      <option value="all">All Scores</option>
+      <option value="high">Trusted (70+)</option>
+      <option value="mid">Fair (30-69)</option>
+      <option value="low">Flagged (&lt;30)</option>
+    </select>
+    <select id="sort-by">
+      <option value="score-desc">Score: High to Low</option>
+      <option value="score-asc">Score: Low to High</option>
+      <option value="id-asc">ID: Ascending</option>
+      <option value="id-desc">ID: Descending</option>
+      <option value="flags">Most Flags</option>
+    </select>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="showing-count" id="showing-count"></div>
+    <div class="showing-count" id="data-freshness"></div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 60px;">ID</th>
+          <th>Agent</th>
+          <th>Owner</th>
+          <th style="width: 180px;">Score</th>
+          <th style="width: 140px;">Flags</th>
+        </tr>
+      </thead>
+      <tbody id="agent-table">
+        <tr id="loading-row"><td colspan="5" style="padding: 0;">
+          <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+  <button class="load-more-btn hidden" id="load-more">Load more</button>
+
+</div>
+
+<!-- Footer -->
+<footer class="site-footer" style="margin-top: var(--space-16);">
+  <div class="footer-inner">
+    <div class="footer-left">AgentGuard &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> Trust Scoring &middot; Built on Celo</div>
+    <div class="footer-links">
+      <a href="https://github.com/yonkoo11/agentguard" target="_blank">GitHub</a>
+      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank">CeloScan</a>
+    </div>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

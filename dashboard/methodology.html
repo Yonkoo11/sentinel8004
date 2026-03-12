@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — AgentGuard</title>
+<meta name="description" content="How AgentGuard scores AI agents: 5 layers, circuit breakers, on-chain attestation.">
+<meta property="og:title" content="Scoring Methodology — AgentGuard">
+<meta property="og:description" content="5 layers, circuit breakers, on-chain attestation. No LLM.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .method-header {
+    padding-top: calc(var(--nav-height) + var(--space-16));
+    padding-bottom: var(--space-12);
+    position: relative;
+  }
+  .method-content {
+    max-width: 720px;
+  }
+
+  /* ── Principle Cards ── */
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin: var(--space-8) 0;
+  }
+  .principle-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: var(--space-5);
+    transition: border-color var(--duration-normal) ease;
+  }
+  .principle-card:hover {
+    border-color: var(--border-hover);
+  }
+  .principle-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+  }
+  .principle-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Layer Cards ── */
+  .layers-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    position: relative;
+    z-index: 1;
+  }
+  .layer-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: var(--space-6);
+    border-left: 4px solid var(--celo);
+    transition: border-color var(--duration-normal) ease;
+  }
+  .layer-card:hover {
+    border-color: var(--border-hover);
+    border-left-color: var(--celo);
+  }
+  .layer-card-red { border-left-color: var(--red); }
+  .layer-card-red:hover { border-left-color: var(--red); }
+  .layer-card-yellow { border-left-color: var(--yellow); }
+  .layer-card-yellow:hover { border-left-color: var(--yellow); }
+  .layer-card-blue { border-left-color: var(--blue); }
+  .layer-card-blue:hover { border-left-color: var(--blue); }
+  .layer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+  }
+  .layer-name {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .layer-weight {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    padding: 2px 10px;
+    border-radius: 6px;
+  }
+  .layer-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .layer-signals {
+    margin-top: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .signal-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+  }
+
+  /* ── Circuit Breakers ── */
+  .cb-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    position: relative;
+    z-index: 1;
+  }
+  .cb-card {
+    background: var(--red-dim);
+    border: 1px solid rgba(239,68,68,0.15);
+    border-radius: 10px;
+    padding: var(--space-5);
+  }
+  .cb-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red);
+    margin-bottom: var(--space-2);
+  }
+  .cb-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .cb-cap {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    margin-top: var(--space-3);
+    display: inline-block;
+    background: rgba(239,68,68,0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(239,68,68,0.15);
+  }
+
+  /* ── Weight Table ── */
+  .weight-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-4) 0;
+  }
+  .weight-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border);
+  }
+  .weight-table td {
+    padding: var(--space-3) var(--space-4);
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .weight-table tbody tr:nth-child(odd) td {
+    background: rgba(255,255,255,0.02);
+  }
+  .weight-table tr:last-child td {
+    font-weight: 600;
+    border-bottom: none;
+    border-top: 1px solid var(--border-hover);
+  }
+
+  /* ── Featured Statement ── */
+  .featured {
+    background: var(--celo-dim);
+    border: 1px solid rgba(53,208,127,0.15);
+    border-left: 4px solid var(--celo);
+    border-radius: 12px;
+    padding: var(--space-8);
+    margin: var(--space-8) 0;
+  }
+  .featured-title {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--celo);
+    margin-bottom: var(--space-3);
+  }
+  .featured-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ── Section ── */
+  .method-section {
+    margin-bottom: var(--space-16);
+  }
+  .method-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .principle-grid { grid-template-columns: 1fr; }
+    .cb-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-page="methodology">
+<a href="#method-content" class="skip-link">Skip to content</a>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-left">
+    <a href="index.html" class="nav-wordmark">AgentGuard</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link" data-page="home">Home</a>
+      <a href="registry.html" class="nav-link" data-page="registry">Registry</a>
+      <a href="methodology.html" class="nav-link" data-page="methodology">Methodology</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" class="nav-cta">Verify on CeloScan</a>
+  </div>
+</nav>
+
+<div class="container" style="position: relative;">
+
+  <!-- Header -->
+  <div class="method-header section section-amber" style="padding-bottom: var(--space-12);">
+    <div class="blob-container">
+      <div class="blob blob-amber" style="top: -20%; right: 10%; width: 400px; height: 400px;"></div>
+      <div class="blob blob-green-sm" style="bottom: 10%; left: 5%;"></div>
+    </div>
+    <div class="method-content" style="position: relative; z-index: 1;">
+      <div class="label reveal mb-3">Methodology</div>
+      <h1 class="heading-md reveal reveal-d1">How AgentGuard Scores Trust</h1>
+      <p class="body-sm reveal reveal-d2 mt-4">
+        AgentGuard reads the ERC-8004 Identity Registry on Celo and evaluates every registered agent across five independent layers. Each layer produces a sub-score and risk flags. Circuit breakers cap the final score when critical red flags trigger.
+      </p>
+    </div>
+  </div>
+
+  <div class="method-content" id="method-content">
+
+    <!-- Principles -->
+    <div class="method-section">
+      <div class="heading-base reveal mb-6" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">01</span> Principles</div>
+      <div class="principle-grid">
+        <div class="principle-card reveal">
+          <div class="principle-title">Deterministic</div>
+          <div class="principle-desc">Same input always produces the same score. No randomness, no external APIs that change between runs (except temporal liveness probes).</div>
+        </div>
+        <div class="principle-card reveal reveal-d1">
+          <div class="principle-title">Verifiable</div>
+          <div class="principle-desc">Every score is pinned to IPFS with the full report, then written on-chain with the content hash. Anyone can verify.</div>
+        </div>
+        <div class="principle-card reveal reveal-d2">
+          <div class="principle-title">Conservative</div>
+          <div class="principle-desc">Missing data scores zero. Unknown is not positive. Circuit breakers prevent gaming via metadata quality alone.</div>
+        </div>
+        <div class="principle-card reveal reveal-d3">
+          <div class="principle-title">Independent</div>
+          <div class="principle-desc">Each layer evaluates a different trust signal. A perfect score on one layer cannot compensate for failure on another.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured: No LLM -->
+    <div class="featured reveal">
+      <div class="featured-title">No LLM. No AI scoring.</div>
+      <div class="featured-desc">
+        AgentGuard uses deterministic heuristics, on-chain data analysis, and endpoint probing. There is no language model in the scoring pipeline. Every decision is explainable and reproducible.
+      </div>
+    </div>
+
+    <!-- 5 Layers -->
+    <div class="method-section section section-blue" style="padding: var(--space-12) 0; margin-left: calc(-1 * var(--space-8)); margin-right: calc(-1 * var(--space-8)); padding-left: var(--space-8); padding-right: var(--space-8); border-radius: 16px;">
+      <div class="heading-base reveal mb-6" style="position: relative; z-index: 1; padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">02</span> The Five Layers</div>
+      <div class="layers-list">
+        <div class="layer-card reveal">
+          <div class="layer-header">
+            <span class="layer-name">L1: Registration Quality</span>
+            <span class="layer-weight">25 pts &middot; 0.8x</span>
+          </div>
+          <div class="layer-desc">
+            Evaluates the agent's metadata completeness and validity. Checks name, description, services array, version field, endpoint URLs, and metadata format (gzip, base64, IPFS, HTTP, raw JSON).
+          </div>
+          <div class="layer-signals">
+            <span class="signal-tag">name present</span>
+            <span class="signal-tag">description length</span>
+            <span class="signal-tag">services array</span>
+            <span class="signal-tag">valid endpoints</span>
+            <span class="signal-tag">version field</span>
+          </div>
+        </div>
+
+        <div class="layer-card layer-card-blue reveal">
+          <div class="layer-header">
+            <span class="layer-name">L2: Liveness</span>
+            <span class="layer-weight">25 pts &middot; 0.8x</span>
+          </div>
+          <div class="layer-desc">
+            Probes all declared endpoints to check if the agent is actually alive and responding. Tests HTTP status codes, response times, and content-type headers.
+          </div>
+          <div class="layer-signals">
+            <span class="signal-tag">HTTP 2xx</span>
+            <span class="signal-tag">response time</span>
+            <span class="signal-tag">content-type</span>
+            <span class="signal-tag">SSL valid</span>
+          </div>
+        </div>
+
+        <div class="layer-card reveal">
+          <div class="layer-header">
+            <span class="layer-name">L3: On-Chain Activity</span>
+            <span class="layer-weight">25 pts &middot; 0.8x</span>
+          </div>
+          <div class="layer-desc">
+            Analyzes the agent owner's wallet behavior via Blockscout. Looks at transaction count, unique contract interactions, wallet age, and token holdings to distinguish active wallets from empty or single-use ones.
+          </div>
+          <div class="layer-signals">
+            <span class="signal-tag">tx count</span>
+            <span class="signal-tag">contract interactions</span>
+            <span class="signal-tag">wallet age</span>
+            <span class="signal-tag">token diversity</span>
+          </div>
+        </div>
+
+        <div class="layer-card layer-card-red reveal">
+          <div class="layer-header">
+            <span class="layer-name">L4: Sybil Detection</span>
+            <span class="layer-weight">25 pts &middot; 1.0x</span>
+          </div>
+          <div class="layer-desc">
+            Identifies spam patterns: mass registration from the same owner, cloned metadata (Jaccard similarity), auto-generated naming patterns, and unlimited token approvals. This is the primary spam filter.
+          </div>
+          <div class="layer-signals">
+            <span class="signal-tag">owner agent count</span>
+            <span class="signal-tag">Jaccard similarity</span>
+            <span class="signal-tag">naming patterns</span>
+            <span class="signal-tag">approval analysis</span>
+          </div>
+        </div>
+
+        <div class="layer-card layer-card-yellow reveal">
+          <div class="layer-header">
+            <span class="layer-name">L5: Reputation</span>
+            <span class="layer-weight">15 pts &middot; 1.0x</span>
+          </div>
+          <div class="layer-desc">
+            Reads existing on-chain feedback from the ReputationRegistry contract. Checks for positive attestations from other agents and penalizes negative feedback.
+          </div>
+          <div class="layer-signals">
+            <span class="signal-tag">positive feedback</span>
+            <span class="signal-tag">negative feedback</span>
+            <span class="signal-tag">unique attestors</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weight Table -->
+    <div class="method-section">
+      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">03</span> Scoring Weights</div>
+      <div class="surface-card reveal">
+        <table class="weight-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Max Raw</th>
+              <th>Weight</th>
+              <th>Weighted Max</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>L1 Registration</td>
+              <td class="mono">25</td>
+              <td class="mono">0.8x</td>
+              <td class="mono">20</td>
+            </tr>
+            <tr>
+              <td>L2 Liveness</td>
+              <td class="mono">25</td>
+              <td class="mono">0.8x</td>
+              <td class="mono">20</td>
+            </tr>
+            <tr>
+              <td>L3 On-Chain</td>
+              <td class="mono">25</td>
+              <td class="mono">0.8x</td>
+              <td class="mono">20</td>
+            </tr>
+            <tr>
+              <td>L4 Sybil</td>
+              <td class="mono">25</td>
+              <td class="mono">1.0x</td>
+              <td class="mono">25</td>
+            </tr>
+            <tr>
+              <td>L5 Reputation</td>
+              <td class="mono">15</td>
+              <td class="mono">1.0x</td>
+              <td class="mono">15</td>
+            </tr>
+            <tr>
+              <td style="color: var(--text-primary);">Total</td>
+              <td class="mono"></td>
+              <td class="mono"></td>
+              <td class="mono" style="color: var(--celo);">100</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="body-sm reveal mt-4">
+        L4 and L5 carry full weight (1.0x) because Sybil detection and reputation are the strongest trust signals. L1-L3 are weighted at 0.8x because metadata quality and liveness can be gamed more easily.
+      </p>
+    </div>
+
+    <!-- Circuit Breakers -->
+    <div class="method-section section section-red" style="padding: var(--space-12) 0; margin-left: calc(-1 * var(--space-8)); margin-right: calc(-1 * var(--space-8)); padding-left: var(--space-8); padding-right: var(--space-8); border-radius: 16px;">
+      <div class="heading-base reveal mb-4" style="position: relative; z-index: 1; padding-bottom: var(--space-3); border-bottom: 1px solid rgba(239,68,68,0.15);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">04</span> Circuit Breakers</div>
+      <p class="heading-sm reveal mb-2" style="position: relative; z-index: 1; color: var(--text-secondary);">When Scores Get Capped</p>
+      <p class="body-sm reveal mb-6">
+        Circuit breakers override the composite score when critical red flags are detected. They set a hard cap regardless of how well the agent scores on other layers.
+      </p>
+      <div class="cb-grid">
+        <div class="cb-card reveal">
+          <div class="cb-name">MASS_REGISTRATION</div>
+          <div class="cb-desc">Owner registered 10+ agents. Caps score to prevent spam clusters from scoring well on metadata quality alone.</div>
+          <div class="cb-cap">Cap: 15/100</div>
+        </div>
+        <div class="cb-card reveal reveal-d1">
+          <div class="cb-name">METADATA_CLONE</div>
+          <div class="cb-desc">Agent metadata is near-identical to another agent (Jaccard similarity &gt; 0.9). Indicates copy-paste registration.</div>
+          <div class="cb-cap">Cap: 25/100</div>
+        </div>
+        <div class="cb-card reveal reveal-d2">
+          <div class="cb-name">NO_METADATA</div>
+          <div class="cb-desc">Agent has no parseable metadata at all. Cannot evaluate registration quality.</div>
+          <div class="cb-cap">Cap: 20/100</div>
+        </div>
+        <div class="cb-card reveal reveal-d3">
+          <div class="cb-name">ALL_ENDPOINTS_DEAD</div>
+          <div class="cb-desc">Every declared endpoint returns errors or times out. Agent is not operational.</div>
+          <div class="cb-cap">Cap: 35/100</div>
+        </div>
+        <div class="cb-card reveal">
+          <div class="cb-name">NEGATIVE_REPUTATION</div>
+          <div class="cb-desc">Agent has received negative on-chain attestations from other agents in the network.</div>
+          <div class="cb-cap">Cap: 30/100</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- On-Chain Write -->
+    <div class="method-section">
+      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">05</span> On-Chain Attestation</div>
+      <p class="body-sm reveal" style="line-height: 1.8;">
+        After scoring, the full report is pinned to IPFS via Pinata. The composite score, IPFS URI, and content hash are then written to the ReputationRegistry contract on Celo mainnet using the <code class="mono" style="font-size: 12px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">giveFeedback()</code> function.
+      </p>
+      <p class="body-sm reveal mt-4" style="line-height: 1.8;">
+        Each write costs approximately 0.006 CELO (~217K gas at 27.5 gwei). The writer processes agents sequentially to avoid nonce collisions, and skips agents that have already been scored.
+      </p>
+    </div>
+
+    <!-- Source -->
+    <div class="method-section" style="margin-bottom: var(--space-8);">
+      <div class="surface-card reveal" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
+        <div>
+          <div class="heading-sm">Open Source</div>
+          <p class="body-sm mt-2">Full scanner, scorer, and writer source code available on GitHub.</p>
+        </div>
+        <a href="https://github.com/yonkoo11/agentguard" target="_blank" class="btn-primary">View Source &#8599;</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">AgentGuard &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> Trust Scoring &middot; Built on Celo</div>
+    <div class="footer-links">
+      <a href="https://github.com/yonkoo11/agentguard" target="_blank">GitHub</a>
+      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank">CeloScan</a>
+    </div>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+</body>
+</html>

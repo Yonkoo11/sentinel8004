@@ -1,266 +1,233 @@
-// AgentGuard Dashboard
+// AgentGuard — Registry Page Logic
 (async function () {
+  const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
   let allReports = [];
-  let displayLimit = 100;
+  let displayLimit = 50;
 
   try {
     const res = await fetch('data/scores.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allReports = data.reports || [];
-    // Remove loading indicator
+
     const loadingRow = document.getElementById('loading-row');
     if (loadingRow) loadingRow.remove();
 
-    // Compute stats
     const total = allReports.length;
     const trusted = allReports.filter(r => r.compositeScore >= 70).length;
     const fair = allReports.filter(r => r.compositeScore >= 30 && r.compositeScore < 70).length;
     const flagged = allReports.filter(r => r.compositeScore < 30).length;
-    const owners = new Set(allReports.map(r => r.owner));
-    const avg = total > 0 ? Math.round(allReports.reduce((s, r) => s + r.compositeScore, 0) / total) : 0;
 
-    document.getElementById('stat-total').textContent = total.toLocaleString();
-    document.getElementById('stat-trusted').textContent = trusted.toLocaleString();
-    document.getElementById('stat-fair').textContent = fair.toLocaleString();
-    document.getElementById('stat-flagged').textContent = flagged.toLocaleString();
-    document.getElementById('stat-owners').textContent = owners.size.toLocaleString();
+    // Quick stats
+    countUp(document.getElementById('qs-total'), total);
+    countUp(document.getElementById('qs-trusted'), trusted);
+    countUp(document.getElementById('qs-fair'), fair);
+    countUp(document.getElementById('qs-flagged'), flagged);
 
-    // Hero
-    const spamPct = total > 0 ? ((flagged / total) * 100).toFixed(1) + '%' : '--';
-    document.getElementById('hero-spam-pct').textContent = spamPct;
-    document.getElementById('hero-desc').textContent =
-      `Out of ${total.toLocaleString()} agents on Celo's IdentityRegistry, ${flagged.toLocaleString()} score below 30/100. ` +
-      `Only ${trusted} agents pass all trust checks. Average score: ${avg}/100. ` +
-      `${owners.size} unique owner addresses.`;
+    // Grey out zero stats (Issue 16)
+    if (trusted === 0) document.getElementById('qs-trusted').style.color = 'var(--text-muted)';
+    if (fair === 0) document.getElementById('qs-fair').style.color = 'var(--text-muted)';
 
-    // Distribution chart (10 buckets of 10)
+    // Distribution chart (Proposal C horizontal bars)
     const buckets = Array(10).fill(0);
     for (const r of allReports) {
       const idx = Math.min(9, Math.floor(r.compositeScore / 10));
       buckets[idx]++;
     }
-    const maxLog = Math.max(...buckets.map(b => b > 0 ? Math.log10(b + 1) : 0), 1);
-    const chart = document.getElementById('distribution-chart');
-    const colors = ['#ef4444','#ef4444','#ef4444','#f59e0b','#f59e0b','#f59e0b','#f59e0b','#35D07F','#35D07F','#35D07F'];
-    chart.innerHTML = buckets.map((count, i) => {
-      const h = count > 0 ? Math.max(8, (Math.log10(count + 1) / maxLog) * 64) : 2;
-      const label = `${i*10}-${i*10+9}: ${count.toLocaleString()} agents`;
-      return `<div class="flex flex-col items-center gap-1" title="${label}">
-        <div class="text-[9px] mono text-gray-500">${count > 0 ? count.toLocaleString() : ''}</div>
-        <div class="w-6 rounded-t" style="height:${h}px;background:${colors[i]};opacity:0.8"></div>
-        <div class="text-[9px] text-gray-600 mono">${i*10}</div>
-      </div>`;
-    }).join('');
+    const maxBucket = Math.max(...buckets, 1);
+    const barColors = ['var(--red)','var(--red)','var(--red)','var(--yellow)','var(--yellow)','var(--yellow)','var(--yellow)','var(--celo)','var(--celo)','var(--celo)'];
+    const distChart = document.getElementById('dist-chart');
+    if (distChart) {
+      distChart.innerHTML = buckets.map((count, i) => {
+        const pct = maxBucket > 0 ? (count / maxBucket) * 100 : 0;
+        return `<div class="dist-row">
+          <div class="dist-label">${i*10}-${i*10+9}</div>
+          <div class="dist-bar-track">
+            <div class="dist-bar-fill" data-width="${pct}" style="background:${barColors[i]}"></div>
+          </div>
+          <div class="dist-count">${count.toLocaleString()}</div>
+        </div>`;
+      }).join('');
 
-    // Flag pills
-    const allFlags = {};
-    for (const r of allReports) {
-      for (const layer of (r.layers || [])) {
-        for (const flag of (layer.flags || [])) {
-          const key = flag.split(':')[0];
-          allFlags[key] = (allFlags[key] || 0) + 1;
-        }
+      // Animate bars
+      const distObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.querySelectorAll('.dist-bar-fill').forEach(bar => {
+              setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+            });
+            distObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      distObs.observe(distChart);
+    }
+
+    // Scan date
+    if (data.scannedAt) {
+      const d = new Date(data.scannedAt);
+      const el = document.getElementById('scan-date');
+      if (el) el.textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const freshEl = document.getElementById('data-freshness');
+      if (freshEl) {
+        const ago = Math.floor((Date.now() - d.getTime()) / 86400000);
+        const label = ago === 0 ? 'Today' : ago === 1 ? '1 day ago' : ago + ' days ago';
+        freshEl.textContent = 'Scanned: ' + label;
       }
     }
-    const flagPills = document.getElementById('flag-pills');
-    const sortedFlags = Object.entries(allFlags).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    flagPills.innerHTML = sortedFlags.map(([flag, count]) => {
-      const isRed = ['MASS_REGISTRATION', 'METADATA_CLONE', 'AUTO_NAMING', 'UNLIMITED_APPROVALS'].includes(flag);
-      const cls = isRed
-        ? 'bg-red-950/50 text-red-400 border-red-900/50'
-        : 'bg-surface-3 text-gray-400 border-white/5';
-      return `<button class="text-[11px] px-2.5 py-1 rounded-full border ${cls} hover:opacity-80 transition-opacity flag-pill" data-flag="${flag}">
-        ${flag.replace(/_/g, ' ')} <span class="text-gray-600 ml-1">${count.toLocaleString()}</span>
-      </button>`;
-    }).join('');
 
-    // Flag pill click filters
-    flagPills.querySelectorAll('.flag-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        const flag = pill.dataset.flag;
-        document.getElementById('search').value = flag;
-        render();
-      });
-    });
+    // Table
+    const searchInput = document.getElementById('search');
+    const scoreFilter = document.getElementById('score-filter');
+    const sortBy = document.getElementById('sort-by');
+    const loadMore = document.getElementById('load-more');
 
-    const scanDate = data.scannedAt ? new Date(data.scannedAt).toLocaleString() : '';
-    const scanMode = data.scanMode || '';
-    document.getElementById('scan-meta').textContent =
-      scanDate + (scanMode ? ` · ${scanMode}` : '');
-  } catch (e) {
-    document.getElementById('agent-table').innerHTML =
-      `<tr><td colspan="5" class="px-5 py-12 text-center text-gray-500">
-        <div class="text-lg mb-2">No scan data found</div>
-        <div class="text-xs">Run the scanner first:</div>
-        <code class="text-[11px] mt-2 block mono text-gray-400">npx tsx src/index.ts scan && npx tsx scripts/generate-dashboard.ts</code>
-      </td></tr>`;
-    return;
-  }
+    function render() {
+      const q = searchInput.value.toLowerCase();
+      const filter = scoreFilter.value;
+      const sort = sortBy.value;
 
-  const search = document.getElementById('search');
-  const scoreFilter = document.getElementById('score-filter');
-  const sortBy = document.getElementById('sort-by');
-  const loadMore = document.getElementById('load-more');
-
-  function scoreBadge(score) {
-    if (score >= 70) return { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/20' };
-    if (score >= 30) return { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/20' };
-    return { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/20' };
-  }
-
-  function scoreBarColor(score) {
-    if (score >= 70) return 'bg-green-500';
-    if (score >= 30) return 'bg-yellow-500';
-    return 'bg-red-500';
-  }
-
-  function truncAddr(addr) {
-    return addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '';
-  }
-
-  function getFlags(report) {
-    return report.layers ? report.layers.flatMap(l => l.flags || []) : [];
-  }
-
-  function render() {
-    const q = search.value.toLowerCase();
-    const filter = scoreFilter.value;
-    const sort = sortBy.value;
-
-    let filtered = allReports.filter(r => {
-      if (q) {
-        const flags = getFlags(r).join(' ').toLowerCase();
-        if (!(r.name || '').toLowerCase().includes(q) &&
-            !r.owner.toLowerCase().includes(q) &&
-            !flags.includes(q)) {
-          return false;
+      let filtered = allReports.filter(r => {
+        if (q) {
+          const flags = getFlags(r).join(' ').toLowerCase();
+          if (!(r.name || '').toLowerCase().includes(q) &&
+              !r.owner.toLowerCase().includes(q) &&
+              !flags.includes(q)) return false;
         }
-      }
-      if (filter === 'high' && r.compositeScore < 70) return false;
-      if (filter === 'mid' && (r.compositeScore < 30 || r.compositeScore >= 70)) return false;
-      if (filter === 'low' && r.compositeScore >= 30) return false;
-      return true;
-    });
+        if (filter === 'high' && r.compositeScore < 70) return false;
+        if (filter === 'mid' && (r.compositeScore < 30 || r.compositeScore >= 70)) return false;
+        if (filter === 'low' && r.compositeScore >= 30) return false;
+        return true;
+      });
 
-    filtered.sort((a, b) => {
-      if (sort === 'score-desc') return b.compositeScore - a.compositeScore;
-      if (sort === 'score-asc') return a.compositeScore - b.compositeScore;
-      if (sort === 'id-asc') return a.agentId - b.agentId;
-      if (sort === 'id-desc') return b.agentId - a.agentId;
-      if (sort === 'flags') return getFlags(b).length - getFlags(a).length;
-      return 0;
-    });
+      filtered.sort((a, b) => {
+        if (sort === 'score-desc') return b.compositeScore - a.compositeScore;
+        if (sort === 'score-asc') return a.compositeScore - b.compositeScore;
+        if (sort === 'id-asc') return a.agentId - b.agentId;
+        if (sort === 'id-desc') return b.agentId - a.agentId;
+        if (sort === 'flags') return getFlags(b).length - getFlags(a).length;
+        return 0;
+      });
 
-    const showing = filtered.slice(0, displayLimit);
-    const tbody = document.getElementById('agent-table');
-    const rows = [];
+      const showing = filtered.slice(0, displayLimit);
+      const tbody = document.getElementById('agent-table');
+      const rows = [];
 
-    for (const r of showing) {
-      const flags = getFlags(r);
-      const flagTypes = [...new Set(flags.map(f => f.split(':')[0]))];
-      const badge = scoreBadge(r.compositeScore);
-      const barColor = scoreBarColor(r.compositeScore);
-      const rowId = `row-${r.agentId}`;
+      for (const r of showing) {
+        const flags = getFlags(r);
+        const flagTypes = [...new Set(flags.map(f => f.split(':')[0]))];
+        const sc = scoreClass(r.compositeScore);
+        const rowId = `expand-${r.agentId}`;
 
-      rows.push(`
-        <tr class="agent-row cursor-pointer" onclick="toggleExpand('${rowId}')">
-          <td class="px-5 py-3 mono text-gray-500 text-xs">${r.agentId}</td>
-          <td class="px-5 py-3">
-            <div class="font-medium text-sm">${escapeHtml(r.name || 'Unknown')}</div>
-          </td>
-          <td class="px-5 py-3 hidden lg:table-cell">
-            <span class="mono text-xs text-gray-500">${truncAddr(r.owner)}</span>
-          </td>
-          <td class="px-5 py-3">
-            <div class="flex items-center gap-3">
-              <span class="mono text-xs font-medium w-7 ${badge.text}">${r.compositeScore}</span>
-              <div class="flex-1 bg-white/5 rounded-full h-1.5 overflow-hidden">
-                <div class="score-bar ${barColor} h-full rounded-full" style="width:${r.compositeScore}%"></div>
+        rows.push(`
+          <tr data-expand="${rowId}" tabindex="0" role="button" aria-expanded="false">
+            <td class="mono" style="color: var(--text-muted); font-size: 12px;">${r.agentId}</td>
+            <td class="agent-name">${escapeHtml(r.name || 'Unknown')}</td>
+            <td class="mono agent-owner">${truncAddr(r.owner)}</td>
+            <td>
+              <div class="score-cell">
+                <span class="score-num score-${sc}">${r.compositeScore}</span>
+                <span class="score-bar-track"><span class="score-bar-fill bar-${sc}" style="width:${r.compositeScore}%"></span></span>
+                ${confDot(r.confidence)}
               </div>
-            </div>
-          </td>
-          <td class="px-5 py-3">
-            ${flags.length > 0
-              ? `<span class="mono text-xs text-red-400/70">${flags.length}</span>`
-              : '<span class="text-xs text-gray-700">--</span>'}
-          </td>
-        </tr>
-        <tr>
-          <td colspan="5" class="p-0">
-            <div id="${rowId}" class="expand-content">
+            </td>
+            <td>
+              ${flagTypes.length > 0
+                ? `<span class="flag-chip">${flagTypes[0]}</span>${flagTypes.length > 1 ? `<span class="mono" style="font-size: 10px; color: var(--text-muted); margin-left: 4px;">+${flagTypes.length - 1}</span>` : ''}`
+                : '<span style="color: var(--text-muted); font-size: 12px;">—</span>'}
+            </td>
+          </tr>
+          <tr><td colspan="5" style="padding: 0;">
+            <div class="expand-wrap" id="${rowId}">
               <div class="expand-inner">
-                <div class="px-6 py-5 bg-surface-1/50 grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-                  <div>
-                    <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Layer Breakdown</div>
-                    ${(r.layers || []).map(l => `
-                      <div class="flex items-center justify-between py-1.5">
-                        <span class="text-gray-400 capitalize">${l.layer}</span>
-                        <div class="flex items-center gap-2">
-                          <div class="w-16 bg-white/5 rounded-full h-1">
-                            <div class="${scoreBarColor(l.score / l.maxScore * 100)} h-full rounded-full" style="width:${(l.score/l.maxScore)*100}%"></div>
-                          </div>
-                          <span class="mono text-gray-300 w-10 text-right">${l.score}/${l.maxScore}</span>
-                        </div>
-                      </div>
-                    `).join('')}
-                  </div>
-                  <div>
-                    ${flagTypes.length > 0 ? `
-                      <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Risk Flags</div>
-                      <div class="flex flex-wrap gap-1.5">
-                        ${flagTypes.map(f => `<span class="bg-red-950/30 text-red-400/80 border border-red-900/30 rounded px-2 py-0.5 text-[10px]">${f}</span>`).join('')}
-                      </div>
-                    ` : '<div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">No Flags</div><div class="text-green-400/60 text-[11px]">Clean</div>'}
-                  </div>
-                  <div>
-                    <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Details</div>
-                    <div class="mono text-[11px] text-gray-400 break-all">${r.owner}</div>
-                    ${r.confidence ? `<div class="mt-2 text-[11px]"><span class="text-gray-500">Confidence:</span> <span class="${r.confidence === 'high' ? 'text-green-400' : r.confidence === 'medium' ? 'text-yellow-400' : 'text-red-400'}">${r.confidence}</span></div>` : ''}
-                    ${r.circuitBreakers && r.circuitBreakers.length > 0 ? `
-                      <div class="mt-3 text-[11px] text-gray-500 uppercase tracking-wider mb-1">Circuit Breakers</div>
-                      ${r.circuitBreakers.map(cb => `<div class="text-orange-400/80 text-[11px]">${escapeHtml(cb)}</div>`).join('')}
-                    ` : ''}
-                    ${r.errors && r.errors.length > 0 ? `
-                      <div class="mt-3 text-[11px] text-gray-500 uppercase tracking-wider mb-1">Errors</div>
-                      ${r.errors.map(e => `<div class="text-red-400/70 text-[11px]">${escapeHtml(e)}</div>`).join('')}
-                    ` : ''}
-                  </div>
+                <div>
+                  <div class="detail-heading">Layer Breakdown</div>
+                  ${(r.layers || []).map(l => {
+                    const pct = l.maxScore > 0 ? (l.score / l.maxScore) * 100 : 0;
+                    const cls = scoreClass(pct);
+                    return `<div class="layer-row">
+                      <span style="text-transform: capitalize;">${l.layer}</span>
+                      <span style="display: flex; align-items: center; gap: 6px;">
+                        <span class="score-bar-track" style="width: 40px;"><span class="score-bar-fill bar-${cls}" style="width:${pct}%"></span></span>
+                        <span class="mono" style="color: var(--text-primary); font-size: 11px;">${l.score}/${l.maxScore}</span>
+                      </span>
+                    </div>`;
+                  }).join('')}
+                </div>
+                <div>
+                  ${flagTypes.length > 0 ? `
+                    <div class="detail-heading">Risk Flags</div>
+                    <div>${flagTypes.map(f => `<span class="flag-chip">${f}</span>`).join('')}</div>
+                  ` : `<div class="detail-heading">Flags</div><div style="color: var(--celo); font-size: 11px;">Clean</div>`}
+                  ${r.circuitBreakers && r.circuitBreakers.length > 0 ? `
+                    <div class="detail-heading" style="margin-top: 12px;">Circuit Breakers</div>
+                    ${r.circuitBreakers.map(cb => `<div style="color: var(--yellow); font-size: 11px;">${escapeHtml(cb)}</div>`).join('')}
+                  ` : ''}
+                </div>
+                <div>
+                  <div class="detail-heading">Details</div>
+                  <div class="mono" style="font-size: 11px; color: var(--text-secondary); word-break: break-all;">${escapeHtml(r.owner)}</div>
+                  ${r.confidence ? `<div style="margin-top: 8px; font-size: 11px;"><span style="color: var(--text-muted);">Confidence:</span> <span class="score-${sc}">${r.confidence}</span></div>` : ''}
+                  ${r.errors && r.errors.length > 0 ? `
+                    <div class="detail-heading" style="margin-top: 12px;">Errors</div>
+                    ${r.errors.map(e => `<div style="color: var(--red); opacity: 0.7; font-size: 11px;">${escapeHtml(e)}</div>`).join('')}
+                  ` : ''}
+                  <a href="https://celoscan.io/nft/${IDENTITY_REGISTRY}/${r.agentId}" target="_blank" class="celoscan-link" style="display: inline-block; margin-top: 12px;">
+                    View on CeloScan &#8599;
+                  </a>
                 </div>
               </div>
             </div>
-          </td>
-        </tr>
-      `);
+          </td></tr>
+        `);
+      }
+
+      tbody.innerHTML = rows.join('');
+      document.getElementById('showing-count').textContent =
+        `Showing ${showing.length} of ${filtered.length} agents`;
+
+      if (filtered.length > displayLimit) {
+        loadMore.classList.remove('hidden');
+        loadMore.textContent = `Load more (${filtered.length - displayLimit} remaining)`;
+      } else {
+        loadMore.classList.add('hidden');
+      }
     }
 
-    tbody.innerHTML = rows.join('');
-    document.getElementById('showing-count').textContent =
-      `Showing ${showing.length} of ${filtered.length} agents`;
+    searchInput.addEventListener('input', () => { displayLimit = 50; render(); });
+    scoreFilter.addEventListener('change', () => { displayLimit = 50; render(); });
+    sortBy.addEventListener('change', render);
+    loadMore.addEventListener('click', () => { displayLimit += 50; render(); });
 
-    if (filtered.length > displayLimit) {
-      loadMore.classList.remove('hidden');
-      loadMore.textContent = `Load more (${filtered.length - displayLimit} remaining)`;
-    } else {
-      loadMore.classList.add('hidden');
-    }
+    render();
+
+  } catch (e) {
+    document.getElementById('agent-table').innerHTML =
+      `<tr><td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+        <div style="font-size: 14px; margin-bottom: 8px;">No scan data found</div>
+        <code style="font-size: 11px; color: var(--text-muted);">npx tsx src/index.ts scan && npx tsx scripts/generate-dashboard.ts</code>
+      </td></tr>`;
   }
-
-  search.addEventListener('input', () => { displayLimit = 100; render(); });
-  scoreFilter.addEventListener('change', () => { displayLimit = 100; render(); });
-  sortBy.addEventListener('change', render);
-  loadMore.addEventListener('click', () => { displayLimit += 100; render(); });
-
-  render();
 })();
 
-function toggleExpand(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('open');
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+// Event delegation for row expand (click + keyboard accessible)
+document.addEventListener('click', function(e) {
+  const row = e.target.closest('tr[data-expand]');
+  if (!row) return;
+  const el = document.getElementById(row.dataset.expand);
+  if (el) {
+    const isOpen = el.classList.toggle('open');
+    row.setAttribute('aria-expanded', isOpen);
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const row = e.target.closest('tr[data-expand]');
+  if (!row) return;
+  e.preventDefault();
+  const el = document.getElementById(row.dataset.expand);
+  if (el) {
+    const isOpen = el.classList.toggle('open');
+    row.setAttribute('aria-expanded', isOpen);
+  }
+});
