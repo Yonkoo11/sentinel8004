@@ -22,8 +22,8 @@ export async function scoreOnchain(agentWallet: string | null): Promise<LayerSco
   const flags: string[] = [];
 
   if (!agentWallet) {
-    details.push('No agent wallet set — neutral score');
-    return { layer: 'onchain', score: 12, maxScore: 25, details, flags };
+    details.push('No agent wallet set — no on-chain behavior to evaluate');
+    return { layer: 'onchain', score: 0, maxScore: 25, details, flags };
   }
 
   let txs: TxListResponse['result'] = [];
@@ -41,7 +41,7 @@ export async function scoreOnchain(agentWallet: string | null): Promise<LayerSco
   } catch (e) {
     details.push(`Blockscout API error: ${(e as Error).message}`);
     flags.push('BLOCKSCOUT_ERROR');
-    return { layer: 'onchain', score: 12, maxScore: 25, details, flags };
+    return { layer: 'onchain', score: 0, maxScore: 25, details, flags };
   }
 
   let score = 0;

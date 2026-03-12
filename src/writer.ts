@@ -1,3 +1,4 @@
+import pLimit from 'p-limit';
 import { keccak256, toBytes } from 'viem';
 import { publicClient, getWalletClient, getAccount } from './chain.js';
 import { REPUTATION_REGISTRY_ADDRESS, REPUTATION_REGISTRY_ABI } from './config.js';
@@ -33,25 +34,29 @@ export async function writeFeedback(
     console.log(`Writer address: ${account.address}`);
   }
 
-  // Check which agents we've already scored
+  // Check which agents we've already scored (batch with concurrency)
   const alreadyScoredSet = new Set<number>();
   if (!dryRun && account) {
     console.log('Checking existing feedback...');
-    for (const report of reports) {
-      try {
-        const clients = await publicClient.readContract({
-          address: REPUTATION_REGISTRY_ADDRESS,
-          abi: REPUTATION_REGISTRY_ABI,
-          functionName: 'getClients',
-          args: [BigInt(report.agentId)],
-        });
-        if ((clients as string[]).includes(account.address)) {
-          alreadyScoredSet.add(report.agentId);
+    const limit = pLimit(20);
+    const checks = reports.map(report =>
+      limit(async () => {
+        try {
+          const clients = await publicClient.readContract({
+            address: REPUTATION_REGISTRY_ADDRESS,
+            abi: REPUTATION_REGISTRY_ABI,
+            functionName: 'getClients',
+            args: [BigInt(report.agentId)],
+          });
+          if ((clients as string[]).includes(account!.address)) {
+            alreadyScoredSet.add(report.agentId);
+          }
+        } catch {
+          // getClients may fail for agents with no feedback yet
         }
-      } catch {
-        // getClients may fail for agents with no feedback yet
-      }
-    }
+      })
+    );
+    await Promise.all(checks);
     if (alreadyScoredSet.size > 0) {
       console.log(`Skipping ${alreadyScoredSet.size} already-scored agents`);
     }
@@ -129,7 +134,7 @@ export async function writeFeedback(
           BigInt(report.compositeScore), // int128 value
           0, // valueDecimals
           'agentguard', // tag1
-          'trust-v1', // tag2
+          'trust-v2', // tag2
           '', // endpoint
           feedbackURI, // feedbackURI
           feedbackHash, // feedbackHash

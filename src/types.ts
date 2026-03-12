@@ -40,9 +40,9 @@ export interface ServiceEndpoint {
 }
 
 export interface LayerScore {
-  layer: 'registration' | 'liveness' | 'onchain' | 'sybil';
+  layer: 'registration' | 'liveness' | 'onchain' | 'sybil' | 'reputation';
   score: number;
-  maxScore: 25;
+  maxScore: number;
   details: string[];
   flags: string[];
 }
@@ -52,9 +52,11 @@ export interface TrustReport {
   owner: string;
   name: string;
   compositeScore: number;
+  confidence: 'high' | 'medium' | 'low';
   layers: LayerScore[];
+  circuitBreakers: string[];
   scannedAt: string;
-  reportVersion: 'trust-v1';
+  reportVersion: 'trust-v2';
   errors: string[];
 }
 

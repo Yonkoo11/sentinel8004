@@ -8,6 +8,9 @@
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allReports = data.reports || [];
+    // Remove loading indicator
+    const loadingRow = document.getElementById('loading-row');
+    if (loadingRow) loadingRow.remove();
 
     // Compute stats
     const total = allReports.length;
@@ -211,6 +214,11 @@
                   <div>
                     <div class="text-[11px] text-gray-500 uppercase tracking-wider mb-3">Details</div>
                     <div class="mono text-[11px] text-gray-400 break-all">${r.owner}</div>
+                    ${r.confidence ? `<div class="mt-2 text-[11px]"><span class="text-gray-500">Confidence:</span> <span class="${r.confidence === 'high' ? 'text-green-400' : r.confidence === 'medium' ? 'text-yellow-400' : 'text-red-400'}">${r.confidence}</span></div>` : ''}
+                    ${r.circuitBreakers && r.circuitBreakers.length > 0 ? `
+                      <div class="mt-3 text-[11px] text-gray-500 uppercase tracking-wider mb-1">Circuit Breakers</div>
+                      ${r.circuitBreakers.map(cb => `<div class="text-orange-400/80 text-[11px]">${escapeHtml(cb)}</div>`).join('')}
+                    ` : ''}
                     ${r.errors && r.errors.length > 0 ? `
                       <div class="mt-3 text-[11px] text-gray-500 uppercase tracking-wider mb-1">Errors</div>
                       ${r.errors.map(e => `<div class="text-red-400/70 text-[11px]">${escapeHtml(e)}</div>`).join('')}

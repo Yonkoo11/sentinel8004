@@ -1,40 +1,46 @@
 # AgentGuard - Progress
 
 ## Completed
-- Project scaffolding (package.json, tsconfig, types, config, chain)
-- Scanner with binary search, checkpoint/resume, metadata parsing (5 formats)
-- Layer 1: Registration Quality scoring (0-25)
-- Layer 2: Endpoint Liveness probing (0-25)
-- Layer 3: On-Chain Behavior via Blockscout (0-25)
-- Layer 4: Sybil/Spam Detection with owner concentration + Jaccard similarity (0-25)
-- Composite scorer (0-100) orchestrating all 4 layers
-- Full scan pipeline in CLI with --layer1, --skip-liveness, --skip-onchain flags
-- IPFS pinning via Pinata API (src/ipfs.ts)
-- On-chain writer to ReputationRegistry with dry-run mode (src/writer.ts)
-- MCP server with 3 tools: check_agent_trust, list_flagged_agents, get_agent_report
-- Dashboard: static HTML+JS with Tailwind, sortable/filterable table, score badges
-- Dashboard data generator script
-- Self-registration script (scripts/register-agent.ts)
+- All source code: scanner, 5 scoring layers (v2), scorer with circuit breakers, writer, IPFS pinner, MCP server, dashboard
+- Scoring v2 overhaul: circuit breakers, weighted layers, confidence levels, no neutral inflation
+- Layer 5 (Reputation): reads existing on-chain feedback from ReputationRegistry
+- L2 improvement: generic domain filter (google.com etc won't pass liveness)
+- Dashboard v2: hero insight, distribution chart, flag pills, expandable rows, methodology section
+- Reporter: ecosystem report generator with adversarial analysis
+- GitHub repo: https://github.com/Yonkoo11/agentguard
+- GitHub Pages: https://yonkoo11.github.io/agentguard/
+- MCP server tested and working (3 tools)
+- Writer dry-run tested
+- README v2 with scoring methodology, adversarial analysis, limitations
 
-## Verified Working
-- 50-agent scan: 6 high-trust, 24 fair, 20 poor. babycaisubagent spam correctly flagged.
-- Writer dry-run: outputs scores per agent without chain interaction
-- Dashboard data generation from scan results
-- All TypeScript compiles clean (tsc --noEmit passes)
+## In Progress
+- Full v2 scan running in background (~250/1838 agents done, L1+L2+L4, skip-onchain/reputation)
+- Once complete: regenerate dashboard data and push
 
-## Remaining (Day 4-5)
-- Run full 1836-agent scan (will take ~30min with L2+L3)
-- Write scores to chain (needs AGENTGUARD_PRIVATE_KEY funded with CELO)
-- Register AgentGuard itself as ERC-8004 agent (needs PINATA_JWT + funded wallet)
-- Deploy dashboard to GitHub Pages
-- README with architecture, setup, demo screenshots
-- Karma Gap, X post, Synthesis registration
+## Blocked on User
+- .env created but empty -- needs:
+  - AGENTGUARD_PRIVATE_KEY (any EVM wallet, export private key, fund with ~0.01 CELO)
+  - PINATA_JWT (from https://app.pinata.cloud)
+- Once keys are set:
+  1. Write scores on-chain: `npx tsx src/index.ts write`
+  2. Register AgentGuard as agent: `npx tsx scripts/register-agent.ts`
+  3. Submit to hackathon
 
-## Key Files
-- src/index.ts — CLI entry (scan, write, serve)
-- src/scorer.ts — 4-layer composite scoring
-- src/writer.ts — ReputationRegistry writer
-- src/mcp-server.ts — MCP stdio server
-- dashboard/ — Static HTML dashboard
-- scripts/register-agent.ts — Self-registration
-- scripts/generate-dashboard.ts — Dashboard data transformer
+## v2 Scoring Changes
+- **Circuit breakers**: MASS_REGISTRATION caps at 15, METADATA_CLONE at 25, NO_METADATA at 20
+- **Weighted layers**: L1/L2/L3 at 0.8x (cosmetic/moderate), L4/L5 at 1.0x (security/social)
+- **No neutral inflation**: Missing data = 0, not middle-of-range
+- **Confidence levels**: high (4+ layers), medium (2-3), low (1)
+- **Layer 5 Reputation**: Reads existing on-chain feedback from ReputationRegistry
+- **Generic domain filter**: Endpoints pointing to google.com etc flagged as dead
+- **Report version**: trust-v2
+
+## Architecture
+- src/index.ts -- CLI: scan, write, info, serve, report
+- src/scorer.ts -- 5-layer composite with circuit breakers (0-100)
+- src/layers/reputation.ts -- NEW: reads on-chain feedback
+- src/writer.ts -- ReputationRegistry + IPFS
+- src/mcp-server.ts -- MCP stdio (3 tools)
+- src/reporter.ts -- Ecosystem report generator
+- dashboard/ -- Static HTML+JS, GitHub Pages
+- scripts/ -- register-agent, generate-dashboard

@@ -16,10 +16,21 @@ interface ScanData {
   reports: TrustReport[];
 }
 
+// Cache scan data in memory instead of re-reading from disk on every tool call
+let cachedData: ScanData | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL_MS = 60_000; // Refresh from disk every 60s
+
 function loadScanData(): ScanData | null {
+  const now = Date.now();
+  if (cachedData && now - cacheTimestamp < CACHE_TTL_MS) {
+    return cachedData;
+  }
   if (!existsSync(RESULTS_PATH)) return null;
   try {
-    return JSON.parse(readFileSync(RESULTS_PATH, 'utf-8'));
+    cachedData = JSON.parse(readFileSync(RESULTS_PATH, 'utf-8'));
+    cacheTimestamp = now;
+    return cachedData;
   } catch {
     return null;
   }
@@ -114,11 +125,15 @@ export async function startMCPServer() {
         const summary = [
           `Agent #${report.agentId}: "${report.name}"`,
           `Owner: ${report.owner}`,
-          `Trust Score: ${report.compositeScore}/100`,
+          `Trust Score: ${report.compositeScore}/100 (confidence: ${report.confidence || 'unknown'})`,
           '',
           'Layer Scores:',
           ...report.layers.map(l => `  ${l.layer}: ${l.score}/${l.maxScore}`),
         ];
+
+        if (report.circuitBreakers && report.circuitBreakers.length > 0) {
+          summary.push('', 'Circuit Breakers Active:', ...report.circuitBreakers.map(cb => `  - ${cb}`));
+        }
 
         if (flags.length > 0) {
           summary.push('', 'Flags:', ...flags.map(f => `  - ${f}`));

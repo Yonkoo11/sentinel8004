@@ -9,14 +9,14 @@ export async function scoreLiveness(agent: AgentRecord): Promise<LayerScore> {
 
   if (!agent.metadata) {
     details.push('No metadata — cannot check endpoints');
-    return { layer: 'liveness', score: 5, maxScore: 25, details, flags };
+    return { layer: 'liveness', score: 0, maxScore: 25, details, flags };
   }
 
   const endpoints = extractEndpoints(agent.metadata);
 
   if (endpoints.length === 0) {
     details.push('No HTTP endpoints declared');
-    return { layer: 'liveness', score: 5, maxScore: 25, details, flags };
+    return { layer: 'liveness', score: 0, maxScore: 25, details, flags };
   }
 
   const limit = pLimit(HTTP_PROBE_CONCURRENCY);
@@ -88,17 +88,55 @@ interface ProbeResult {
   domainVerified: boolean;
 }
 
+// Known generic domains that don't indicate real agent endpoints
+const GENERIC_DOMAINS = new Set([
+  'google.com', 'www.google.com', 'example.com', 'www.example.com',
+  'github.com', 'www.github.com', 'twitter.com', 'x.com',
+  'facebook.com', 'youtube.com', 'wikipedia.org',
+]);
+
 async function probeEndpoint(url: string): Promise<ProbeResult> {
   let live = false;
   let status: number | undefined;
   let error: string | undefined;
   let domainVerified = false;
 
+  // Check if endpoint points to a generic domain (not an agent service)
+  try {
+    const hostname = new URL(url).hostname;
+    if (GENERIC_DOMAINS.has(hostname)) {
+      return {
+        url,
+        live: false,
+        error: 'Generic domain (not an agent endpoint)',
+        domainVerified: false,
+      };
+    }
+  } catch { /* invalid URL, will fail below */ }
+
   try {
     const response = await fetchWithTimeout(url, HTTP_PROBE_TIMEOUT_MS);
     status = response.status;
-    // Any response (even 4xx) means the server is live
-    live = response.status < 500;
+    // Any non-5xx response means the server is live
+    if (response.status < 500) {
+      live = true;
+      // Check if the response is a parking/placeholder page
+      try {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) {
+          const body = await response.text();
+          const lower = body.toLowerCase();
+          // Common parking page indicators
+          if (lower.includes('domain is for sale') ||
+              lower.includes('buy this domain') ||
+              lower.includes('parked domain') ||
+              lower.includes('under construction') && body.length < 2000) {
+            live = false;
+            error = 'Parking/placeholder page detected';
+          }
+        }
+      } catch { /* body read failed, keep live=true */ }
+    }
   } catch (e) {
     error = (e as Error).message;
     if (error.includes('abort')) error = 'Timeout';

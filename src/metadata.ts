@@ -1,6 +1,6 @@
 import { gunzipSync } from 'node:zlib';
 import type { AgentMetadata, MetadataFormat } from './types.js';
-import { IPFS_GATEWAYS, IPFS_FETCH_TIMEOUT_MS, HTTP_PROBE_TIMEOUT_MS } from './config.js';
+import { IPFS_GATEWAYS, IPFS_FETCH_TIMEOUT_MS, HTTP_METADATA_TIMEOUT_MS } from './config.js';
 import { fetchWithTimeout } from './utils.js';
 
 interface ParseResult {
@@ -87,7 +87,7 @@ async function tryIPFS(hash: string): Promise<ParseResult> {
 
 async function tryHTTP(url: string): Promise<ParseResult> {
   try {
-    const response = await fetchWithTimeout(url, HTTP_PROBE_TIMEOUT_MS);
+    const response = await fetchWithTimeout(url, HTTP_METADATA_TIMEOUT_MS);
     if (!response.ok) {
       return { metadata: null, format: 'http', error: `HTTP ${response.status} from ${url}` };
     }

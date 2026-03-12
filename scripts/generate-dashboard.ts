@@ -16,7 +16,9 @@ const output = {
     owner: r.owner,
     name: r.name,
     compositeScore: r.compositeScore,
+    confidence: r.confidence,
     layers: r.layers,
+    circuitBreakers: r.circuitBreakers,
     errors: r.errors,
   })),
 };

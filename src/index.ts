@@ -5,6 +5,7 @@ import { scoreAgent, buildOwnerProfiles } from './scorer.js';
 import { scoreRegistration } from './layers/registration.js';
 import { writeFeedback } from './writer.js';
 import { startMCPServer } from './mcp-server.js';
+import { generateEcosystemReport } from './reporter.js';
 import type { AgentRecord, TrustReport, LayerScore } from './types.js';
 
 const RESULTS_DIR = 'data';
@@ -69,17 +70,21 @@ async function scan(args: string[]) {
           owner: agent.owner,
           name: agent.metadata?.name || 'Unknown',
           compositeScore: l1.score,
+          confidence: 'low',
           layers: [l1],
+          circuitBreakers: [],
           scannedAt: new Date().toISOString(),
-          reportVersion: 'trust-v1',
+          reportVersion: 'trust-v2',
           errors: agent.metadataError ? [agent.metadataError] : [],
         });
       }
     } else {
-      // Full scan: all 4 layers
-      console.log('\n=== Full 4-Layer Scoring ===');
+      // Full scan: all 5 layers
+      const skipReputation = args.includes('--skip-reputation');
+      console.log('\n=== Full 5-Layer Scoring (v2) ===');
       if (skipLiveness) console.log('  (skipping L2 liveness probes)');
       if (skipOnchain) console.log('  (skipping L3 on-chain analysis)');
+      if (skipReputation) console.log('  (skipping L5 reputation checks)');
 
       // Pre-compute owner profiles for Sybil detection (L4)
       const ownerProfileMap = buildOwnerProfiles(agents);
@@ -101,9 +106,11 @@ async function scan(args: string[]) {
         const agentSkipOnchain = skipOnchain || (smart && !agent.metadata);
 
         try {
+          const agentSkipReputation = skipReputation || (smart && !agent.metadata);
           const report = await scoreAgent(agent, ownerProfileMap, {
             skipLiveness: agentSkipLiveness,
             skipOnchain: agentSkipOnchain,
+            skipReputation: agentSkipReputation,
           });
           reports.push(report);
           const flagCount = report.layers.reduce((sum, l) => sum + l.flags.length, 0);
@@ -116,9 +123,11 @@ async function scan(args: string[]) {
             owner: agent.owner,
             name: agent.metadata?.name || 'Unknown',
             compositeScore: 0,
+            confidence: 'low',
             layers: [],
+            circuitBreakers: [],
             scannedAt: new Date().toISOString(),
-            reportVersion: 'trust-v1',
+            reportVersion: 'trust-v2',
             errors: [(e as Error).message],
           });
         }
@@ -175,10 +184,23 @@ async function scan(args: string[]) {
 
     // Save results
     mkdirSync(RESULTS_DIR, { recursive: true });
+    // Build accurate scan mode description
+    let scanMode = 'full-v2';
+    if (layer1Only) {
+      scanMode = 'layer1';
+    } else {
+      const skippedLayers: string[] = [];
+      if (args.includes('--skip-liveness')) skippedLayers.push('L2');
+      if (args.includes('--skip-onchain')) skippedLayers.push('L3');
+      if (args.includes('--skip-reputation')) skippedLayers.push('L5');
+      if (args.includes('--smart')) scanMode = 'smart-v2';
+      if (skippedLayers.length > 0) scanMode += ` (skip: ${skippedLayers.join(',')})`;
+    }
+
     const output = {
       totalAgents: agents.length,
       scannedAt: new Date().toISOString(),
-      scanMode: layer1Only ? 'layer1' : 'full',
+      scanMode,
       reports,
       ownerStats: ownerCounts,
     };
@@ -255,10 +277,14 @@ switch (command) {
   case 'serve':
     startMCPServer().catch(console.error);
     break;
+  case 'report':
+    console.log(generateEcosystemReport(`${RESULTS_DIR}/scan-results.json`));
+    break;
   default:
-    console.log('Usage: tsx src/index.ts <scan|info|write|serve>');
-    console.log('  scan [--max N] [--start N] [--layer1] [--smart] [--skip-metadata] [--skip-liveness] [--skip-onchain]');
+    console.log('Usage: tsx src/index.ts <scan|info|write|serve|report>');
+    console.log('  scan [--max N] [--start N] [--layer1] [--smart] [--skip-metadata] [--skip-liveness] [--skip-onchain] [--skip-reputation]');
     console.log('  info                 Show total agent count');
     console.log('  write [--dry-run]    Write scores to chain');
     console.log('  serve                Start MCP server');
+    console.log('  report               Generate ecosystem report');
 }

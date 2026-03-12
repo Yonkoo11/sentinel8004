@@ -5,18 +5,27 @@ import { pinJSON } from '../src/ipfs.js';
 
 const AGENT_METADATA = {
   name: 'AgentGuard',
-  description: 'Autonomous ERC-8004 trust scoring agent. Scans all registered agents on Celo, scores them across 4 layers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection), and writes trust attestations to the ReputationRegistry.',
-  type: 'service',
-  version: '0.1.0',
+  description: 'Autonomous ERC-8004 trust scoring agent (v2). Scans all 1,835+ registered agents on Celo, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.',
+  type: 'https://eips.ethereum.org/EIPS/eip-8004#registration-v1',
+  version: '0.2.0',
+  image: 'https://yonkoo11.github.io/agentguard/favicon.svg',
   services: [
     {
       type: 'mcp',
+      name: 'AgentGuard MCP',
       endpoint: 'stdio',
-      description: 'MCP server with check_agent_trust, list_flagged_agents, get_agent_report tools',
+      description: 'MCP server: check_agent_trust, list_flagged_agents, get_agent_report',
+    },
+    {
+      type: 'dashboard',
+      name: 'AgentGuard Dashboard',
+      endpoint: 'https://yonkoo11.github.io/agentguard/',
+      description: 'Live trust dashboard for all Celo ERC-8004 agents',
     },
   ],
-  tags: ['trust', 'security', 'sybil-detection', 'reputation'],
+  tags: ['trust', 'security', 'sybil-detection', 'reputation', 'erc-8004'],
   source: 'https://github.com/yonkoo11/agentguard',
+  active: true,
 };
 
 async function main() {

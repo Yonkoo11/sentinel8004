@@ -148,7 +148,14 @@
             <th class="text-left px-5 py-3 w-20">Flags</th>
           </tr>
         </thead>
-        <tbody id="agent-table" class="divide-y divide-white/[0.03]"></tbody>
+        <tbody id="agent-table" class="divide-y divide-white/[0.03]">
+          <tr id="loading-row">
+            <td colspan="5" class="px-5 py-12 text-center text-gray-500">
+              <div class="text-sm mb-2">Loading scan data...</div>
+              <div class="w-8 h-8 border-2 border-celo-green/30 border-t-celo-green rounded-full animate-spin mx-auto"></div>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
@@ -160,6 +167,42 @@
         </button>
       </div>
     </div>
+    <!-- Methodology -->
+    <div class="mt-12 p-6 rounded-xl bg-surface-2 border border-white/5">
+      <h2 class="text-sm font-semibold text-gray-300 mb-4">Scoring Methodology (v2)</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-gray-400">
+        <div>
+          <h3 class="text-[11px] text-gray-500 uppercase tracking-wider mb-2">5 Independent Layers</h3>
+          <div class="space-y-1.5">
+            <div class="flex justify-between"><span>L1 Registration Quality</span><span class="mono text-gray-500">0-20pts</span></div>
+            <div class="flex justify-between"><span>L2 Endpoint Liveness</span><span class="mono text-gray-500">0-20pts</span></div>
+            <div class="flex justify-between"><span>L3 On-Chain Behavior</span><span class="mono text-gray-500">0-20pts</span></div>
+            <div class="flex justify-between"><span>L4 Sybil/Spam Detection</span><span class="mono text-gray-500">0-25pts</span></div>
+            <div class="flex justify-between"><span>L5 Existing Reputation</span><span class="mono text-gray-500">0-15pts</span></div>
+          </div>
+          <p class="mt-3 text-[11px] text-gray-600 leading-relaxed">
+            Security-critical layers (L4, L5) carry full weight. Cosmetic layers (L1, L2) weighted 0.8x because they're easy to game.
+            Missing data scores 0 - unknown is not positive.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-[11px] text-gray-500 uppercase tracking-wider mb-2">Circuit Breakers</h3>
+          <div class="space-y-1.5 text-[11px]">
+            <div class="flex justify-between"><span class="text-red-400/70">MASS_REGISTRATION</span><span class="mono">cap 15</span></div>
+            <div class="flex justify-between"><span class="text-red-400/70">NO_METADATA</span><span class="mono">cap 20</span></div>
+            <div class="flex justify-between"><span class="text-red-400/70">METADATA_CLONE</span><span class="mono">cap 25</span></div>
+            <div class="flex justify-between"><span class="text-orange-400/70">NEGATIVE_REPUTATION</span><span class="mono">cap 30</span></div>
+            <div class="flex justify-between"><span class="text-orange-400/70">ALL_ENDPOINTS_DEAD</span><span class="mono">cap 35</span></div>
+          </div>
+          <p class="mt-3 text-[11px] text-gray-600 leading-relaxed">
+            A single strong negative signal caps the maximum score.
+            A Sybil farm with perfect metadata still scores &le;15.
+            All checks are deterministic and reproducible. No LLM in the scoring pipeline.
+          </p>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- Footer -->

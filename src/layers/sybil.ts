@@ -57,9 +57,14 @@ export function scoreSybil(
   if (count > 1 && agent.metadata?.description && profile.descriptions.length > 1) {
     const agentWords = wordSet(agent.metadata.description);
     let maxSimilarity = 0;
+    let skippedSelf = false;
 
     for (const otherDesc of profile.descriptions) {
-      if (otherDesc === agent.metadata.description) continue; // Skip self
+      // Skip self exactly once (not all duplicates)
+      if (!skippedSelf && otherDesc === agent.metadata.description) {
+        skippedSelf = true;
+        continue;
+      }
       const otherWords = wordSet(otherDesc);
       const similarity = jaccard(agentWords, otherWords);
       maxSimilarity = Math.max(maxSimilarity, similarity);

@@ -18,10 +18,15 @@ export async function findTotalAgents(): Promise<number> {
   // Binary search for the last valid agentId
   let low = 1;
   let high = 10000;
+  const MAX_BOUND = 100_000; // Safety cap to prevent infinite loop
 
   // First find an upper bound
   while (await ownerOf(high) !== null) {
     high *= 2;
+    if (high > MAX_BOUND) {
+      high = MAX_BOUND;
+      break;
+    }
   }
 
   // Binary search between low and high
