@@ -20,7 +20,7 @@ Celo's IdentityRegistry has 1,853 registered agents. No quality layer exists. Wh
 ## How It Works
 
 ```
- IdentityRegistry (1,838 agents)
+ IdentityRegistry (1,853 agents)
          |
          v
      [Scanner]  ---- enumerate all agents, parse metadata (5 formats)

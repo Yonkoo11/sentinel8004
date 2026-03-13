@@ -3,6 +3,12 @@ dist/
 .env
 *.js.map
 data/scan-results.json
+data/scan-results-backup.json
+data/scan-results-test.json
 data/scan-checkpoint.json
+data/*.log
 dashboard/ai/
 dashboard/proposal-*.html
+scripts/test-*.ts
+scripts/debug-*.ts
+scripts/check-balance.ts
