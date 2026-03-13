@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0d0c"/>
+  <rect x="0" y="620" width="1200" height="10" fill="#35D07F"/>
+  <!-- Logo circle -->
+  <circle cx="100" cy="315" r="36" fill="none" stroke="#35D07F" stroke-width="3"/>
+  <path d="M88 315l8 8 14-16" fill="none" stroke="#35D07F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Title -->
+  <text x="160" y="280" font-family="monospace" font-size="64" font-weight="bold" fill="#f0f2f0" letter-spacing="-2">AgentGuard</text>
+  <!-- Subtitle -->
+  <text x="160" y="340" font-family="sans-serif" font-size="28" fill="#a1aaa4">ERC-8004 Trust Scoring on Celo</text>
+  <!-- Stats -->
+  <text x="160" y="420" font-family="monospace" font-size="44" font-weight="bold" fill="#f0f2f0">1,853</text>
+  <text x="380" y="420" font-family="sans-serif" font-size="28" fill="#a1aaa4">agents scanned</text>
+  <text x="160" y="480" font-family="monospace" font-size="44" font-weight="bold" fill="#ef4444">97.7%</text>
+  <text x="370" y="480" font-family="sans-serif" font-size="28" fill="#a1aaa4">flagged</text>
+  <text x="160" y="540" font-family="monospace" font-size="44" font-weight="bold" fill="#35D07F">1,852</text>
+  <text x="380" y="540" font-family="sans-serif" font-size="28" fill="#a1aaa4">scored on-chain</text>
+  <!-- Right side accent -->
+  <rect x="800" y="200" width="320" height="260" rx="12" fill="#121614" stroke="#1b201c" stroke-width="1"/>
+  <text x="830" y="240" font-family="monospace" font-size="14" fill="#8a9690" text-transform="uppercase" letter-spacing="2">SCORING LAYERS</text>
+  <text x="830" y="280" font-family="sans-serif" font-size="20" fill="#f0f2f0">L1 Registration</text>
+  <rect x="830" y="292" width="200" height="4" rx="2" fill="#1b201c"/><rect x="830" y="292" width="160" height="4" rx="2" fill="#35D07F"/>
+  <text x="830" y="330" font-family="sans-serif" font-size="20" fill="#f0f2f0">L2 Liveness</text>
+  <rect x="830" y="342" width="200" height="4" rx="2" fill="#1b201c"/><rect x="830" y="342" width="140" height="4" rx="2" fill="#6B8AFF"/>
+  <text x="830" y="380" font-family="sans-serif" font-size="20" fill="#f0f2f0">L3 On-Chain</text>
+  <rect x="830" y="392" width="200" height="4" rx="2" fill="#1b201c"/><rect x="830" y="392" width="120" height="4" rx="2" fill="#35D07F"/>
+  <text x="830" y="430" font-family="sans-serif" font-size="20" fill="#ef4444">L4 Sybil</text>
+  <rect x="830" y="442" width="200" height="4" rx="2" fill="#1b201c"/><rect x="830" y="442" width="180" height="4" rx="2" fill="#ef4444"/>
+</svg>

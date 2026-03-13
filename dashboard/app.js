@@ -67,10 +67,13 @@
     if (data.scannedAt) {
       const d = new Date(data.scannedAt);
       const el = document.getElementById('scan-date');
-      if (el) el.textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      if (el) el.textContent = 'Last scan: ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const freshEl = document.getElementById('data-freshness');
       if (freshEl) {
-        const ago = Math.floor((Date.now() - d.getTime()) / 86400000);
+        const now = new Date();
+        const scanDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const ago = Math.round((today - scanDay) / 86400000);
         const label = ago === 0 ? 'Today' : ago === 1 ? '1 day ago' : ago + ' days ago';
         freshEl.textContent = 'Scanned: ' + label;
       }
@@ -128,13 +131,13 @@
             <td>
               <div class="score-cell">
                 <span class="score-num score-${sc}">${r.compositeScore}</span>
-                <span class="score-bar-track"><span class="score-bar-fill bar-${sc}" style="width:${r.compositeScore}%"></span></span>
+                <span class="score-bar-track" role="meter" aria-valuenow="${r.compositeScore}" aria-valuemin="0" aria-valuemax="100" aria-label="Trust score ${r.compositeScore} out of 100"><span class="score-bar-fill bar-${sc}" style="width:${r.compositeScore}%"></span></span>
                 ${confDot(r.confidence)}
               </div>
             </td>
             <td>
               ${flagTypes.length > 0
-                ? `<span class="flag-chip ${redFlagSet.has(flagTypes[0]) ? 'flag-chip-red' : 'flag-chip-yellow'}">${flagTypes[0]}</span>${flagTypes.length > 1 ? `<span class="mono" style="font-size: 10px; color: var(--text-muted); margin-left: 4px;">+${flagTypes.length - 1}</span>` : ''}`
+                ? `<span class="flag-chip ${redFlagSet.has(flagTypes[0]) ? 'flag-chip-red' : 'flag-chip-yellow'}">${flagTypes[0]}</span>${flagTypes.length > 1 ? `<span class="mono" style="font-size: 10px; color: var(--text-muted); margin-left: 4px;" title="${flagTypes.slice(1).join(', ')}">+${flagTypes.length - 1}</span>` : ''}`
                 : '<span style="color: var(--text-muted); font-size: 12px;">—</span>'}
             </td>
           </tr>
