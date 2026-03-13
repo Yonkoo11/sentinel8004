@@ -17,7 +17,7 @@
   /* ── Hero ── */
   .hero-wrap {
     min-height: 0;
-    padding: calc(var(--nav-height) + var(--space-20)) 0 var(--space-16);
+    padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-12);
   }
   .hero-inner {
     max-width: var(--max-width);
@@ -101,20 +101,23 @@
 
   /* ── Problem Section ── */
   .problem-section {
-    padding: var(--space-20) 0;
+    padding: var(--space-16) 0;
   }
   .problem-inner {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 0 var(--space-8);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+    align-items: start;
   }
   .problem-card {
     background: var(--bg-surface);
     border: 1px solid var(--border);
     border-left: 3px solid var(--red);
     border-radius: 0 12px 12px 0;
-    padding: var(--space-10) var(--space-10);
-    max-width: 720px;
+    padding: var(--space-8) var(--space-8);
   }
   .problem-label {
     font-family: var(--mono);
@@ -151,8 +154,7 @@
 
   /* ── Flag Pills ── */
   .flags-wrap {
-    margin-top: var(--space-10);
-    max-width: 720px;
+    margin-top: 0;
   }
   .flags-label {
     font-family: var(--mono);
@@ -190,7 +192,7 @@
 
   /* ── How It Works ── */
   .how-section {
-    padding: var(--space-20) 0;
+    padding: var(--space-16) 0;
   }
   .how-inner {
     max-width: var(--max-width);
@@ -199,7 +201,7 @@
   }
   .how-header {
     max-width: 480px;
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-8);
   }
 
   /* ── Pipeline ── */
@@ -208,7 +210,7 @@
     align-items: flex-start;
     gap: 0;
     position: relative;
-    margin-bottom: var(--space-12);
+    margin-bottom: var(--space-8);
   }
   .pipe-step {
     display: flex;
@@ -332,7 +334,7 @@
   /* ── CTA Section ── */
   .cta-section {
     text-align: center;
-    padding: var(--space-16) 0 var(--space-20);
+    padding: var(--space-12) 0 var(--space-16);
     position: relative;
   }
   .cta-inner {
@@ -347,6 +349,7 @@
     .hero-inner { grid-template-columns: 1fr; gap: var(--space-8); }
     .hero-number { font-size: 80px; }
     .stat-row { grid-template-columns: 1fr 1fr; }
+    .problem-inner { grid-template-columns: 1fr; }
     .problem-card { padding: var(--space-6) var(--space-6); }
     .pipeline { flex-wrap: wrap; justify-content: center; gap: var(--space-1); }
     .pipe-line { display: none; }
