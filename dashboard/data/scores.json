@@ -1,10 +1,10 @@
 {
-  "totalAgents": 1838,
-  "scannedAt": "2026-03-12T08:09:28.668Z",
+  "totalAgents": 1853,
+  "scannedAt": "2026-03-13T21:03:32.706Z",
   "scanMode": "full",
   "onchainStats": {
-    "written": 1838,
-    "total": 1838,
+    "written": 1852,
+    "total": 1853,
     "writerAddress": "0xf9946775891a24462cD4ec885d0D4E2675C84355",
     "contractAddress": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63"
   },
@@ -100531,6 +100531,1029 @@
       ],
       "errors": [
         "HTTP fetch failed: This operation was aborted"
+      ]
+    },
+    {
+      "agentId": 1850,
+      "owner": "0x4A5Ce41ED6383Ee58A97eB3F0163D92562B2E0Ae",
+      "name": "AgentDashboard (Motus)",
+      "compositeScore": 85,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"AgentDashboard (Motus)\"",
+            "+5 Has description (117 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 1 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://agents.motusdao.org/.well-known/agent-card.json (200)",
+            "Domain verified: https://agents.motusdao.org/.well-known/agent-card.json"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+5 Wallet age: 312 days",
+            "+5 Transaction count: 100+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (28 txs)",
+            "+5 Diverse interactions: 25 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "1 feedback client(s) found",
+            "Client 0xF65306...: read error",
+            "Note: Only 1 feedback client (limited signal)"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1852,
+      "owner": "0xbd7b5d8Fdc2d21e73350741ff5C4cAC335B219a2",
+      "name": "AgentDashboard (Motus)",
+      "compositeScore": 85,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"AgentDashboard (Motus)\"",
+            "+5 Has description (117 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 1 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://agents.motusdao.org/.well-known/agent-card.json (200)",
+            "Domain verified: https://agents.motusdao.org/.well-known/agent-card.json"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+5 Wallet age: 161 days",
+            "+5 Transaction count: 100+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (21 txs)",
+            "+5 Diverse interactions: 27 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1849,
+      "owner": "0xF6320E6195A816E44F9599F322D489cAbbC45D24",
+      "name": "AgentDashboard (Motus)",
+      "compositeScore": 81,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"AgentDashboard (Motus)\"",
+            "+5 Has description (117 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 1 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://agents.motusdao.org/.well-known/agent-card.json (200)",
+            "Domain verified: https://agents.motusdao.org/.well-known/agent-card.json"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+5 Wallet age: 255 days",
+            "+5 Transaction count: 100+",
+            "+0 Found 1 unlimited approval(s)",
+            "+5 Active in last 90 days (27 txs)",
+            "+5 Diverse interactions: 19 unique partners"
+          ],
+          "flags": [
+            "UNLIMITED_APPROVALS:1"
+          ]
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "1 feedback client(s) found",
+            "Client 0xF65306...: read error",
+            "Note: Only 1 feedback client (limited signal)"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1848,
+      "owner": "0x5451bC61a58FfD5B6684a7EA1E2Ef0FDbd4ccBE6",
+      "name": "HausClaw",
+      "compositeScore": 76,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 22,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"HausClaw\"",
+            "+5 Has description (68 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+0 No image"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://selfclaw.ai (200)",
+            "Domain verified: https://selfclaw.ai"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+2 Wallet age: 27 days (< 30)",
+            "+5 Transaction count: 100+",
+            "+0 Found 20 unlimited approval(s)",
+            "+5 Active in last 90 days (100 txs)",
+            "+5 Diverse interactions: 27 unique partners"
+          ],
+          "flags": [
+            "UNLIMITED_APPROVALS:20"
+          ]
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1853,
+      "owner": "0xf9946775891a24462cD4ec885d0D4E2675C84355",
+      "name": "AgentGuard",
+      "compositeScore": 75,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"AgentGuard\"",
+            "+5 Has description (309 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://yonkoo11.github.io/agentguard/ (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 17,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 0 days (< 30)",
+            "+5 Transaction count: 100+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (100 txs)",
+            "+2 Limited interactions: 2 partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1841,
+      "owner": "0xD5cC1Cc332baBfF970c6570FDbF5373FfC0B3D8F",
+      "name": "Haggiaz Agent",
+      "compositeScore": 74,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Haggiaz Agent\"",
+            "+5 Has description (126 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 1 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://haggiaz.vercel.app (404)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 16,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+3 Transaction count: 7 (< 10)",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (7 txs)",
+            "+3 Limited interactions: 3 partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal",
+            "Metadata distinct from siblings (max 4% similarity)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1847,
+      "owner": "0x23772e10945D5D17FC2296fDC3A23c6fD11f170c",
+      "name": "HausClaw",
+      "compositeScore": 65,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 22,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"HausClaw\"",
+            "+5 Has description (68 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 2 service endpoint(s)",
+            "+0 No image"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "1/1 endpoints live",
+            "LIVE: https://selfclaw.ai (200)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+5 Transaction count: 11+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (11 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 6 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:6"
+          ]
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1839,
+      "owner": "0x36A0356d43EE4168ED24EFA1CAe3198708667ac0",
+      "name": "AI Internet-Meritocracy",
+      "compositeScore": 61,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 22,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"AI Internet-Meritocracy\"",
+            "+5 Has description (978 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 1 service endpoint(s)",
+            "+0 No image"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 23,
+          "maxScore": 25,
+          "details": [
+            "+5 Wallet age: 166 days",
+            "+3 Transaction count: 8 (< 10)",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (1 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1840,
+      "owner": "0xD5cC1Cc332baBfF970c6570FDbF5373FfC0B3D8F",
+      "name": "Haggiaz Agent (deprecated)",
+      "compositeScore": 54,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Haggiaz Agent (deprecated)\"",
+            "+5 Has description (84 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+0 No services declared",
+            "+3 Has image URL"
+          ],
+          "flags": [
+            "NO_SERVICES"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No HTTP endpoints declared"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 16,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+3 Transaction count: 7 (< 10)",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (7 txs)",
+            "+3 Limited interactions: 3 partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 2 agent(s) — normal",
+            "Metadata distinct from siblings (max 4% similarity)"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [],
+      "errors": []
+    },
+    {
+      "agentId": 1851,
+      "owner": "0xA097E814E0EF5cb85F9B7bEa291e5ABa0dc7751f",
+      "name": "Regen Eliza",
+      "compositeScore": 35,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "+4 Valid parseable metadata",
+            "+5 Has name: \"Regen Eliza\"",
+            "+5 Has description (1006 chars)",
+            "+3 Correct ERC-8004 type field",
+            "+5 Has 1 service endpoint(s)",
+            "+3 Has image URL"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "0/1 endpoints live",
+            "DEAD: https://github.com/agntcy/oasf/ (Generic domain (not an agent endpoint))"
+          ],
+          "flags": [
+            "DEAD_ENDPOINT:https://github.com/agntcy/oasf/",
+            "ALL_ENDPOINTS_DEAD"
+          ]
+        },
+        {
+          "layer": "onchain",
+          "score": 14,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 0 days (< 30)",
+            "+2 Transaction count: 2 (< 10)",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (2 txs)",
+            "+2 Limited interactions: 2 partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 25,
+          "maxScore": 25,
+          "details": [
+            "Owner has 1 agent(s) — normal"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [
+        "ALL_ENDPOINTS_DEAD: capped at 35 (All declared service endpoints are unreachable)"
+      ],
+      "errors": []
+    },
+    {
+      "agentId": 1842,
+      "owner": "0x23772e10945D5D17FC2296fDC3A23c6fD11f170c",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+5 Transaction count: 11+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (11 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 6 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:6"
+          ]
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "1 feedback client(s) found",
+            "Client 0xF65306...: read error",
+            "Note: Only 1 feedback client (limited signal)"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [
+        "NO_METADATA: capped at 20 (No parseable metadata at all)"
+      ],
+      "errors": [
+        "Not valid JSON and not a recognized URI format"
+      ]
+    },
+    {
+      "agentId": 1843,
+      "owner": "0x23772e10945D5D17FC2296fDC3A23c6fD11f170c",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+5 Transaction count: 11+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (11 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 6 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:6"
+          ]
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [
+        "NO_METADATA: capped at 20 (No parseable metadata at all)"
+      ],
+      "errors": [
+        "Not valid JSON and not a recognized URI format"
+      ]
+    },
+    {
+      "agentId": 1844,
+      "owner": "0x23772e10945D5D17FC2296fDC3A23c6fD11f170c",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+5 Transaction count: 11+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (11 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 6 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:6"
+          ]
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [
+        "NO_METADATA: capped at 20 (No parseable metadata at all)"
+      ],
+      "errors": [
+        "Not valid JSON and not a recognized URI format"
+      ]
+    },
+    {
+      "agentId": 1845,
+      "owner": "0x23772e10945D5D17FC2296fDC3A23c6fD11f170c",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+5 Transaction count: 11+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (11 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 6 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:6"
+          ]
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [
+        "NO_METADATA: capped at 20 (No parseable metadata at all)"
+      ],
+      "errors": [
+        "Not valid JSON and not a recognized URI format"
+      ]
+    },
+    {
+      "agentId": 1846,
+      "owner": "0x23772e10945D5D17FC2296fDC3A23c6fD11f170c",
+      "name": "Unknown",
+      "compositeScore": 20,
+      "confidence": "high",
+      "layers": [
+        {
+          "layer": "registration",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No parseable metadata"
+          ],
+          "flags": [
+            "NO_METADATA"
+          ]
+        },
+        {
+          "layer": "liveness",
+          "score": 0,
+          "maxScore": 25,
+          "details": [
+            "No metadata — cannot check endpoints"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "onchain",
+          "score": 20,
+          "maxScore": 25,
+          "details": [
+            "+0 Wallet age: 1 days (< 30)",
+            "+5 Transaction count: 11+",
+            "+5 No unlimited token approvals",
+            "+5 Active in last 90 days (11 txs)",
+            "+5 Diverse interactions: 4 unique partners"
+          ],
+          "flags": []
+        },
+        {
+          "layer": "sybil",
+          "score": 15,
+          "maxScore": 25,
+          "details": [
+            "Owner has 6 agents — moderate concentration"
+          ],
+          "flags": [
+            "OWNER_CONCENTRATION:6"
+          ]
+        },
+        {
+          "layer": "reputation",
+          "score": 0,
+          "maxScore": 15,
+          "details": [
+            "No existing feedback from any client"
+          ],
+          "flags": []
+        }
+      ],
+      "circuitBreakers": [
+        "NO_METADATA: capped at 20 (No parseable metadata at all)"
+      ],
+      "errors": [
+        "Not valid JSON and not a recognized URI format"
       ]
     }
   ]

@@ -139,7 +139,6 @@ export async function writeFeedback(
           feedbackURI, // feedbackURI
           feedbackHash, // feedbackHash
         ],
-        gas: 200_000n,
       });
 
       const txHash = await walletClient!.writeContract(request);

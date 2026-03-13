@@ -2,45 +2,34 @@
 
 ## Completed
 - All source code: scanner, 5 scoring layers (v2), scorer with circuit breakers, writer, IPFS pinner, MCP server, dashboard
-- Scoring v2 overhaul: circuit breakers, weighted layers, confidence levels, no neutral inflation
-- Layer 5 (Reputation): reads existing on-chain feedback from ReputationRegistry
-- L2 improvement: generic domain filter (google.com etc won't pass liveness)
-- Dashboard v2: hero insight, distribution chart, flag pills, expandable rows, methodology section
-- Reporter: ecosystem report generator with adversarial analysis
-- GitHub repo: https://github.com/Yonkoo11/agentguard
-- GitHub Pages: https://yonkoo11.github.io/agentguard/
-- MCP server tested and working (3 tools)
-- Writer dry-run tested
-- README v2 with scoring methodology, adversarial analysis, limitations
+- Scoring v2 committed (e6b35ba) and pushed to main
+- Full v2 scan: 1838 agents, 0 trusted (70+), 32 fair (30-69), 1806 poor (<30), avg score 15
+- Dashboard data generated and pushed (d333b37)
+- GitHub Pages live: https://yonkoo11.github.io/agentguard/
+- IPFS pinning tested and working (Pinata)
+- Single on-chain write tested: agent #1, score 45, TX 0x9a64f824..., verified on CeloScan
+- Gas bug fixed: 200K was too low (needs ~217K), removed hardcoded gas limit
+- CLAUDE.md created with 7 strict rules for project quality
+- Fixed: circuit breaker collection (records ALL triggered, not just binding), sybil clone detection, scorer skipped-layer tracking
 
 ## In Progress
-- Full v2 scan running in background (~250/1838 agents done, L1+L2+L4, skip-onchain/reputation)
-- Once complete: regenerate dashboard data and push
+- Batch on-chain write running (PID 49633, nohup): ~468/1838 as of latest check
+- Output: `write-output.log`, ~17s per agent, est. ~7hrs total
+- Some nonce errors (~25 out of first 339), will need retry pass
+- Dashboard polished: hero upgrade, on-chain banner, ring chart, pipeline viz, CeloScan links, count-up animations, confidence dots, OG tags
 
-## Blocked on User
-- .env created but empty -- needs:
-  - AGENTGUARD_PRIVATE_KEY (any EVM wallet, export private key, fund with ~0.01 CELO)
-  - PINATA_JWT (from https://app.pinata.cloud)
-- Once keys are set:
-  1. Write scores on-chain: `npx tsx src/index.ts write`
-  2. Register AgentGuard as agent: `npx tsx scripts/register-agent.ts`
-  3. Submit to hackathon
+## Next Steps
+1. Wait for batch write to complete
+2. Retry failed writes (nonce errors)
+3. Regenerate dashboard data with write stats: `npx tsx scripts/generate-dashboard.ts`
+4. Register AgentGuard as ERC-8004 agent: `npx tsx scripts/register-agent.ts`
+5. Commit all changes and push to main (triggers GitHub Pages deploy)
+6. Submit to hackathon (deadline March 18)
 
-## v2 Scoring Changes
-- **Circuit breakers**: MASS_REGISTRATION caps at 15, METADATA_CLONE at 25, NO_METADATA at 20
-- **Weighted layers**: L1/L2/L3 at 0.8x (cosmetic/moderate), L4/L5 at 1.0x (security/social)
-- **No neutral inflation**: Missing data = 0, not middle-of-range
-- **Confidence levels**: high (4+ layers), medium (2-3), low (1)
-- **Layer 5 Reputation**: Reads existing on-chain feedback from ReputationRegistry
-- **Generic domain filter**: Endpoints pointing to google.com etc flagged as dead
-- **Report version**: trust-v2
-
-## Architecture
-- src/index.ts -- CLI: scan, write, info, serve, report
-- src/scorer.ts -- 5-layer composite with circuit breakers (0-100)
-- src/layers/reputation.ts -- NEW: reads on-chain feedback
-- src/writer.ts -- ReputationRegistry + IPFS
-- src/mcp-server.ts -- MCP stdio (3 tools)
-- src/reporter.ts -- Ecosystem report generator
-- dashboard/ -- Static HTML+JS, GitHub Pages
-- scripts/ -- register-agent, generate-dashboard
+## Key Facts
+- Writer wallet: 0xf9946775891a24462cD4ec885d0D4E2675C84355
+- Cost per tx: ~0.006 CELO (217K gas * 27.5 gwei)
+- Gas limit: removed (let node estimate per-tx)
+- ReputationRegistry version: 2.0.0
+- Agent #1 already scored (will be skipped by writer)
+- All IPFS pins from aborted batch run are orphaned but harmless

@@ -81,6 +81,12 @@ export async function scoreAgent(
   layers.push(l1);
   layersEvaluated++;
 
+  // Track skipped layers explicitly so reports are transparent
+  const skippedLayers: string[] = [];
+  if (options.skipLiveness) skippedLayers.push('L2 Liveness (skipped by config)');
+  if (options.skipOnchain) skippedLayers.push('L3 On-Chain (skipped by config)');
+  if (options.skipReputation) skippedLayers.push('L5 Reputation (skipped by config)');
+
   // Layer 2: Endpoint Liveness (async, HTTP probes)
   if (!options.skipLiveness) {
     try {
@@ -162,7 +168,7 @@ export async function scoreAgent(
     circuitBreakers,
     scannedAt: new Date().toISOString(),
     reportVersion: 'trust-v2',
-    errors,
+    errors: [...skippedLayers, ...errors],
   };
 }
 

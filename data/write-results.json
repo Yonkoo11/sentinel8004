@@ -14433,10 +14433,11 @@
   },
   {
     "agentId": 99,
-    "txHash": "0xadcb42be9c76eafa8332d2dc7bd92598bbb5811dc8974b07ee6483a22cbbaa4f",
+    "txHash": null,
     "ipfsCID": null,
     "error": null,
-    "skipped": false
+    "skipped": true,
+    "skipReason": "already-scored"
   },
   {
     "agentId": 104,
@@ -14701,5 +14702,120 @@
     "error": null,
     "skipped": true,
     "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1850,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1852,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1849,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1848,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1853,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": "The contract function \"giveFeedback\" reverted with the following reason:\nSelf-feedback not allowed\n\nContract Call:\n  address:   0x8004BAa17C55a88189AE136b182e5fdA19dE9b63\n  function:  giveFeedback(uint256 agentId, int128 value, uint8 valueDecimals, string tag1, string tag2, string endpoint, string feedbackURI, bytes32 feedbackHash)\n  args:                  (1853, 75, 0, agentguard, trust-v2, , , 0xb547d98f6875fb2044ce06e6e75b3c70c9057a84e4e8e73f49e212a149fb37cd)\n  sender:    0xf9946775891a24462cD4ec885d0D4E2675C84355\n\nDocs: https://viem.sh/docs/contract/simulateContract\nVersion: viem@2.47.1",
+    "skipped": false
+  },
+  {
+    "agentId": 1841,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1847,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1839,
+    "txHash": "0x2b25a2f2990bf7104ae3e35f5242cac88751f36e65145d1c9439d8f3891bf91d",
+    "ipfsCID": null,
+    "error": null,
+    "skipped": false
+  },
+  {
+    "agentId": 1840,
+    "txHash": "0xd52fd804110be252858f67a125abee1dede0143f9c351bc12888d8134f2fed1f",
+    "ipfsCID": null,
+    "error": null,
+    "skipped": false
+  },
+  {
+    "agentId": 1851,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1842,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1843,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1844,
+    "txHash": null,
+    "ipfsCID": null,
+    "error": null,
+    "skipped": true,
+    "skipReason": "already-scored"
+  },
+  {
+    "agentId": 1845,
+    "txHash": "0x0c4b8933163aac77552643d0caec6781489f3e22531c8195d63279bb33e1a500",
+    "ipfsCID": null,
+    "error": null,
+    "skipped": false
+  },
+  {
+    "agentId": 1846,
+    "txHash": "0x71fcd56bb82ff868f5230c23f809f9aea4eb3e71c2646c7ddebb6e4c708a7572",
+    "ipfsCID": null,
+    "error": null,
+    "skipped": false
   }
 ]

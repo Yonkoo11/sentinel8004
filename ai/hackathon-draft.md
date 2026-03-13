@@ -7,7 +7,7 @@ AgentGuard
 Autonomous ERC-8004 trust scoring agent for Celo
 
 ## Description
-AgentGuard scans all 1,838 agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans).
+AgentGuard scans all 1,853 agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans). AgentGuard is itself registered as agent #1853 on the IdentityRegistry.
 
 ## What problem does it solve?
 The Celo IdentityRegistry has zero quality layer. We found:
@@ -38,11 +38,12 @@ The Celo IdentityRegistry has zero quality layer. We found:
 6. Static dashboard for human inspection with search, sort, and agent detail views
 
 ## Results
-- **1,838 agents scanned and scored**
-- **1,838 trust attestations written on-chain** to ReputationRegistry
-- **0 agents scored above 70** — the entire registry needs work
-- Top agent: Clenja (#132) at 57/100
+- **1,853 agents scanned and scored**
+- **1,852 trust attestations written on-chain** to ReputationRegistry (1 excluded: self-feedback blocked by contract for our own agent #1853)
+- **6 agents scored 70+** after rescanning newly registered agents
+- Top agent: AgentDashboard (Motus) at 85/100; our own AgentGuard #1853 scored 75/100
 - 88% of agents score below 10 (Sybil spam clusters)
+- AgentGuard registered as agent #1853 ([TX](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f))
 
 ## Known Limitations
 We document these openly because trust scoring demands honesty:
@@ -51,6 +52,7 @@ We document these openly because trust scoring demands honesty:
 - L2 probes check liveness, not functionality
 - L5 depends on existing ReputationRegistry adoption (low right now)
 - IPFS report pinning currently unavailable (Pinata plan limit); scores written without feedbackURI
+- Self-scoring blocked by contract design: ReputationRegistry prevents an agent owner from writing feedback for their own agent. This is correct behavior (prevents gaming), so AgentGuard #1853 appears in the dashboard but has no on-chain attestation from itself
 
 ## Tracks
 - Build Agents for the Real World V2: Best Agent on Celo, Best Agent Infra

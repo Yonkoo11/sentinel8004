@@ -258,6 +258,11 @@ async function write(args: string[]) {
   console.log(`Written: ${written}`);
   console.log(`Skipped: ${skipped}`);
   console.log(`Failed:  ${failed}`);
+
+  // Save write results for dashboard
+  mkdirSync(RESULTS_DIR, { recursive: true });
+  writeFileSync(`${RESULTS_DIR}/write-results.json`, JSON.stringify(results, null, 2));
+  console.log(`Write results saved to ${RESULTS_DIR}/write-results.json`);
 }
 
 // CLI dispatch

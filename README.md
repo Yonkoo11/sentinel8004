@@ -6,11 +6,11 @@ AgentGuard scans every registered agent on Celo's IdentityRegistry, scores them 
 
 **Live dashboard**: [yonkoo11.github.io/agentguard](https://yonkoo11.github.io/agentguard/)
 
-**On-chain**: 1,838 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet.
+**On-chain**: 1,852 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet. 1,853 agents scanned.
 
 ## The Problem
 
-Celo's IdentityRegistry has 1,838 registered agents. No quality layer exists. What we found:
+Celo's IdentityRegistry has 1,853 registered agents. No quality layer exists. What we found:
 
 - **Sybil spam**: One address owns 500+ "babycaisubagent" clones with identical metadata
 - **Dead endpoints**: Agents with 28+ feedback clients point to URLs that return nothing
