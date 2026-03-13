@@ -67,8 +67,27 @@ function getFlags(report) {
   return report.layers ? report.layers.flatMap(l => l.flags || []) : [];
 }
 
+// ── Mobile Nav Toggle (#34) ──
+function initMobileNav() {
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  if (!toggle || !links) return;
+  toggle.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  // Close on link click
+  links.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      links.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
 // ── Init on DOM ready ──
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initReveals();
+  initMobileNav();
 });

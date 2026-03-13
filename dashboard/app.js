@@ -54,7 +54,7 @@
         entries.forEach(e => {
           if (e.isIntersecting) {
             e.target.querySelectorAll('.dist-bar-fill').forEach(bar => {
-              setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+              setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 80);
             });
             distObs.unobserve(e.target);
           }
@@ -120,7 +120,7 @@
         const rowId = `expand-${r.agentId}`;
 
         rows.push(`
-          <tr data-expand="${rowId}" tabindex="0" role="button" aria-expanded="false">
+          <tr data-expand="${rowId}" tabindex="0" aria-expanded="false">
             <td class="mono" style="color: var(--text-muted); font-size: 12px;">${r.agentId}</td>
             <td class="agent-name">${escapeHtml(r.name || 'Unknown')}</td>
             <td class="mono agent-owner">${truncAddr(r.owner)}</td>
@@ -141,7 +141,7 @@
             <div class="expand-wrap" id="${rowId}">
               <div class="expand-inner">
                 <div>
-                  <div class="detail-heading">Layer Breakdown</div>
+                  <h4 class="detail-heading">Layer Breakdown</h4>
                   ${(r.layers || []).map(l => {
                     const pct = l.maxScore > 0 ? (l.score / l.maxScore) * 100 : 0;
                     const cls = scoreClass(pct);
@@ -156,16 +156,16 @@
                 </div>
                 <div>
                   ${flagTypes.length > 0 ? `
-                    <div class="detail-heading">Risk Flags</div>
+                    <h4 class="detail-heading">Risk Flags</h4>
                     <div>${flagTypes.map(f => `<span class="flag-chip">${f}</span>`).join('')}</div>
-                  ` : `<div class="detail-heading">Flags</div><div style="color: var(--celo); font-size: 11px;">Clean</div>`}
+                  ` : `<h4 class="detail-heading">Flags</h4><div style="color: var(--celo); font-size: 11px;">Clean</div>`}
                   ${r.circuitBreakers && r.circuitBreakers.length > 0 ? `
                     <div class="detail-heading" style="margin-top: 12px;">Circuit Breakers</div>
                     ${r.circuitBreakers.map(cb => `<div style="color: var(--yellow); font-size: 11px;">${escapeHtml(cb)}</div>`).join('')}
                   ` : ''}
                 </div>
                 <div>
-                  <div class="detail-heading">Details</div>
+                  <h4 class="detail-heading">Details</h4>
                   <div class="mono" style="font-size: 11px; color: var(--text-secondary); word-break: break-all;">${escapeHtml(r.owner)}</div>
                   ${r.confidence ? `<div style="margin-top: 8px; font-size: 11px;"><span style="color: var(--text-muted);">Confidence:</span> <span class="score-${sc}">${r.confidence}</span></div>` : ''}
                   ${r.errors && r.errors.length > 0 ? `
@@ -182,9 +182,16 @@
         `);
       }
 
-      tbody.innerHTML = rows.join('');
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+          <div style="font-size: 14px; margin-bottom: 4px;">No agents match your search</div>
+          <div style="font-size: 12px;">Try a different name, address, or flag.</div>
+        </td></tr>`;
+      } else {
+        tbody.innerHTML = rows.join('');
+      }
       document.getElementById('showing-count').textContent =
-        `Showing ${showing.length} of ${filtered.length} agents`;
+        filtered.length > 0 ? `Showing ${showing.length} of ${filtered.length} agents` : '';
 
       if (filtered.length > displayLimit) {
         loadMore.classList.remove('hidden');
@@ -204,8 +211,8 @@
   } catch (e) {
     document.getElementById('agent-table').innerHTML =
       `<tr><td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
-        <div style="font-size: 14px; margin-bottom: 8px;">No scan data found</div>
-        <code style="font-size: 11px; color: var(--text-muted);">npx tsx src/index.ts scan && npx tsx scripts/generate-dashboard.ts</code>
+        <div style="font-size: 14px; margin-bottom: 8px;">Unable to load scan data</div>
+        <div style="font-size: 12px; color: var(--text-muted);">Check back later or verify the data source.</div>
       </td></tr>`;
   }
 })();

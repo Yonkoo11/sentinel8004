@@ -11,15 +11,13 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared.css">
 <style>
   /* ── Hero ── */
   .hero-wrap {
-    min-height: 85vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 0;
+    padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-12);
     position: relative;
     overflow: hidden;
   }
@@ -28,60 +26,59 @@
     z-index: 1;
     text-align: center;
     max-width: 800px;
+    margin: 0 auto;
     padding: 0 var(--space-8);
   }
 
-  /* ── Spam Reveal ── */
-  .spam-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* ── Stats Grid (inside hero) ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    margin-top: var(--space-10);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .stat-card {
+    padding: var(--space-5) var(--space-4);
+    border-radius: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    transition: border-color var(--duration-normal) ease;
+  }
+  /* No hover on stat-card - not interactive (#28) */
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: var(--space-1);
+  }
+
+  /* ── Problem Section (spam + flags merged) ── */
+  .problem-section {
     position: relative;
-    padding: var(--space-24) 0;
+    padding: var(--space-16) 0;
   }
   .spam-number {
     font-family: var(--mono);
-    font-size: clamp(56px, 10vw, 104px);
+    font-size: clamp(48px, 8vw, 80px);
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.03em;
     color: var(--red);
   }
   .spam-sub {
-    font-size: clamp(18px, 2.5vw, 24px);
+    font-size: clamp(16px, 2vw, 20px);
     color: var(--text-secondary);
-    margin-top: var(--space-4);
+    margin-top: var(--space-3);
     line-height: 1.5;
-  }
-
-  /* ── Stats Grid ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
-  }
-  .stat-card {
-    padding: var(--space-6) var(--space-5);
-    border-radius: 12px;
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
-  }
-  .stat-card:hover {
-    border-color: var(--border-hover);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  }
-  .stat-value {
-    font-family: var(--mono);
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: var(--space-1);
   }
 
   /* ── Proof Card ── */
@@ -135,9 +132,7 @@
     color: var(--text-secondary);
     transition: border-color var(--duration-normal) ease;
   }
-  .pipe-icon:hover {
-    border-color: var(--border-hover);
-  }
+  /* No hover on pipe-icon - not interactive (#27) */
   .pipe-name {
     font-size: 11px;
     font-weight: 500;
@@ -182,17 +177,22 @@
   /* ── CTA Section ── */
   .cta-section {
     text-align: center;
-    padding: var(--space-24) 0 var(--space-16);
+    padding: var(--space-12) 0 var(--space-16);
   }
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .pipe-step { padding: 10px 6px; }
-    .pipe-icon { width: 40px; height: 40px; font-size: 14px; }
+    .hero-wrap { padding-top: calc(var(--nav-height) + var(--space-12)); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+    .pipeline { gap: var(--space-1); }
+    .pipe-step { padding: 8px 4px; }
+    .pipe-icon { width: 36px; height: 36px; font-size: 10px; }
+    .pipe-name { font-size: 9px; max-width: 56px; }
+    .pipe-arrow { font-size: 10px; }
+    .proof-card { max-width: 100%; }
   }
   @media (max-width: 480px) {
-    .stat-value { font-size: 24px; }
+    .stat-value { font-size: 20px; }
     .spam-number { font-size: 48px; }
   }
 </style>
@@ -204,6 +204,9 @@
 <nav class="nav">
   <div class="nav-left">
     <a href="index.html" class="nav-wordmark">AgentGuard</a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <div class="nav-links">
       <a href="index.html" class="nav-link" data-page="home">Home</a>
       <a href="registry.html" class="nav-link" data-page="registry">Registry</a>
@@ -216,63 +219,34 @@
   </div>
 </nav>
 
-<!-- ═══════════════════ HERO ═══════════════════ -->
+<!-- ═══════════════════ HERO + STATS ═══════════════════ -->
 <main id="main">
 <section class="hero-wrap">
   <div class="blob-container">
     <div class="blob blob-green"></div>
     <div class="blob blob-blue"></div>
-    <div class="blob blob-cyan" style="top: 60%; left: 10%;"></div>
   </div>
   <div class="hero-content">
     <div class="label reveal mb-4">ERC-8004 Trust Report</div>
+    <h1 class="heading-md reveal reveal-d1 mb-2" style="letter-spacing: -0.03em;">AgentGuard</h1>
     <div class="heading-xl reveal reveal-d1" id="hero-count" style="opacity: 0.3;">...</div>
-    <p class="body-lg reveal reveal-d2 mt-6" style="max-width: 480px; margin-left: auto; margin-right: auto;">
-      AI agents registered on Celo's Identity Registry.<br>We scored every single one.
+    <p class="body-lg reveal reveal-d2 mt-4" style="max-width: 520px; margin-left: auto; margin-right: auto;">
+      AI agents on Celo's Identity Registry, scanned and scored on-chain.
     </p>
-  </div>
-</section>
-
-<!-- ═══════════════════ SPAM REVEAL ═══════════════════ -->
-<section class="spam-section section section-red" style="padding: 0;">
-  <div class="blob-container">
-    <div class="blob blob-red" style="top: 20%; right: 15%;"></div>
-    <div class="blob blob-amber" style="bottom: 10%; left: 20%; width: 300px; height: 300px;"></div>
-  </div>
-  <div class="container text-center" style="position: relative; z-index: 1;">
-    <div class="label reveal mb-3">The problem</div>
-    <div style="border-left: 4px solid var(--red); padding-left: var(--space-6); display: inline-block; text-align: left;">
-      <div class="spam-number reveal reveal-d1" id="spam-pct">98.3%</div>
-      <p class="spam-sub reveal reveal-d2">are spam, dormant, or untrustworthy.</p>
-    </div>
-    <div class="divider divider-center reveal reveal-d3 mt-6 mb-4"></div>
-    <p class="reveal reveal-d3" style="font-family: var(--mono); font-size: 13px; color: var(--text-muted);">
-      <span id="flagged-count">...</span> agents score below 30 out of 100
-    </p>
-  </div>
-</section>
-
-<!-- ═══════════════════ STATS ═══════════════════ -->
-<section class="section section-green relative">
-  <div class="blob-container">
-    <div class="blob blob-green-sm" style="top: 10%; right: 20%;"></div>
-    <div class="blob blob-blue-sm" style="bottom: 15%; left: 5%;"></div>
-  </div>
-  <div class="container z-1">
-    <div class="stats-grid">
-      <div class="stat-card reveal">
+    <div class="stats-grid reveal reveal-d3">
+      <div class="stat-card">
         <div class="stat-value text-primary" id="stat-total">0</div>
-        <div class="stat-label">Agents Scanned</div>
+        <div class="stat-label">Scanned</div>
       </div>
-      <div class="stat-card reveal reveal-d1">
+      <div class="stat-card">
         <div class="stat-value text-celo" id="stat-trusted">0</div>
         <div class="stat-label">Trusted (70+)</div>
       </div>
-      <div class="stat-card reveal reveal-d2">
+      <div class="stat-card">
         <div class="stat-value text-yellow" id="stat-fair">0</div>
         <div class="stat-label">Fair (30-69)</div>
       </div>
-      <div class="stat-card reveal reveal-d3">
+      <div class="stat-card">
         <div class="stat-value text-red" id="stat-flagged">0</div>
         <div class="stat-label">Flagged (&lt;30)</div>
       </div>
@@ -280,76 +254,42 @@
   </div>
 </section>
 
-<!-- ═══════════════════ TOP FLAGS ═══════════════════ -->
-<section class="section section-amber" style="padding-top: var(--space-16);">
+<!-- ═══════════════════ PROBLEM (spam + flags) ═══════════════════ -->
+<section class="problem-section section section-red">
   <div class="blob-container">
-    <div class="blob blob-amber" style="top: 20%; left: 30%; width: 350px; height: 350px;"></div>
+    <div class="blob blob-red" style="top: 20%; right: 15%;"></div>
   </div>
-  <div class="container text-center" style="position: relative; z-index: 1;">
-    <div class="label reveal mb-6">Most Common Risk Flags</div>
-    <div class="flag-pills reveal reveal-d1" id="flag-pills"></div>
-  </div>
-</section>
-
-<!-- ═══════════════════ ON-CHAIN PROOF ═══════════════════ -->
-<section class="section section-green">
-  <div class="blob-container">
-    <div class="blob blob-green-sm" style="top: 10%; left: 60%;"></div>
-    <div class="blob blob-cyan" style="bottom: 20%; right: 10%; width: 300px; height: 300px;"></div>
-  </div>
-  <div class="container" style="display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1;">
-    <div class="text-center mb-8" style="max-width: 480px;">
-      <div class="label reveal">On-chain proof</div>
-      <p class="body-lg reveal reveal-d1 mt-3">
-        Every score is written to Celo via the ReputationRegistry contract.
+  <div class="container" style="position: relative; z-index: 1;">
+    <div class="text-center">
+      <div class="label reveal mb-3">The problem</div>
+      <div style="border-left: 4px solid var(--red); padding-left: var(--space-6); display: inline-block; text-align: left;">
+        <div class="spam-number reveal reveal-d1" id="spam-pct">98.3%</div>
+        <p class="spam-sub reveal reveal-d2">are spam, dormant, or untrustworthy.</p>
+      </div>
+      <p class="reveal reveal-d2 mt-4" style="font-family: var(--mono); font-size: 12px; color: var(--text-muted);">
+        <span id="flagged-count">...</span> agents score below 30 out of 100
       </p>
     </div>
-    <div class="proof-card reveal reveal-d2">
-      <div class="proof-row">
-        <span class="proof-key">Contract</span>
-        <span class="proof-val"><a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank">0x8004...9dE9b63</a></span>
-      </div>
-      <div class="proof-row">
-        <span class="proof-key">Identity Registry</span>
-        <span class="proof-val"><a href="https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank">0x8004...9a432</a></span>
-      </div>
-      <div class="proof-row">
-        <span class="proof-key">Writer</span>
-        <span class="proof-val">0xf994...4355</span>
-      </div>
-      <div class="proof-row">
-        <span class="proof-key">Scores written</span>
-        <span class="proof-val"><span class="flex items-center gap-2"><span class="pulse-dot"></span> <span id="proof-written">Loading...</span></span></span>
-      </div>
-      <div class="proof-row">
-        <span class="proof-key">Cost per TX</span>
-        <span class="proof-val">~0.006 CELO</span>
-      </div>
-      <div style="margin-top: var(--space-4);">
-        <div class="progress-track">
-          <div class="progress-fill" id="onchain-bar"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 6px;">
-          <span class="mono" style="font-size: 11px; color: var(--text-muted);" id="onchain-label">Loading...</span>
-          <span class="mono" style="font-size: 11px; color: var(--text-muted);">on-chain</span>
-        </div>
-      </div>
+    <div class="text-center mt-10">
+      <div class="label reveal mb-4">Most common risk flags</div>
+      <div class="flag-pills reveal reveal-d1" id="flag-pills"></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════ PIPELINE ═══════════════════ -->
-<section class="section section-blue">
+<!-- ═══════════════════ HOW IT WORKS (pipeline + proof) ═══════════════════ -->
+<section class="section section-blue" style="position: relative;">
   <div class="blob-container">
-    <div class="blob blob-blue" style="top: 15%; left: 5%; width: 450px; height: 450px;"></div>
-    <div class="blob blob-green-sm" style="bottom: 10%; right: 20%;"></div>
+    <div class="blob blob-blue" style="top: 10%; left: 5%; width: 400px; height: 400px;"></div>
   </div>
-  <div class="container text-center" style="position: relative; z-index: 1;">
-    <div class="label reveal mb-3">How we scored</div>
-    <p class="body-lg reveal reveal-d1 mb-8" style="max-width: 480px; margin-left: auto; margin-right: auto;">
-      Five independent scoring layers, each with circuit breakers.
-    </p>
-    <div class="pipeline reveal reveal-d2">
+  <div class="container" style="position: relative; z-index: 1;">
+    <div class="text-center mb-10">
+      <div class="label reveal mb-3">How it works</div>
+      <p class="body-lg reveal reveal-d1" style="max-width: 480px; margin-left: auto; margin-right: auto;">
+        Five independent scoring layers with circuit breakers. Every score written on-chain.
+      </p>
+    </div>
+    <div class="pipeline reveal reveal-d2 mb-10">
       <div class="pipe-step">
         <div class="pipe-icon">REG</div>
         <div class="pipe-name">Read registry</div>
@@ -380,15 +320,43 @@
         <div class="pipe-name">Write on-chain</div>
       </div>
     </div>
-    <a href="methodology.html" class="btn-ghost reveal reveal-d3 mt-8">Read full methodology</a>
+    <div style="display: flex; justify-content: center;">
+      <div class="proof-card reveal reveal-d3">
+        <div class="proof-row">
+          <span class="proof-key">Contract</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank">0x8004...9dE9b63</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Identity Registry</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank">0x8004...9a432</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Scores written</span>
+          <span class="proof-val"><span class="flex items-center gap-2"><span class="pulse-dot"></span> <span id="proof-written">Loading...</span></span></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Cost per TX</span>
+          <span class="proof-val">~0.006 CELO</span>
+        </div>
+        <div style="margin-top: var(--space-4);">
+          <div class="progress-track">
+            <div class="progress-fill" id="onchain-bar"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+            <span class="mono" style="font-size: 11px; color: var(--text-muted);" id="onchain-label">Loading...</span>
+            <span class="mono" style="font-size: 11px; color: var(--text-muted);">on-chain</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-6">
+      <a href="methodology.html" class="btn-ghost reveal">Read full methodology</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══════════════════ CTA ═══════════════════ -->
 <section class="cta-section" style="position: relative; overflow: hidden;">
-  <div class="blob-container">
-    <div class="blob blob-green" style="top: -20%; left: 30%; width: 500px; height: 500px;"></div>
-  </div>
   <div class="container" style="position: relative; z-index: 1;">
     <div class="heading-md reveal mb-4">Explore the full registry</div>
     <p class="body-sm reveal reveal-d1 mb-6" style="max-width: 400px; margin-left: auto; margin-right: auto;">
@@ -467,7 +435,7 @@
     const redFlags = ['MASS_REGISTRATION', 'METADATA_CLONE', 'UNLIMITED_APPROVALS'];
     document.getElementById('flag-pills').innerHTML = sorted.map(([flag, count]) => {
       const cls = redFlags.includes(flag) ? 'flag-pill-red' : 'flag-pill-yellow';
-      return `<span class="flag-pill ${cls}">${flag.replace(/_/g, ' ')} <span style="opacity:0.5; margin-left: 4px;">${count.toLocaleString()}</span></span>`;
+      return `<span class="flag-pill ${cls}">${flag.replace(/_/g, ' ')} <span style="opacity:0.7; margin-left: 4px;">${count.toLocaleString()}</span></span>`;
     }).join('');
 
     // On-chain stats
@@ -479,7 +447,8 @@
       document.getElementById('onchain-label').textContent = `${w.toLocaleString()} / ${t.toLocaleString()}`;
       setTimeout(() => {
         const pct = t > 0 ? (w / t) * 100 : 0;
-        document.getElementById('onchain-bar').style.width = pct + '%';
+        // Minimum 2% width so the bar is visible even at very low values
+        document.getElementById('onchain-bar').style.width = (pct > 0 ? Math.max(pct, 2) : 0) + '%';
       }, 500);
     } else {
       document.getElementById('proof-written').textContent = 'Pending';
@@ -498,7 +467,7 @@
     const errMsg = document.createElement('p');
     errMsg.className = 'body-sm mt-4';
     errMsg.style.cssText = 'color: var(--red); text-align: center; font-family: var(--mono); font-size: 12px;';
-    errMsg.textContent = 'Failed to load scan data. Run: npx tsx src/index.ts scan';
+    errMsg.textContent = 'Unable to load scan data. Check back later.';
     document.querySelector('.hero-content')?.appendChild(errMsg);
   }
 })();

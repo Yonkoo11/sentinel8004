@@ -4,3 +4,5 @@ dist/
 *.js.map
 data/scan-results.json
 data/scan-checkpoint.json
+dashboard/ai/
+dashboard/proposal-*.html
