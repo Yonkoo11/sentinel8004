@@ -609,7 +609,7 @@
       }
     }
     const sorted = Object.entries(allFlags).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const redFlags = ['MASS_REGISTRATION', 'METADATA_CLONE', 'UNLIMITED_APPROVALS'];
+    const redFlags = ['MASS_REGISTRATION', 'METADATA_CLONE', 'ALL_ENDPOINTS_DEAD', 'NEGATIVE_REPUTATION', 'UNLIMITED_APPROVALS'];
     document.getElementById('flag-pills').innerHTML = sorted.map(([flag, count]) => {
       const cls = redFlags.includes(flag) ? 'flag-pill-red' : 'flag-pill-yellow';
       return `<span class="flag-pill ${cls}">${flag.replace(/_/g, ' ')} <span style="opacity:0.7; margin-left: 4px;">${count.toLocaleString()}</span></span>`;

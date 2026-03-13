@@ -5,7 +5,7 @@ import { pinJSON } from '../src/ipfs.js';
 
 const AGENT_METADATA = {
   name: 'AgentGuard',
-  description: 'Autonomous ERC-8004 trust scoring agent (v2). Scans all 1,835+ registered agents on Celo, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.',
+  description: 'Autonomous ERC-8004 trust scoring agent (v2). Scans all 1,838 registered agents on Celo, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.',
   type: 'https://eips.ethereum.org/EIPS/eip-8004#registration-v1',
   version: '0.2.0',
   image: 'https://yonkoo11.github.io/agentguard/favicon.svg',
@@ -40,11 +40,10 @@ async function main() {
     return;
   }
 
-  // Pin metadata to IPFS
-  console.log('Pinning metadata to IPFS...');
-  const cid = await pinJSON(AGENT_METADATA, 'agentguard-metadata');
-  const agentURI = `ipfs://${cid}`;
-  console.log(`Pinned: ${agentURI}`);
+  // Encode metadata as base64 data URI (IPFS pinning unavailable)
+  const metadataJSON = JSON.stringify(AGENT_METADATA);
+  const agentURI = `data:application/json;base64,${Buffer.from(metadataJSON).toString('base64')}`;
+  console.log(`Metadata encoded as base64 data URI (${agentURI.length} chars)`);
 
   // Register on IdentityRegistry
   console.log('Registering on-chain...');

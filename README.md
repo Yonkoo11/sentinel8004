@@ -6,9 +6,11 @@ AgentGuard scans every registered agent on Celo's IdentityRegistry, scores them 
 
 **Live dashboard**: [yonkoo11.github.io/agentguard](https://yonkoo11.github.io/agentguard/)
 
+**On-chain**: 1,838 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet.
+
 ## The Problem
 
-Celo's IdentityRegistry has 1,835+ registered agents. No quality layer exists. What we found:
+Celo's IdentityRegistry has 1,838 registered agents. No quality layer exists. What we found:
 
 - **Sybil spam**: One address owns 500+ "babycaisubagent" clones with identical metadata
 - **Dead endpoints**: Agents with 28+ feedback clients point to URLs that return nothing
@@ -18,7 +20,7 @@ Celo's IdentityRegistry has 1,835+ registered agents. No quality layer exists. W
 ## How It Works
 
 ```
- IdentityRegistry (1,835 agents)
+ IdentityRegistry (1,838 agents)
          |
          v
      [Scanner]  ---- enumerate all agents, parse metadata (5 formats)
@@ -187,7 +189,7 @@ npx tsx scripts/register-agent.ts
 - [viem](https://viem.sh) -- chain interaction
 - [p-limit](https://github.com/sindresorhus/p-limit) -- concurrency
 - [@modelcontextprotocol/sdk](https://modelcontextprotocol.io) -- MCP server
-- Tailwind CSS (CDN) -- dashboard
+- Custom CSS design system -- dashboard (dark mode, CSS custom properties)
 
 ## License
 

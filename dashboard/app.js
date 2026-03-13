@@ -116,6 +116,7 @@
       for (const r of showing) {
         const flags = getFlags(r);
         const flagTypes = [...new Set(flags.map(f => f.split(':')[0]))];
+        const redFlagSet = new Set(['MASS_REGISTRATION', 'METADATA_CLONE', 'ALL_ENDPOINTS_DEAD', 'NEGATIVE_REPUTATION', 'UNLIMITED_APPROVALS']);
         const sc = scoreClass(r.compositeScore);
         const rowId = `expand-${r.agentId}`;
 
@@ -133,7 +134,7 @@
             </td>
             <td>
               ${flagTypes.length > 0
-                ? `<span class="flag-chip">${flagTypes[0]}</span>${flagTypes.length > 1 ? `<span class="mono" style="font-size: 10px; color: var(--text-muted); margin-left: 4px;">+${flagTypes.length - 1}</span>` : ''}`
+                ? `<span class="flag-chip ${redFlagSet.has(flagTypes[0]) ? 'flag-chip-red' : 'flag-chip-yellow'}">${flagTypes[0]}</span>${flagTypes.length > 1 ? `<span class="mono" style="font-size: 10px; color: var(--text-muted); margin-left: 4px;">+${flagTypes.length - 1}</span>` : ''}`
                 : '<span style="color: var(--text-muted); font-size: 12px;">—</span>'}
             </td>
           </tr>
@@ -157,7 +158,7 @@
                 <div>
                   ${flagTypes.length > 0 ? `
                     <h4 class="detail-heading">Risk Flags</h4>
-                    <div>${flagTypes.map(f => `<span class="flag-chip">${f}</span>`).join('')}</div>
+                    <div>${flagTypes.map(f => `<span class="flag-chip ${redFlagSet.has(f) ? 'flag-chip-red' : 'flag-chip-yellow'}">${f}</span>`).join('')}</div>
                   ` : `<h4 class="detail-heading">Flags</h4><div style="color: var(--celo); font-size: 11px;">Clean</div>`}
                   ${r.circuitBreakers && r.circuitBreakers.length > 0 ? `
                     <div class="detail-heading" style="margin-top: 12px;">Circuit Breakers</div>
