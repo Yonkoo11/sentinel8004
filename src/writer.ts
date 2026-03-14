@@ -133,7 +133,7 @@ export async function writeFeedback(
           BigInt(report.agentId),
           BigInt(report.compositeScore), // int128 value
           0, // valueDecimals
-          'agentguard', // tag1
+          'sentinel8004', // tag1
           'trust-v2', // tag2
           '', // endpoint
           feedbackURI, // feedbackURI

@@ -30,7 +30,7 @@ The Celo IdentityRegistry has zero quality layer. We found:
    - METADATA_CLONE → max 25 (>80% identical to sibling)
    - ALL_ENDPOINTS_DEAD → max 35 (all endpoints unreachable)
    - NEGATIVE_REPUTATION → max 30 (net negative feedback)
-4. Scores written to ReputationRegistry as on-chain attestations (tag1="agentguard", tag2="trust-v2")
+4. Scores written to ReputationRegistry as on-chain attestations (tag1="sentinel8004", tag2="trust-v2"; the first 1,852 batch used tag1="agentguard" before the project rename)
 5. MCP server exposes 3 tools for AI-to-AI queries:
    - `check_agent_trust(agentId)` — score, confidence, layer breakdown, flags
    - `list_flagged_agents(maxScore?, limit?)` — agents below threshold
@@ -51,7 +51,7 @@ We document these openly because trust scoring demands honesty:
 - L4 Sybil detection is address-based; multi-wallet Sybils are not detected
 - L2 probes check liveness, not functionality
 - L5 depends on existing ReputationRegistry adoption (low right now)
-- IPFS report pinning currently unavailable (Pinata plan limit); scores written without feedbackURI
+- First 1,852 attestations written without feedbackURI (IPFS provider plan limit at time of batch write). IPFS pipeline is functional and verified; future writes include pinned reports.
 - Self-scoring blocked by contract design: ReputationRegistry prevents an agent owner from writing feedback for their own agent. This is correct behavior (prevents gaming), so Sentinel8004 #1853 appears in the dashboard but has no on-chain attestation from itself
 
 ## Tracks
