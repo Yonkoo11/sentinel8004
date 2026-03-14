@@ -1,4 +1,4 @@
-// AgentGuard — Registry Page Logic
+// Sentinel8004 — Registry Page Logic
 (async function () {
   const IDENTITY_REGISTRY = '0x8004A169FB4a3325136EB29fA0ceB6D2e539a432';
   let allReports = [];

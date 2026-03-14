@@ -4,34 +4,34 @@ import { IDENTITY_REGISTRY_ADDRESS, IDENTITY_REGISTRY_ABI } from '../src/config.
 import { pinJSON } from '../src/ipfs.js';
 
 const AGENT_METADATA = {
-  name: 'AgentGuard',
+  name: 'Sentinel8004',
   description: 'Autonomous ERC-8004 trust scoring agent (v2). Scans all 1,838 registered agents on Celo, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.',
   type: 'https://eips.ethereum.org/EIPS/eip-8004#registration-v1',
   version: '0.2.0',
-  image: 'https://yonkoo11.github.io/agentguard/favicon.svg',
+  image: 'https://yonkoo11.github.io/sentinel8004/favicon.svg',
   services: [
     {
       type: 'mcp',
-      name: 'AgentGuard MCP',
+      name: 'Sentinel8004 MCP',
       endpoint: 'stdio',
       description: 'MCP server: check_agent_trust, list_flagged_agents, get_agent_report',
     },
     {
       type: 'dashboard',
-      name: 'AgentGuard Dashboard',
-      endpoint: 'https://yonkoo11.github.io/agentguard/',
+      name: 'Sentinel8004 Dashboard',
+      endpoint: 'https://yonkoo11.github.io/sentinel8004/',
       description: 'Live trust dashboard for all Celo ERC-8004 agents',
     },
   ],
   tags: ['trust', 'security', 'sybil-detection', 'reputation', 'erc-8004'],
-  source: 'https://github.com/yonkoo11/agentguard',
+  source: 'https://github.com/yonkoo11/sentinel8004',
   active: true,
 };
 
 async function main() {
   const dryRun = process.argv.includes('--dry-run');
   const account = getAccount();
-  console.log(`Registering AgentGuard as ERC-8004 agent`);
+  console.log(`Registering Sentinel8004 as ERC-8004 agent`);
   console.log(`From: ${account.address}`);
 
   if (dryRun) {
@@ -66,7 +66,7 @@ async function main() {
   // Parse the agentId from the Transfer event log
   if (receipt.logs.length > 0) {
     const tokenId = BigInt(receipt.logs[0].topics?.[3] || '0');
-    console.log(`AgentGuard registered as agent #${tokenId}`);
+    console.log(`Sentinel8004 registered as agent #${tokenId}`);
   }
 }
 

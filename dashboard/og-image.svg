@@ -5,7 +5,7 @@
   <circle cx="100" cy="315" r="36" fill="none" stroke="#35D07F" stroke-width="3"/>
   <path d="M88 315l8 8 14-16" fill="none" stroke="#35D07F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Title -->
-  <text x="160" y="280" font-family="monospace" font-size="64" font-weight="bold" fill="#f0f2f0" letter-spacing="-2">AgentGuard</text>
+  <text x="160" y="280" font-family="monospace" font-size="64" font-weight="bold" fill="#f0f2f0" letter-spacing="-2">Sentinel8004</text>
   <!-- Subtitle -->
   <text x="160" y="340" font-family="sans-serif" font-size="28" fill="#a1aaa4">ERC-8004 Trust Scoring on Celo</text>
   <!-- Stats -->

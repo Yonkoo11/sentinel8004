@@ -45,7 +45,7 @@ function findReport(agentId: number): TrustReport | null {
 export async function startMCPServer() {
   const server = new Server(
     {
-      name: 'agentguard',
+      name: 'sentinel8004',
       version: '0.1.0',
     },
     {
@@ -218,5 +218,5 @@ export async function startMCPServer() {
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('AgentGuard MCP server started on stdio');
+  console.error('Sentinel8004 MCP server started on stdio');
 }

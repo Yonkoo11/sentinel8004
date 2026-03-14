@@ -1,13 +1,13 @@
-# AgentGuard - Hackathon Submission Draft
+# Sentinel8004 - Hackathon Submission Draft
 
 ## Project Name
-AgentGuard
+Sentinel8004
 
 ## Tagline
 Autonomous ERC-8004 trust scoring agent for Celo
 
 ## Description
-AgentGuard scans all 1,853 agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans). AgentGuard is itself registered as agent #1853 on the IdentityRegistry.
+Sentinel8004 scans all 1,853 agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans). Sentinel8004 is itself registered as agent #1853 on the IdentityRegistry.
 
 ## What problem does it solve?
 The Celo IdentityRegistry has zero quality layer. We found:
@@ -41,9 +41,9 @@ The Celo IdentityRegistry has zero quality layer. We found:
 - **1,853 agents scanned and scored**
 - **1,852 trust attestations written on-chain** to ReputationRegistry (1 excluded: self-feedback blocked by contract for our own agent #1853)
 - **6 agents scored 70+** after rescanning newly registered agents
-- Top agent: AgentDashboard (Motus) at 85/100; our own AgentGuard #1853 scored 75/100
+- Top agent: AgentDashboard (Motus) at 85/100; our own Sentinel8004 #1853 scored 75/100
 - 88% of agents score below 10 (Sybil spam clusters)
-- AgentGuard registered as agent #1853 ([TX](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f))
+- Sentinel8004 registered as agent #1853 ([TX](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f))
 
 ## Known Limitations
 We document these openly because trust scoring demands honesty:
@@ -52,15 +52,15 @@ We document these openly because trust scoring demands honesty:
 - L2 probes check liveness, not functionality
 - L5 depends on existing ReputationRegistry adoption (low right now)
 - IPFS report pinning currently unavailable (Pinata plan limit); scores written without feedbackURI
-- Self-scoring blocked by contract design: ReputationRegistry prevents an agent owner from writing feedback for their own agent. This is correct behavior (prevents gaming), so AgentGuard #1853 appears in the dashboard but has no on-chain attestation from itself
+- Self-scoring blocked by contract design: ReputationRegistry prevents an agent owner from writing feedback for their own agent. This is correct behavior (prevents gaming), so Sentinel8004 #1853 appears in the dashboard but has no on-chain attestation from itself
 
 ## Tracks
 - Build Agents for the Real World V2: Best Agent on Celo, Best Agent Infra
 - The Synthesis: Trust Systems track
 
 ## Links
-- GitHub: https://github.com/Yonkoo11/agentguard
-- Dashboard: https://yonkoo11.github.io/agentguard/
+- GitHub: https://github.com/Yonkoo11/sentinel8004
+- Dashboard: https://yonkoo11.github.io/sentinel8004/
 - Contract (ReputationRegistry): https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63
 
 ## Tech Stack

@@ -15,9 +15,9 @@ export const publicClient = createPublicClient({
 });
 
 export function getWalletClient() {
-  const pk = process.env.AGENTGUARD_PRIVATE_KEY;
+  const pk = process.env.SENTINEL8004_PRIVATE_KEY;
   if (!pk) {
-    throw new Error('AGENTGUARD_PRIVATE_KEY not set in environment');
+    throw new Error('SENTINEL8004_PRIVATE_KEY not set in environment');
   }
   const account = privateKeyToAccount(pk as `0x${string}`);
   return createWalletClient({
@@ -28,9 +28,9 @@ export function getWalletClient() {
 }
 
 export function getAccount() {
-  const pk = process.env.AGENTGUARD_PRIVATE_KEY;
+  const pk = process.env.SENTINEL8004_PRIVATE_KEY;
   if (!pk) {
-    throw new Error('AGENTGUARD_PRIVATE_KEY not set in environment');
+    throw new Error('SENTINEL8004_PRIVATE_KEY not set in environment');
   }
   return privateKeyToAccount(pk as `0x${string}`);
 }

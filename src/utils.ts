@@ -39,7 +39,7 @@ export async function fetchWithTimeout(url: string, timeoutMs: number, init?: Re
       ...init,
       signal: controller.signal,
       headers: {
-        'User-Agent': 'AgentGuard/0.1',
+        'User-Agent': 'Sentinel8004/0.1',
         ...init?.headers,
       },
     });

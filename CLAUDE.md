@@ -1,8 +1,8 @@
-# CLAUDE.md - AgentGuard
+# CLAUDE.md - Sentinel8004
 
 ## Product Identity
 
-AgentGuard is an autonomous ERC-8004 trust scoring agent on Celo. It scans every registered agent on the IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain.
+Sentinel8004 is an autonomous ERC-8004 trust scoring agent on Celo. It scans every registered agent on the IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain.
 
 **The bar:** Every decision should pass the question: "Would the Celo team accept this into their core infrastructure?" If not, rethink.
 

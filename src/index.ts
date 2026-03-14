@@ -16,7 +16,7 @@ async function scan(args: string[]) {
   const layer1Only = args.includes('--layer1');
   const skipMetadata = args.includes('--skip-metadata');
 
-  console.log('=== AgentGuard Scanner ===');
+  console.log('=== Sentinel8004 Scanner ===');
   console.log(`Mode: ${layer1Only ? 'Layer 1 only' : 'Full scan'}`);
   if (maxAgents) console.log(`Max agents: ${maxAgents}`);
 
@@ -210,7 +210,7 @@ async function scan(args: string[]) {
 }
 
 async function info() {
-  console.log('=== AgentGuard Info ===');
+  console.log('=== Sentinel8004 Info ===');
   const total = await findTotalAgents();
   console.log(`Total agents on Celo: ${total}`);
 }
@@ -227,7 +227,7 @@ async function write(args: string[]) {
   const skipPinning = args.includes('--skip-pinning');
   const ownAgentIdStr = getArgValue(args, '--own-agent-id');
 
-  console.log('=== AgentGuard Writer ===');
+  console.log('=== Sentinel8004 Writer ===');
   if (dryRun) console.log('DRY RUN MODE — no transactions will be sent');
 
   // Load scan results

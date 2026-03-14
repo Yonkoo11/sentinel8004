@@ -1,4 +1,4 @@
-# AgentGuard - AI Memory
+# Sentinel8004 - AI Memory
 
 ## What This Is
 ERC-8004 agent trust scoring system for Celo hackathons (deadline March 18, 2026).

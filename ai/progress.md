@@ -1,4 +1,4 @@
-# AgentGuard - Progress
+# Sentinel8004 - Progress
 
 ## Status: SUBMISSION READY
 
@@ -7,15 +7,15 @@
 - Full v2 scan: 1,853 agents scored (15 new agents discovered in rescan)
 - 1,852 trust attestations written on-chain to ReputationRegistry
 - Agent #1853 excluded: self-feedback blocked by contract design (feature, not bug)
-- AgentGuard self-registered as agent #1853 (TX: 0x336764f2)
-- AgentGuard scored 75/100 by own scanner
+- Sentinel8004 self-registered as agent #1853 (TX: 0x336764f2)
+- Sentinel8004 scored 75/100 by own scanner
 - Dashboard: 3 pages (homepage, registry, methodology) live on GitHub Pages
 - Mobile tested at 375px: all pages pass
 - MCP server: all 3 tools verified with real data
 - Hackathon draft updated with final numbers
 
 ### Live
-- Dashboard: https://yonkoo11.github.io/agentguard/
+- Dashboard: https://yonkoo11.github.io/sentinel8004/
 - ReputationRegistry: https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63
 - Writer: 0xf9946775891a24462cD4ec885d0D4E2675C84355
 

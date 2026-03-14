@@ -98,7 +98,7 @@ export async function writeFeedback(
     let ipfsCID: string | null = null;
     if (!skipPinning) {
       try {
-        ipfsCID = await pinJSON(report, `agentguard-report-${report.agentId}`);
+        ipfsCID = await pinJSON(report, `sentinel8004-report-${report.agentId}`);
         console.log(`${progress} #${report.agentId} pinned: ${ipfsCID}`);
       } catch (e) {
         console.error(`${progress} #${report.agentId} pin failed: ${(e as Error).message}`);

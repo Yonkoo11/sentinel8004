@@ -1,10 +1,10 @@
-# AgentGuard
+# Sentinel8004
 
 Autonomous trust scoring agent for the ERC-8004 AI Agent Registry on Celo.
 
-AgentGuard scans every registered agent on Celo's IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. Results are exposed through an MCP server (AI-to-AI) and a static dashboard (humans).
+Sentinel8004 scans every registered agent on Celo's IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. Results are exposed through an MCP server (AI-to-AI) and a static dashboard (humans).
 
-**Live dashboard**: [yonkoo11.github.io/agentguard](https://yonkoo11.github.io/agentguard/)
+**Live dashboard**: [yonkoo11.github.io/sentinel8004](https://yonkoo11.github.io/sentinel8004/)
 
 **On-chain**: 1,852 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet. 1,853 agents scanned.
 
@@ -89,8 +89,8 @@ We document these openly because trust scoring demands honesty:
 ## Setup
 
 ```bash
-git clone https://github.com/yonkoo11/agentguard
-cd agentguard
+git clone https://github.com/yonkoo11/sentinel8004
+cd sentinel8004
 npm install
 cp .env.example .env
 # Edit .env with your keys
@@ -99,7 +99,7 @@ cp .env.example .env
 ### Environment Variables
 
 ```
-AGENTGUARD_PRIVATE_KEY=0x...    # Wallet for writing scores on-chain
+SENTINEL8004_PRIVATE_KEY=0x...    # Wallet for writing scores on-chain
 PINATA_JWT=...                   # Pinata API JWT for IPFS pinning
 CELO_RPC_URL=https://forno.celo.org  # Optional, defaults to Celo mainnet
 ```
@@ -156,7 +156,7 @@ npx tsx scripts/generate-dashboard.ts
 open dashboard/index.html
 ```
 
-### Register AgentGuard as an agent
+### Register Sentinel8004 as an agent
 
 ```bash
 npx tsx scripts/register-agent.ts --dry-run
@@ -168,7 +168,7 @@ npx tsx scripts/register-agent.ts
 - **IdentityRegistry**: [`0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`](https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432)
 - **ReputationRegistry**: [`0x8004BAa17C55a88189AE136b182e5fdA19dE9b63`](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63)
 - **Chain**: Celo Mainnet (42220)
-- **Feedback format**: `tag1="agentguard"`, `tag2="trust-v2"`, value = composite score (0-100)
+- **Feedback format**: `tag1="sentinel8004"`, `tag2="trust-v2"`, value = composite score (0-100)
 - **Report hash**: keccak256 of full JSON report stored as `feedbackHash`
 
 ## Architecture Decisions
