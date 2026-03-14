@@ -71,6 +71,13 @@ export const IDENTITY_REGISTRY_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
+  {
+    inputs: [{ name: 'agentId', type: 'uint256' }, { name: 'agentURI', type: 'string' }],
+    name: 'setAgentURI',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const;
 
 export const REPUTATION_REGISTRY_ABI = [

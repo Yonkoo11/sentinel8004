@@ -20,7 +20,7 @@ Sentinel8004 pulls every agent from the IdentityRegistry, parses their metadata 
 
 Circuit breakers cap the final score when hard red flags fire. A mass registrar can't score above 15 no matter how good their metadata looks. This matters because without it, spammers just copy a legitimate agent's metadata and score high.
 
-Every score gets written to the ReputationRegistry via `giveFeedback()` with tag1="agentguard" and tag2="trust-v2". An MCP server exposes three tools so other AI agents can query trust data without parsing the chain themselves. A static dashboard lets humans search, filter, and inspect any agent.
+Every score gets written to the ReputationRegistry via `giveFeedback()` with tag1="agentguard" and tag2="trust-v2" (the on-chain tag predates the rename to Sentinel8004; attestations are immutable once written). An MCP server exposes three tools so other AI agents can query trust data without parsing the chain themselves. A static dashboard lets humans search, filter, and inspect any agent.
 
 Sentinel8004 is registered as agent #1853 on the IdentityRegistry. It can't score itself because the contract blocks self-feedback - which is the correct design.
 
@@ -40,6 +40,7 @@ Sentinel8004 is registered as agent #1853 on the IdentityRegistry. It can't scor
 - Dashboard: https://yonkoo11.github.io/sentinel8004/
 - ReputationRegistry on CeloScan: https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63
 - Agent #1853 registration TX: https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f
+- Agent #1853 metadata update TX: https://celoscan.io/tx/0x947185526ae3f791babd118abb3a2b068d38548ca16c133fb16c5880dc3de8b7
 - GitHub: https://github.com/Yonkoo11/sentinel8004
 
 ---
