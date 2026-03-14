@@ -7,7 +7,7 @@ Sentinel8004
 Autonomous ERC-8004 trust scoring agent for Celo
 
 ## Description
-Sentinel8004 scans all 1,853 agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans). Sentinel8004 is itself registered as agent #1853 on the IdentityRegistry.
+Sentinel8004 scans all 1,855 agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans). Sentinel8004 is itself registered as agent #1853 on the IdentityRegistry.
 
 ## What problem does it solve?
 The Celo IdentityRegistry has zero quality layer. We found:

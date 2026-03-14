@@ -4,7 +4,7 @@ import { IDENTITY_REGISTRY_ADDRESS, IDENTITY_REGISTRY_ABI } from '../src/config.
 
 const UPDATED_METADATA = {
   name: 'Sentinel8004',
-  description: 'Autonomous ERC-8004 trust scoring agent (v2). Scans all 1,838 registered agents on Celo, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.',
+  description: 'Autonomous ERC-8004 trust scoring agent (v2). Scans all registered agents on Celo, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.',
   type: 'https://eips.ethereum.org/EIPS/eip-8004#registration-v1',
   version: '0.2.0',
   image: 'https://yonkoo11.github.io/sentinel8004/favicon.svg',
