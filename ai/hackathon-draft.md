@@ -38,8 +38,8 @@ The Celo IdentityRegistry has zero quality layer. We found:
 6. Static dashboard for human inspection with search, sort, and agent detail views
 
 ## Results
-- **1,853 agents scanned and scored**
-- **1,852 trust attestations written on-chain** to ReputationRegistry (1 excluded: self-feedback blocked by contract for our own agent #1853)
+- **1,855 agents scanned and scored**
+- **1,854 trust attestations written on-chain** to ReputationRegistry (1 excluded: self-feedback blocked by contract for our own agent #1853)
 - **6 agents scored 70+** after rescanning newly registered agents
 - Top agent: AgentDashboard (Motus) at 85/100; our own Sentinel8004 #1853 scored 75/100
 - 88% of agents score below 10 (Sybil spam clusters)
@@ -51,7 +51,7 @@ We document these openly because trust scoring demands honesty:
 - L4 Sybil detection is address-based; multi-wallet Sybils are not detected
 - L2 probes check liveness, not functionality
 - L5 depends on existing ReputationRegistry adoption (low right now)
-- First 1,852 attestations written without feedbackURI (IPFS provider plan limit at time of batch write). IPFS pipeline is functional and verified; future writes include pinned reports.
+- First 1,852 attestations written without feedbackURI (IPFS provider plan limit at time of batch write). IPFS pipeline restored; agents #1854 and #1855 written with pinned IPFS reports.
 - Self-scoring blocked by contract design: ReputationRegistry prevents an agent owner from writing feedback for their own agent. This is correct behavior (prevents gaming), so Sentinel8004 #1853 appears in the dashboard but has no on-chain attestation from itself
 
 ## Tracks

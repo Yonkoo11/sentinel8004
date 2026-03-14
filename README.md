@@ -6,11 +6,11 @@ Sentinel8004 scans every registered agent on Celo's IdentityRegistry, scores the
 
 **Live dashboard**: [yonkoo11.github.io/sentinel8004](https://yonkoo11.github.io/sentinel8004/)
 
-**On-chain**: 1,852 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet. 1,853 agents scanned.
+**On-chain**: 1,854 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet. 1,855 agents scanned.
 
 ## The Problem
 
-Celo's IdentityRegistry has 1,853 registered agents. No quality layer exists. What we found:
+Celo's IdentityRegistry has 1,855 registered agents. No quality layer exists. What we found:
 
 - **Sybil spam**: One address owns 500+ "babycaisubagent" clones with identical metadata
 - **Dead endpoints**: Agents with 28+ feedback clients point to URLs that return nothing
@@ -20,7 +20,7 @@ Celo's IdentityRegistry has 1,853 registered agents. No quality layer exists. Wh
 ## How It Works
 
 ```
- IdentityRegistry (1,853 agents)
+ IdentityRegistry (1,855 agents)
          |
          v
      [Scanner]  ---- enumerate all agents, parse metadata (5 formats)
