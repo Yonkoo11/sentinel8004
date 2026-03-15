@@ -127,10 +127,10 @@ async function probeEndpoint(url: string): Promise<ProbeResult> {
           const body = await response.text();
           const lower = body.toLowerCase();
           // Common parking page indicators
-          if (lower.includes('domain is for sale') ||
+          if ((lower.includes('domain is for sale') ||
               lower.includes('buy this domain') ||
               lower.includes('parked domain') ||
-              lower.includes('under construction') && body.length < 2000) {
+              lower.includes('under construction')) && body.length < 2000) {
             live = false;
             error = 'Parking/placeholder page detected';
           }

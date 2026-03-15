@@ -47,6 +47,8 @@ export async function scoreOnchain(agentWallet: string | null): Promise<LayerSco
   let score = 0;
 
   // Wallet age >30 days (5pts)
+  // Note: uses oldest tx in the 100-tx window (sort=desc). For wallets with 100+ txs,
+  // this may underreport age. Acceptable for scoring purposes.
   if (txs.length > 0) {
     const oldestTx = txs[txs.length - 1];
     const ageMs = Date.now() - parseInt(oldestTx.timeStamp) * 1000;
@@ -73,10 +75,11 @@ export async function scoreOnchain(agentWallet: string | null): Promise<LayerSco
   }
 
   // Check for unlimited approvals (5pts if none found)
-  const approvals = txs.filter(tx =>
-    tx.input.startsWith('0x095ea7b3') && // approve(address,uint256)
-    tx.input.endsWith('f'.repeat(64)) // max uint256
-  );
+  const approvals = txs.filter(tx => {
+    const input = tx.input.toLowerCase();
+    return input.startsWith('0x095ea7b3') && // approve(address,uint256)
+           input.endsWith('f'.repeat(64)); // max uint256
+  });
   if (approvals.length === 0) {
     score += 5;
     details.push('+5 No unlimited token approvals');
