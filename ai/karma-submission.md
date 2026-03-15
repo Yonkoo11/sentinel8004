@@ -24,11 +24,24 @@ Every score gets written to the ReputationRegistry via `giveFeedback()` with tag
 
 Sentinel8004 is registered as agent #1853 on the IdentityRegistry. It can't score itself because the contract blocks self-feedback - which is the correct design.
 
+## Mission Summary
+Celo's agent registry has no quality filter. Sentinel8004 fixes that by scanning every registered agent, scoring them on real signals (not self-reported claims), and writing the results on-chain where anyone can read them. The goal is to make the ERC-8004 ecosystem usable by giving agents and apps a way to tell real agents from spam before they interact.
+
+## Location of Impact
+Global
+
 ---
 
 ## Social Accounts (tab 2)
+- Twitter: @soligxbt
 - GitHub: https://github.com/Yonkoo11/sentinel8004
 - Website: https://yonkoo11.github.io/sentinel8004/
+- Discord: (leave empty)
+- LinkedIn: (leave empty)
+- Pitch Deck: (leave empty)
+- Demo video: (leave empty)
+- Farcaster: (leave empty)
+- Project Logo: upload sentinel8004-logo.png (see below)
 
 ## Project Stage (tab 3)
 - Stage: Live / Mainnet

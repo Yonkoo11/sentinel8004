@@ -49,7 +49,7 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
           address: REPUTATION_REGISTRY_ADDRESS,
           abi: REPUTATION_REGISTRY_ABI,
           functionName: 'readFeedback',
-          args: [BigInt(agentId), client, 0n],
+          args: [BigInt(agentId), client, 1n],
         }) as [bigint, number, string, string, boolean];
 
         const [value, , tag1, , isRevoked] = feedback;
