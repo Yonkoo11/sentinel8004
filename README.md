@@ -81,6 +81,7 @@ Critical flags cap the maximum score regardless of other layers:
 
 We document these openly because trust scoring demands honesty:
 
+- First batch of 1,854 attestations has empty `feedbackURI` (IPFS provider hit rate limits during the write batch). Scores and hashes are on-chain; full reports are in `data/scan-results.json` and can be verified against `feedbackHash`. Future writes will include IPFS URIs.
 - Single-snapshot scoring; no longitudinal tracking yet
 - L4 Sybil detection is address-based; multi-wallet Sybils are not detected
 - L2 probes check liveness, not functionality
