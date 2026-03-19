@@ -1,0 +1,54 @@
+{
+  "type": "agent-registration-v1",
+  "metadata": {
+    "name": "Sentinel8004",
+    "description": "Autonomous ERC-8004 trust scoring agent (v2). Scans all 1,855 registered agents on Celo's IdentityRegistry, scores them across 5 layers with circuit breakers (registration quality, endpoint liveness, on-chain behavior, Sybil/spam detection, existing reputation), and writes trust attestations to the ReputationRegistry on-chain.",
+    "version": "0.2.0",
+    "image": "https://yonkoo11.github.io/sentinel8004/favicon.svg",
+    "source": "https://github.com/Yonkoo11/sentinel8004",
+    "tags": ["trust", "security", "sybil-detection", "reputation", "erc-8004"],
+    "active": true
+  },
+  "identity": {
+    "agentId": 1853,
+    "network": "celo",
+    "chainId": 42220,
+    "registryAddress": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+    "operatorWallet": "0x67FbCB8A3C9136eAA83A550ef0aA17a5549aFB52"
+  },
+  "registries": {
+    "identity": {
+      "address": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+      "usage": "Agent registered as token #1853"
+    },
+    "reputation": {
+      "address": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
+      "usage": "Writes trust attestations via giveFeedback() with tag1='sentinel8004', tag2='trust-v2'. 1,854 attestations written."
+    }
+  },
+  "services": [
+    {
+      "name": "Sentinel8004 MCP",
+      "type": "mcp",
+      "transport": "stdio",
+      "description": "MCP server: check_agent_trust, list_flagged_agents, get_agent_report"
+    },
+    {
+      "name": "Sentinel8004 Dashboard",
+      "type": "dashboard",
+      "url": "https://yonkoo11.github.io/sentinel8004/",
+      "description": "Live trust dashboard for all Celo ERC-8004 agents"
+    }
+  ],
+  "trust": {
+    "supportedTrust": ["reputation"],
+    "scoringMethodology": "5-layer deterministic scoring with circuit breakers. No LLM, no randomness.",
+    "layers": [
+      "L1: Registration quality (metadata schema validation)",
+      "L2: Endpoint liveness (HTTP probes)",
+      "L3: On-chain behavior (wallet analysis via Blockscout)",
+      "L4: Sybil/spam detection (owner concentration, metadata cloning)",
+      "L5: Existing reputation (on-chain feedback from other agents)"
+    ]
+  }
+}

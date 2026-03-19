@@ -49,6 +49,29 @@ Global
 - Dashboard deployed on GitHub Pages
 - MCP server functional
 
+## Milestones (tab 3 of funding form)
+Fields: Title, Description, Start date (optional), End date (required), Priority (optional)
+
+### Milestone 1
+- **Title:** Auto-score new agents as they register
+- **Description:** Right now scoring runs manually in batches. I want to set up a cron job that watches the IdentityRegistry for new registrations, scores them, and writes to the ReputationRegistry with an IPFS report. Goal is under 24h from registration to on-chain score.
+- **End date:** April 15, 2026
+- **Priority:** Priority 1
+
+### Milestone 2
+- **Title:** Public API so other devs can query scores
+- **Description:** The MCP server works but you have to run it locally. I'll deploy a simple REST API (GET /agent/:id, GET /flagged) so any app can check an agent's trust score over HTTP without setting anything up.
+- **End date:** May 1, 2026
+- **Priority:** Priority 2
+
+### Milestone 3
+- **Title:** Add behavioral scoring layer
+- **Description:** Current scoring looks at a snapshot: metadata, wallet age, registration patterns. Adding a layer that tracks how agents actually behave over time (who they transact with, how often, value patterns) would catch agents that look clean at registration but act malicious later.
+- **End date:** June 15, 2026
+- **Priority:** Priority 3
+
+---
+
 ## Links to include anywhere relevant
 - Dashboard: https://yonkoo11.github.io/sentinel8004/
 - ReputationRegistry on CeloScan: https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63

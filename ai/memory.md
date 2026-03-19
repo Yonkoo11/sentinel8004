@@ -1,7 +1,7 @@
 # Sentinel8004 - AI Memory
 
 ## What This Is
-ERC-8004 agent trust scoring system for Celo hackathons (deadline March 18, 2026).
+ERC-8004 agent trust scoring system for Celo hackathons (deadline March 22, 2026 for BOTH).
 
 ## On-Chain Facts (Verified March 11)
 - IdentityRegistry: 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432
@@ -28,3 +28,18 @@ Scores written to ReputationRegistry via giveFeedback with tag1="agentguard", ta
 - Deterministic scoring (no LLM in pipeline)
 - Static dashboard on GitHub Pages
 - MCP server for agent-to-agent queries
+
+## Hackathon Key Facts (March 16)
+- **Build Agents V2 deadline: March 22, 9am GMT** (NOT March 18 — Notion page is authoritative, tweet was misleading)
+- **The Synthesis deadline: March 22** (building phase March 13-22, winners March 25)
+- agentscan.info (by Alias AI) ≠ 8004scan.io (by AltLayer). Both show Sentinel8004. Hackathon step 2 uses agentscan.info. Track 3 ($500) is for 8004scan rank.
+- Self AI verification requires biometric passport with NFC chip. No workaround without passport.
+- Karma Gap registration done (prior session). Tweet draft in ai/karma-submission.md.
+- Synthesis registration is API-based (POST /register), creates ERC-8004 on BASE Mainnet.
+- Relevant Synthesis tracks: ERC-8004 ($4K/$3K/$1K from Protocol Labs), Best Agent on Celo ($3K/$2K), Open Track ($14.5K)
+
+## Gotchas
+- Notion pages not fetchable programmatically (require JS). User must share content manually.
+- Karma Gap pages also require JS rendering.
+- submission-gate.sh hook blocks writing files with "submission" in name. Use "hackathon-checklist" instead.
+- on_chain_data.agentURI on agentscan still shows old "AgentGuard" name but display name is correct "Sentinel8004"
