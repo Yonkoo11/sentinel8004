@@ -1,19 +1,26 @@
 /**
- * trust-gate.ts - Demonstrates how another agent would consume Sentinel8004's
- * trust data before deciding whether to interact with an ERC-8004 agent.
+ * trust-gate.ts - On-chain consumer demo for Sentinel8004 trust scores.
  *
- * This is the core value proposition: any agent in the Celo ecosystem can query
- * Sentinel8004's scan results (via MCP or direct file read) and gate interactions
- * based on trust scores, flags, and circuit breakers.
+ * Queries the ReputationRegistry contract directly to read trust scores,
+ * demonstrating how any agent or dApp can consume Sentinel's attestations.
  *
  * Usage: npx tsx scripts/trust-gate.ts <agentId>
  */
 
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import type { ScanResult, TrustReport } from '../src/types.js';
+import { createPublicClient, http } from 'viem';
+import { celo } from 'viem/chains';
+import {
+  REPUTATION_REGISTRY_ADDRESS,
+  REPUTATION_REGISTRY_ABI,
+  CELO_RPC_URL,
+} from '../src/config.js';
 
-const SCAN_PATH = join(import.meta.dirname!, '..', 'data', 'scan-results.json');
+const SENTINEL_WRITER = '0xf9946775891a24462cD4ec885d0D4E2675C84355' as const;
+
+const client = createPublicClient({
+  chain: celo,
+  transport: http(CELO_RPC_URL),
+});
 
 function decide(score: number): { label: string; color: string } {
   if (score >= 50) return { label: 'SAFE to interact', color: '\x1b[32m' };
@@ -21,33 +28,55 @@ function decide(score: number): { label: string; color: string } {
   return { label: 'DO NOT INTERACT', color: '\x1b[31m' };
 }
 
-function printReport(report: TrustReport): void {
+async function checkAgentTrust(agentId: number) {
   const reset = '\x1b[0m';
   const bold = '\x1b[1m';
   const dim = '\x1b[2m';
-  const { label, color } = decide(report.compositeScore);
 
-  const allFlags = report.layers.flatMap(l => l.flags);
-  const breakers = report.circuitBreakers;
+  console.log(`\n${bold}--- Sentinel8004 Trust Gate (On-Chain) ---${reset}\n`);
+  console.log(`  Querying ReputationRegistry for agent #${agentId}...`);
 
-  console.log(`\n${bold}--- Sentinel8004 Trust Gate ---${reset}\n`);
-  console.log(`  Agent:      #${report.agentId} ${report.name}`);
-  console.log(`  Owner:      ${report.owner}`);
-  console.log(`  Score:      ${report.compositeScore}/100`);
-  console.log(`  Confidence: ${report.confidence}`);
+  // Check if Sentinel has written feedback for this agent
+  const clients = await client.readContract({
+    address: REPUTATION_REGISTRY_ADDRESS,
+    abi: REPUTATION_REGISTRY_ABI,
+    functionName: 'getClients',
+    args: [BigInt(agentId)],
+  }) as string[];
 
-  if (allFlags.length > 0) {
-    console.log(`  Flags:      ${allFlags.join(', ')}`);
+  const hasSentinelFeedback = clients.some(
+    c => c.toLowerCase() === SENTINEL_WRITER.toLowerCase()
+  );
+
+  if (!hasSentinelFeedback) {
+    console.log(`\n  ${dim}No Sentinel8004 feedback found for agent #${agentId}.${reset}`);
+    console.log(`  ${dim}Total feedback clients: ${clients.length}${reset}\n`);
+    return;
   }
-  if (breakers.length > 0) {
-    console.log(`  ${dim}Breakers:   ${breakers.join('; ')}${reset}`);
-  }
 
-  console.log(`\n  Layers:`);
-  for (const l of report.layers) {
-    console.log(`    ${l.layer.padEnd(14)} ${l.score}/${l.maxScore}`);
-  }
+  // Read the latest Sentinel feedback
+  const lastIndex = await client.readContract({
+    address: REPUTATION_REGISTRY_ADDRESS,
+    abi: REPUTATION_REGISTRY_ABI,
+    functionName: 'getLastIndex',
+    args: [BigInt(agentId), SENTINEL_WRITER],
+  }) as bigint;
 
+  const [value, valueDecimals, tag1, tag2] = await client.readContract({
+    address: REPUTATION_REGISTRY_ADDRESS,
+    abi: REPUTATION_REGISTRY_ABI,
+    functionName: 'readFeedback',
+    args: [BigInt(agentId), SENTINEL_WRITER, lastIndex],
+  }) as [bigint, number, string, string, boolean];
+
+  const score = Number(value);
+  const { label, color } = decide(score);
+
+  console.log(`  Agent:      #${agentId}`);
+  console.log(`  Score:      ${score}/100`);
+  console.log(`  Tag:        ${tag1}/${tag2}`);
+  console.log(`  Clients:    ${clients.length} total feedback providers`);
+  console.log(`  Source:     ReputationRegistry (on-chain)`);
   console.log(`\n  ${color}${bold}Decision: ${label}${reset}\n`);
 }
 
@@ -58,12 +87,7 @@ if (!agentId || isNaN(agentId)) {
   process.exit(1);
 }
 
-const data: ScanResult = JSON.parse(readFileSync(SCAN_PATH, 'utf-8'));
-const report = data.reports.find(r => r.agentId === agentId);
-
-if (!report) {
-  console.error(`Agent #${agentId} not found in scan results (${data.totalAgents} agents scanned).`);
+checkAgentTrust(agentId).catch(e => {
+  console.error('Error:', e.message);
   process.exit(1);
-}
-
-printReport(report);
+});

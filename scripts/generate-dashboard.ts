@@ -41,7 +41,12 @@ const output = {
     name: r.name,
     compositeScore: r.compositeScore,
     confidence: r.confidence,
-    layers: r.layers,
+    layers: (r.layers || []).map((l: any) => ({
+      layer: l.layer,
+      score: l.score,
+      maxScore: l.maxScore,
+      flags: l.flags || [],
+    })),
     circuitBreakers: r.circuitBreakers,
     errors: r.errors,
     ipfsCID: cidMap.get(r.agentId) || null,
@@ -49,5 +54,7 @@ const output = {
 };
 
 mkdirSync('dashboard/data', { recursive: true });
-writeFileSync(OUTPUT, JSON.stringify(output, null, 2));
-console.log(`Dashboard data written to ${OUTPUT} (${output.reports.length} agents)`);
+const jsonStr = JSON.stringify(output);
+writeFileSync(OUTPUT, jsonStr);
+const sizeMB = (Buffer.byteLength(jsonStr) / (1024 * 1024)).toFixed(2);
+console.log(`Dashboard data written to ${OUTPUT} (${output.reports.length} agents, ${sizeMB}MB)`);

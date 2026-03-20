@@ -4,10 +4,12 @@
 Sentinel8004
 
 ## Tagline
-Autonomous ERC-8004 trust scoring agent for Celo
+Infrastructure-grade trust layer for ERC-8004 agents on Celo
 
 ## Description
-Sentinel8004 scans all 2,900+ agents registered on Celo's ERC-8004 IdentityRegistry, scores them across 5 independent layers with circuit breakers, and writes trust attestations to the ReputationRegistry on-chain. It exposes results via MCP (for AI agents) and a static dashboard (for humans). Sentinel8004 is itself registered as agent #1853 on the IdentityRegistry.
+Sentinel8004 is a trust infrastructure primitive for Celo's ERC-8004 ecosystem. It scans all 2,900+ registered agents, scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain. Any agent, dApp, or contract on Celo can query these scores to gate interactions without building their own trust evaluation.
+
+What Celo gains: a composable trust layer that makes the IdentityRegistry usable. Before Sentinel, there was no way to distinguish legitimate agents from the 50%+ spam. Now any builder can call `getFeedback(agentId)` and get an auditable trust score backed by IPFS-pinned evidence.
 
 ## What problem does it solve?
 The Celo IdentityRegistry has zero quality layer. We found:
@@ -57,6 +59,12 @@ We document these openly because trust scoring demands honesty:
 - Build Agents for the Real World V2: Best Agent on Celo, Best Agent Infra
 - The Synthesis: Best Agent on Celo, Agents With Receipts (ERC-8004), Synthesis Open Track
 
+## Integration Surfaces
+Three ways to consume trust scores today:
+1. **Direct contract call:** `getFeedback(agentId)` on ReputationRegistry returns score, tags, and IPFS URI
+2. **MCP server:** AI agents can call `check_agent_trust(agentId)` via stdio for score + flags + confidence
+3. **Static JSON:** `scores.json` on GitHub Pages for lightweight dashboard-style reads
+
 ## Links
 - GitHub: https://github.com/Yonkoo11/sentinel8004
 - Dashboard: https://yonkoo11.github.io/sentinel8004/
@@ -66,8 +74,9 @@ We document these openly because trust scoring demands honesty:
 TypeScript, viem, p-limit, @modelcontextprotocol/sdk
 
 ## What makes this different
-- No LLM in scoring pipeline. All checks are deterministic. LLM powers the MCP query interface only.
-- Actually scans real agents and finds real problems (Sybil spam, dead endpoints, placeholder metadata)
-- Writes results on-chain using the ERC-8004 ReputationRegistry (not a separate contract)
-- Circuit breakers ensure a single strong negative signal dominates easy-to-game positive signals
-- Documents its own limitations publicly
+- **Infrastructure, not a demo:** Scores are on-chain and queryable by any contract or agent today. Not a prototype; a composable primitive.
+- **Deterministic scoring:** No LLM in the pipeline. Same input, same output. Other systems can depend on this.
+- **Real data, real problems found:** 50%+ of agents are spam. One address owns 991 clones. Dead endpoints everywhere.
+- **Standard interface:** Uses the existing ReputationRegistry contract. Zero new contracts to deploy for consumers.
+- **Circuit breakers:** A mass registrar cannot game the score with good metadata. Critical for downstream trust decisions.
+- **Honest about limits:** Documents what it can and cannot detect. Trust infrastructure requires transparency.

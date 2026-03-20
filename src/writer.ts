@@ -1,10 +1,33 @@
 import pLimit from 'p-limit';
 import { keccak256, toBytes } from 'viem';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { publicClient, getWalletClient, getAccount } from './chain.js';
 import { REPUTATION_REGISTRY_ADDRESS, REPUTATION_REGISTRY_ABI } from './config.js';
 import { pinJSON } from './ipfs.js';
 import { canonicalJSON } from './utils.js';
 import type { TrustReport } from './types.js';
+
+const CHECKPOINT_PATH = 'data/write-checkpoint.json';
+
+interface WriteCheckpoint {
+  lastAgentId: number;
+  txHash: string | null;
+  timestamp: string;
+  totalWritten: number;
+}
+
+function loadCheckpoint(): WriteCheckpoint | null {
+  try {
+    return JSON.parse(readFileSync(CHECKPOINT_PATH, 'utf-8'));
+  } catch {
+    return null;
+  }
+}
+
+function saveCheckpoint(cp: WriteCheckpoint): void {
+  mkdirSync('data', { recursive: true });
+  writeFileSync(CHECKPOINT_PATH, JSON.stringify(cp, null, 2));
+}
 
 interface WriteResult {
   agentId: number;
@@ -21,10 +44,24 @@ export async function writeFeedback(
     dryRun?: boolean;
     skipPinning?: boolean;
     ownAgentId?: number;
+    resume?: boolean;
   } = {}
 ): Promise<WriteResult[]> {
   const results: WriteResult[] = [];
-  const { dryRun = false, skipPinning = false, ownAgentId } = options;
+  const { dryRun = false, skipPinning = false, ownAgentId, resume = false } = options;
+
+  // Checkpoint-based resume: skip agents at or below the checkpoint
+  let skipBelow = 0;
+  if (resume) {
+    const cp = loadCheckpoint();
+    if (cp) {
+      skipBelow = cp.lastAgentId;
+      console.log(`Resuming from checkpoint: lastAgentId=${cp.lastAgentId}, totalWritten=${cp.totalWritten} (${cp.timestamp})`);
+    } else {
+      console.log('No checkpoint found, starting from beginning');
+    }
+  }
+  console.log(`Checkpoint path: ${CHECKPOINT_PATH}`);
 
   let walletClient: ReturnType<typeof getWalletClient> | null = null;
   let account: ReturnType<typeof getAccount> | null = null;
@@ -66,6 +103,19 @@ export async function writeFeedback(
   for (let i = 0; i < reports.length; i++) {
     const report = reports[i];
     const progress = `[${i + 1}/${reports.length}]`;
+
+    // Skip agents below checkpoint (resume mode)
+    if (resume && report.agentId <= skipBelow) {
+      results.push({
+        agentId: report.agentId,
+        txHash: null,
+        ipfsCID: null,
+        error: null,
+        skipped: true,
+        skipReason: 'checkpoint-skip',
+      });
+      continue;
+    }
 
     // Skip self-feedback (contract blocks it)
     if (ownAgentId && report.agentId === ownAgentId) {
@@ -171,6 +221,13 @@ export async function writeFeedback(
           ipfsCID,
           error: null,
           skipped: false,
+        });
+        // Save checkpoint after each successful write
+        saveCheckpoint({
+          lastAgentId: report.agentId,
+          txHash,
+          timestamp: new Date().toISOString(),
+          totalWritten: results.filter(r => r.txHash && !r.error).length,
         });
       }
     } catch (e) {

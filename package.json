@@ -8,17 +8,19 @@
     "write": "tsx src/index.ts write",
     "serve": "tsx src/index.ts serve",
     "register": "tsx scripts/register-agent.ts",
-    "dashboard": "tsx scripts/generate-dashboard.ts"
+    "dashboard": "tsx scripts/generate-dashboard.ts",
+    "test": "vitest run"
   },
   "dependencies": {
-    "viem": "^2.23.0",
-    "p-limit": "^6.2.0",
     "@modelcontextprotocol/sdk": "^1.6.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.4.7",
+    "p-limit": "^6.2.0",
+    "viem": "^2.23.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
+    "@types/node": "^22.10.0",
     "tsx": "^4.19.0",
-    "@types/node": "^22.10.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.0"
   }
 }

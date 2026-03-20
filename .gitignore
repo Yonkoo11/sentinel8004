@@ -7,6 +7,7 @@ data/scan-results-backup.json
 data/scan-results-test.json
 data/scan-checkpoint.json
 data/*.log
+data/scan-old.json
 dashboard/ai/
 dashboard/proposal-*.html
 scripts/test-*.ts

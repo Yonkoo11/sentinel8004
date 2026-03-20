@@ -303,8 +303,9 @@
       <a href="#weights">03 Weights</a>
       <a href="#breakers">04 Breakers</a>
       <a href="#attestation">05 On-Chain</a>
-      <a href="#limitations">06 Limits</a>
-      <a href="#example">07 Example</a>
+      <a href="#calibration">06 Calibration</a>
+      <a href="#limitations">07 Limits</a>
+      <a href="#example">08 Example</a>
     </nav>
 
     <!-- Principles -->
@@ -326,6 +327,30 @@
         <div class="principle-card reveal reveal-d3">
           <div class="principle-title">Independent</div>
           <div class="principle-desc">Each layer evaluates a different trust signal. A perfect score on one layer cannot compensate for failure on another.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Design Principles (Infrastructure) -->
+    <div class="method-section" id="design-principles">
+      <div class="heading-base reveal mb-6" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);">Design Principles: Why These Choices</div>
+      <p class="body-sm reveal mb-4">Each architectural decision is made with infrastructure adoption in mind.</p>
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
+          <div class="heading-sm" style="font-size: 13px;">Deterministic Scoring</div>
+          <p class="body-sm mt-2" style="font-size: 12px;">No LLM, no randomness. Other infrastructure can depend on Sentinel scores because the same input always produces the same output. This is a prerequisite for on-chain verifiability.</p>
+        </div>
+        <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
+          <div class="heading-sm" style="font-size: 13px;">Circuit Breakers</div>
+          <p class="body-sm mt-2" style="font-size: 12px;">A single strong negative signal (mass Sybil spam) cannot be overcome by good metadata. Without this, any scoring system is trivially gameable. Downstream consumers can trust that a score above 70 has no critical flags.</p>
+        </div>
+        <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
+          <div class="heading-sm" style="font-size: 13px;">IPFS Pinning</div>
+          <p class="body-sm mt-2" style="font-size: 12px;">Every attestation links to a full JSON report on IPFS via feedbackURI. This makes scores auditable by anyone, not just Sentinel. Downstream systems can verify exactly why an agent received its score.</p>
+        </div>
+        <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
+          <div class="heading-sm" style="font-size: 13px;">Standard Contract Interface</div>
+          <p class="body-sm mt-2" style="font-size: 12px;">Scores are written to the existing ReputationRegistry using its standard giveFeedback() function. No custom contracts needed. Any contract or agent that reads the registry automatically has access to Sentinel scores.</p>
         </div>
       </div>
     </div>
@@ -532,9 +557,134 @@
       </p>
     </div>
 
+    <!-- Calibration: Weight Sensitivity + Threshold Justification -->
+    <div class="method-section" id="calibration">
+      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">06</span> Calibration</div>
+
+      <!-- Weight Sensitivity -->
+      <div class="heading-sm reveal mb-2">Weight Sensitivity</div>
+      <p class="body-sm reveal mb-4">We tested 5 weight configurations against all 2,902 agents. Spearman's rank correlation measures how much agent rankings change.</p>
+
+      <div class="surface-card reveal" style="overflow-x: auto;">
+        <table class="weight-table">
+          <thead>
+            <tr>
+              <th>Config</th>
+              <th>L1-L3</th>
+              <th>L4-L5</th>
+              <th>Trusted</th>
+              <th>Fair</th>
+              <th>Flagged</th>
+              <th>Spearman &rho;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Current</td>
+              <td class="mono">0.8</td>
+              <td class="mono">1.0</td>
+              <td class="mono">7</td>
+              <td class="mono">24</td>
+              <td class="mono">2,871</td>
+              <td class="mono" style="color: var(--celo);">1.0000</td>
+            </tr>
+            <tr>
+              <td>Equal</td>
+              <td class="mono">1.0</td>
+              <td class="mono">1.0</td>
+              <td class="mono">17</td>
+              <td class="mono">14</td>
+              <td class="mono">2,871</td>
+              <td class="mono">0.9782</td>
+            </tr>
+            <tr>
+              <td>Sybil-heavy</td>
+              <td class="mono">0.6</td>
+              <td class="mono">1.0</td>
+              <td class="mono">2</td>
+              <td class="mono">29</td>
+              <td class="mono">2,871</td>
+              <td class="mono">0.9698</td>
+            </tr>
+            <tr>
+              <td>Metadata-heavy</td>
+              <td class="mono">1.0/0.8</td>
+              <td class="mono">0.8</td>
+              <td class="mono">7</td>
+              <td class="mono">24</td>
+              <td class="mono">2,871</td>
+              <td class="mono">0.9778</td>
+            </tr>
+            <tr>
+              <td>Liveness-heavy</td>
+              <td class="mono">0.8/1.0</td>
+              <td class="mono">0.8</td>
+              <td class="mono">5</td>
+              <td class="mono">26</td>
+              <td class="mono">2,871</td>
+              <td class="mono">0.9995</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="body-sm reveal mt-4" style="color: var(--celo);">
+        All rank correlations exceed 0.96. Circuit breakers dominate rankings; the specific weight values have minimal impact on which agents are trusted vs. flagged. The flagged count (2,871) is identical across all configs because circuit breakers, not weights, determine which agents fall below 30.
+      </p>
+
+      <!-- Threshold Justification -->
+      <div class="heading-sm reveal mb-2 mt-8">Threshold Selection</div>
+      <p class="body-sm reveal mb-4">Sybil thresholds are validated against the actual owner distribution in the registry.</p>
+
+      <div class="surface-card reveal" style="overflow-x: auto;">
+        <table class="weight-table">
+          <thead>
+            <tr>
+              <th>Bracket</th>
+              <th>Owners</th>
+              <th>Agents</th>
+              <th>Avg L1 (metadata)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1-3 (normal)</td>
+              <td class="mono">83</td>
+              <td class="mono">102</td>
+              <td class="mono">14.8/25</td>
+            </tr>
+            <tr>
+              <td>4-10 (moderate)</td>
+              <td class="mono">8</td>
+              <td class="mono">55</td>
+              <td class="mono">2.5/25</td>
+            </tr>
+            <tr>
+              <td>11-50 (high)</td>
+              <td class="mono">3</td>
+              <td class="mono">51</td>
+              <td class="mono">10.2/25</td>
+            </tr>
+            <tr>
+              <td>51+ (mass)</td>
+              <td class="mono">3</td>
+              <td class="mono">2,694</td>
+              <td class="mono">24.6/25</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="body-sm reveal mt-4">
+        68% of owners have exactly 1 agent. 3 owners account for 92.8% of all agents (2,694 agents). Natural breaks in the distribution align with our thresholds: gaps appear at 7&rarr;10, 14&rarr;25, and 25&rarr;73 agent counts.
+      </p>
+      <p class="body-sm reveal mt-2" style="color: var(--text-muted);">
+        The 51+ mass registration group has the highest average metadata quality (24.6/25) despite being spam. This validates the circuit breaker design: good metadata cannot compensate for mass registration behavior.
+      </p>
+    </div>
+
     <!-- Known Limitations -->
     <div class="method-section" id="limitations">
-      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">06</span> Known Limitations</div>
+      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">07</span> Known Limitations</div>
       <p class="body-sm reveal mb-4">We document these openly because trust scoring demands honesty about what it can and cannot prove.</p>
       <div style="display: flex; flex-direction: column; gap: var(--space-3);">
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
@@ -543,7 +693,7 @@
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Address-based Sybil detection</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">L4 detects mass registration from the same address. Multi-wallet Sybils using different addresses are not detected.</p>
+          <p class="body-sm mt-2" style="font-size: 12px;">L4 detects mass registration from the same address. Multi-wallet Sybils using different addresses are not detected by the primary scorer. A supplementary timing-cluster analysis script checks for agents registered within 60 seconds across different owners with similar metadata (Jaccard &gt; 0.6), but this is not yet part of the automated pipeline.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Liveness checks, not functionality</div>
@@ -562,7 +712,7 @@
 
     <!-- Worked Example -->
     <div class="method-section" id="example">
-      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">07</span> Worked Example</div>
+      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">08</span> Worked Example</div>
       <p class="body-sm reveal mb-6">Two real agents scored by the pipeline. Click to verify on CeloScan.</p>
 
       <!-- Example 1: Toppa (high score) -->
