@@ -1,41 +1,40 @@
 # Sentinel8004 - Progress
 
-## Status: CRITICAL FIXES APPLIED (March 20, 2026, Session 2)
+## Status: SCANNING NEW AGENTS (March 20, 2026, Session 3)
 
-## What Was Done This Session
+## What's Done This Session
 
-### Code Fixes (all verified, tsc --noEmit clean)
-1. **IPFS hash mismatch fixed** — `src/ipfs.ts`: Pinata now uses `pinFileToIPFS` with raw JSON bytes (same as Lighthouse), ensuring CID matches `feedbackHash` on-chain
-2. **Writer blocks on IPFS failure** — `src/writer.ts`: IPFS pin failure now skips the agent instead of writing with empty feedbackURI. Enforces CLAUDE.md rule.
-3. **MCP server absolute paths** — `src/mcp-server.ts`: Uses `import.meta.url` to resolve `data/scan-results.json` relative to project root, works from any cwd
-4. **MCP input validation** — agentId validated as positive integer, limit capped at 100
-5. **L5 reputation uses getLastIndex** — `src/layers/reputation.ts`: Reads most recent feedback per client instead of hardcoded index 1n
-6. **ownerOf propagates RPC errors** — `src/chain.ts`: Only returns null for ERC-721 "nonexistent token" reverts, throws on network errors
-7. **findTotalAgents fails safely** — `src/scanner.ts`: Wraps ownerOf in safeOwnerOf that throws fatal error on RPC failures during enumeration
+### Session 2 (completed)
+- Fixed 15 issues across code, dashboard, docs (commit af1320d, pushed)
+- IPFS hash mismatch, writer IPFS enforcement, MCP paths, L5 reputation, ownerOf, dashboard hardcoded numbers, OG image, README, agent_log.json, package.json version
 
-### Dashboard Fixes
-8. **Removed all hardcoded numbers** — Meta tags, OG tags, footer now dynamic. spam-pct default changed from "98.3%" to "..."
-9. **OG image converted to PNG** — 1200x630 PNG (was SVG, which doesn't render on Twitter/Discord)
-10. **rel="noopener noreferrer"** added to all target="_blank" links (index, registry, methodology)
-11. **Error handler fixed** — Appends to `.hero-left` (was `.hero-content` which doesn't exist)
-12. **Footer attestation count dynamic** — `<span id="footer-attestations">...</span>` populated by JS
-13. **`<main>` landmark added** to registry.html and methodology.html
-14. **Skip link target fixed** — registry.html now targets `<table>` not `<tbody>`
-15. **Meta descriptions** — removed hardcoded counts from all 3 pages
+### Session 3 (current)
+1. **Committed and pushed** all session 2 fixes (af1320d)
+2. **Added `--output` flag** to scanner CLI for parallel scans
+3. **Created merge script** at `scripts/merge-scans.ts`
+4. **Old agents scan complete** — `data/scan-old.json`: 1,860 reports (L1-only, agents #1-1860)
+5. **New agents smart scan IN PROGRESS** — background PID running, writing to `data/scan-results.json` (agents #1859-2902+, smart mode with L2-L5)
+   - At 260/1044 as of last check, ~55 min remaining
+   - Most new agents are a spam cluster scoring 15/100
+6. **Updated hackathon-draft.md** — counts to 2,900+, tracks to include Open Track
+7. **Verified GitHub Pages** — deploys from `dashboard/` via Actions workflow, triggers on `dashboard/**` pushes
 
-### Documentation Fixes
-16. **README tag1 honest** — Documents that first 1,852 attestations use "agentguard" (immutable), not "sentinel8004"
-17. **README counts updated** — No more hardcoded 1,855, uses "2,800+" or "1,857+"
-18. **agent_log.json rewritten** — Real tx hashes, gas data, failure details, 3 specific batch2 transactions with CIDs
-19. **Version mismatch fixed** — package.json now 0.2.0 (matches agent.json)
+## What's In Progress
+- **Background smart scan** running for agents 1859-2902+ (PID from `nohup` in /tmp/sentinel-scan.log)
 
-## What's Next
-1. **Scan agents 1859-2881** — ~1,023 new agents. Run `scan --start 1859 --max 1100`
-2. **Write new attestations with IPFS** — All new writes get proper feedbackURI
-3. **Regenerate dashboard** — Include all data
-4. **Check CELO balance** — Need ~6 CELO for writes
-5. **Commit and push** all fixes
-6. **Synthesis API key** — Ask in nsb.dev/synthesis-chat for key recovery
+## What's Next (after smart scan finishes)
+1. **Merge scans**: `npx tsx scripts/merge-scans.ts data/scan-old.json data/scan-results.json`
+2. **Write new attestations**: `npx tsx src/index.ts write --own-agent-id 1853`
+   - Budget: 4.39 CELO = ~731 writes at 0.006 CELO each
+   - Writer auto-skips already-scored agents (1-1858 already on-chain)
+   - Need LIGHTHOUSE_API_KEY or PINATA_JWT for IPFS
+3. **Regenerate dashboard**: `npx tsx scripts/generate-dashboard.ts`
+4. **Commit + push** — triggers GitHub Pages deploy
+5. **Update agent_log.json** with batch 3 stats
+6. **Synthesis API key** — User needs to recover from nsb.dev/synthesis-chat or @synthesis_md
+   - Need key to update tracks (add Open Track) and conversation log
+   - Project UUID: 44047eed8b3545f28c33779685d88e00
+   - Track UUIDs: ff26ab4933c84eea856a5c6bf513370b (Celo), 3bf41be958da497bbb69f1a150c76af9 (ERC-8004), fdb76d08812b43f6a5f454744b66f590 (Open)
 
 ## Synthesis Update
 - Team confirmed: "You can ask your agent to modify tracks. Changes are allowed till the deadline."
@@ -52,3 +51,9 @@
 - User wallet: 0x67FbCB8A3C9136eAA83A550ef0aA17a5549aFB52
 - Celo agent: #1853
 - Writer address: 0xf9946775891a24462cD4ec885d0D4E2675C84355
+
+## Agent Count
+- Celo IdentityRegistry: 2,904 agents (as of this session)
+- Previously scanned: 1-1858
+- Currently scanning: 1859-2904 (smart mode, background)
+- On-chain attestations: 1,857 (1,854 without IPFS + 3 with IPFS)

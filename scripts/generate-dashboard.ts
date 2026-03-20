@@ -20,7 +20,7 @@ try {
 
 // Transform for dashboard consumption
 const output = {
-  totalAgents: data.totalAgents,
+  totalAgents: Math.max(data.totalAgents || 0, data.reports.length),
   scannedAt: data.scannedAt,
   scanMode: data.scanMode || 'unknown',
   onchainStats: {

@@ -204,8 +204,9 @@ async function scan(args: string[]) {
       reports,
       ownerStats: ownerCounts,
     };
-    writeFileSync(`${RESULTS_DIR}/scan-results.json`, JSON.stringify(output, null, 2));
-    console.log(`\nResults saved to ${RESULTS_DIR}/scan-results.json`);
+    const outputFile = getArgString(args, '--output') || `${RESULTS_DIR}/scan-results.json`;
+    writeFileSync(outputFile, JSON.stringify(output, null, 2));
+    console.log(`\nResults saved to ${outputFile}`);
   }
 }
 
@@ -220,6 +221,12 @@ function getArgValue(args: string[], flag: string): number | undefined {
   if (idx === -1 || idx + 1 >= args.length) return undefined;
   const val = parseInt(args[idx + 1], 10);
   return isNaN(val) ? undefined : val;
+}
+
+function getArgString(args: string[], flag: string): string | undefined {
+  const idx = args.indexOf(flag);
+  if (idx === -1 || idx + 1 >= args.length) return undefined;
+  return args[idx + 1];
 }
 
 async function write(args: string[]) {
