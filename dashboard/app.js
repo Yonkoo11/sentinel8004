@@ -74,7 +74,7 @@
         const scanDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const ago = Math.round((today - scanDay) / 86400000);
-        const label = ago === 0 ? 'Today' : ago === 1 ? '1 day ago' : ago + ' days ago';
+        const label = ago <= 1 ? 'Today' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         freshEl.textContent = 'Scanned: ' + label;
       }
     }
