@@ -28,6 +28,10 @@
     if (trusted === 0) document.getElementById('qs-trusted').style.color = 'var(--text-muted)';
     if (fair === 0) document.getElementById('qs-fair').style.color = 'var(--text-muted)';
 
+    // Footer attestation count
+    const footerEl = document.getElementById('footer-attestations');
+    if (footerEl) footerEl.textContent = (data.onchainStats?.written || total).toLocaleString();
+
     // Distribution chart (Proposal C horizontal bars)
     const buckets = Array(10).fill(0);
     for (const r of allReports) {
@@ -113,7 +117,7 @@
       });
 
       const showing = filtered.slice(0, displayLimit);
-      const tbody = document.getElementById('agent-table');
+      const tbody = document.getElementById('agent-table-body');
       const rows = [];
 
       for (const r of showing) {
@@ -213,7 +217,7 @@
     render();
 
   } catch (e) {
-    document.getElementById('agent-table').innerHTML =
+    document.getElementById('agent-table-body').innerHTML =
       `<tr><td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
         <div style="font-size: 14px; margin-bottom: 8px;">Unable to load scan data</div>
         <div style="font-size: 12px; color: var(--text-muted);">Check back later or verify the data source.</div>

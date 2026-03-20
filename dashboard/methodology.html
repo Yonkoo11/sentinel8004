@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Methodology — Sentinel8004</title>
-<meta name="description" content="How Sentinel8004 scores AI agents: 5 layers, circuit breakers, on-chain attestation.">
+<meta name="description" content="How Sentinel8004 scores ERC-8004 AI agents: 5 layers, circuit breakers, and on-chain attestation on Celo.">
 <meta property="og:title" content="Scoring Methodology — Sentinel8004">
 <meta property="og:description" content="5 layers, circuit breakers, on-chain attestation. No LLM.">
-<meta property="og:image" content="https://yonkoo11.github.io/sentinel8004/og-image.svg">
+<meta property="og:image" content="https://yonkoo11.github.io/sentinel8004/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -274,10 +274,11 @@
   </div>
   <div class="nav-right">
     <span class="nav-meta" id="scan-date"></span>
-    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" class="nav-cta">Verify on CeloScan</a>
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer" class="nav-cta">Verify on CeloScan</a>
   </div>
 </nav>
 
+<main>
 <div class="container">
 
   <!-- Header -->
@@ -565,20 +566,21 @@
           <div class="heading-sm">Open Source</div>
           <p class="body-sm mt-2">Full scanner, scorer, and writer source code available on GitHub.</p>
         </div>
-        <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" class="btn-primary">View Source &#8599;</a>
+        <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" rel="noopener noreferrer" class="btn-primary">View Source &#8599;</a>
       </div>
     </div>
 
   </div>
 </div>
+</main>
 
 <!-- Footer -->
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="footer-left">Sentinel8004 v2 &middot; 1,854 attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> &middot; Built on Celo</div>
+    <div class="footer-left">Sentinel8004 v2 &middot; <span id="footer-attestations">...</span> attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> &middot; Built on Celo</div>
     <div class="footer-links">
-      <a href="https://github.com/yonkoo11/sentinel8004" target="_blank">GitHub</a>
-      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank">CeloScan</a>
+      <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">CeloScan</a>
     </div>
   </div>
 </footer>
@@ -591,6 +593,12 @@ fetch('data/scores.json').then(r => r.json()).then(data => {
     const d = new Date(data.scannedAt);
     const el = document.getElementById('scan-date');
     if (el) el.textContent = 'Last scan: ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  // Footer attestation count
+  const footerEl = document.getElementById('footer-attestations');
+  if (footerEl) {
+    const total = (data.reports || []).length;
+    footerEl.textContent = (data.onchainStats?.written || total).toLocaleString();
   }
 }).catch(() => {});
 </script>

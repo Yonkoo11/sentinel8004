@@ -45,8 +45,14 @@ export async function ownerOf(agentId: number): Promise<string | null> {
       args: [BigInt(agentId)],
     });
     return owner as string;
-  } catch {
-    return null; // Agent doesn't exist
+  } catch (e) {
+    const msg = (e as Error).message || '';
+    // ERC-721 reverts with specific messages for non-existent tokens
+    if (msg.includes('ERC721') || msg.includes('nonexistent') || msg.includes('invalid token') || msg.includes('revert')) {
+      return null; // Token doesn't exist
+    }
+    // RPC/network errors should propagate so callers can handle them
+    throw e;
   }
 }
 

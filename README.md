@@ -6,11 +6,11 @@ Sentinel8004 scans every registered agent on Celo's IdentityRegistry, scores the
 
 **Live dashboard**: [yonkoo11.github.io/sentinel8004](https://yonkoo11.github.io/sentinel8004/)
 
-**On-chain**: 1,854 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet. 1,855 agents scanned.
+**On-chain**: 1,857+ trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) on Celo mainnet.
 
 ## The Problem
 
-Celo's IdentityRegistry has 1,855 registered agents. No quality layer exists. What we found:
+Celo's IdentityRegistry has 2,800+ registered agents and growing. No quality layer exists. What we found:
 
 - **Sybil spam**: One address owns 500+ "babycaisubagent" clones with identical metadata
 - **Dead endpoints**: Agents with 28+ feedback clients point to URLs that return nothing
@@ -20,7 +20,7 @@ Celo's IdentityRegistry has 1,855 registered agents. No quality layer exists. Wh
 ## How It Works
 
 ```
- IdentityRegistry (1,855 agents)
+ IdentityRegistry (all agents)
          |
          v
      [Scanner]  ---- enumerate all agents, parse metadata (5 formats)
@@ -81,7 +81,7 @@ Critical flags cap the maximum score regardless of other layers:
 
 We document these openly because trust scoring demands honesty:
 
-- First batch of 1,854 attestations has empty `feedbackURI` (IPFS provider hit rate limits during the write batch). Scores and hashes are on-chain; full reports are in `data/scan-results.json` and can be verified against `feedbackHash`. Future writes will include IPFS URIs.
+- The first batch of 1,854 attestations has empty `feedbackURI` (IPFS provider hit rate limits during the initial write). Scores and `feedbackHash` values are on-chain; full reports are in `data/scan-results.json`. Subsequent writes (agent #1856+) include IPFS URIs with verifiable reports.
 - Single-snapshot scoring; no longitudinal tracking yet
 - L4 Sybil detection is address-based; multi-wallet Sybils are not detected
 - L2 probes check liveness, not functionality
@@ -101,7 +101,8 @@ cp .env.example .env
 
 ```
 SENTINEL8004_PRIVATE_KEY=0x...    # Wallet for writing scores on-chain
-PINATA_JWT=...                   # Pinata API JWT for IPFS pinning
+PINATA_JWT=...                   # Pinata API JWT for IPFS pinning (primary)
+LIGHTHOUSE_API_KEY=...           # Lighthouse.storage API key (alternative IPFS provider)
 CELO_RPC_URL=https://forno.celo.org  # Optional, defaults to Celo mainnet
 ```
 
@@ -180,7 +181,7 @@ npx tsx scripts/register-agent.ts
 - **IdentityRegistry**: [`0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`](https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432)
 - **ReputationRegistry**: [`0x8004BAa17C55a88189AE136b182e5fdA19dE9b63`](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63)
 - **Chain**: Celo Mainnet (42220)
-- **Feedback format**: `tag1="sentinel8004"`, `tag2="trust-v2"`, value = composite score (0-100)
+- **Feedback format**: `tag1="sentinel8004"`, `tag2="trust-v2"`, value = composite score (0-100). Note: the first 1,852 attestations used `tag1="agentguard"` (pre-rename, immutable on-chain).
 - **Report hash**: keccak256 of full JSON report stored as `feedbackHash`
 
 ## Architecture Decisions

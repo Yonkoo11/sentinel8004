@@ -2,15 +2,17 @@
   "agentId": 1853,
   "agentName": "Sentinel8004",
   "network": "celo",
-  "logVersion": "1.0.0",
-  "generatedAt": "2026-03-19T17:30:00Z",
+  "logVersion": "1.1.0",
+  "generatedAt": "2026-03-20T22:00:00.000Z",
   "summary": {
-    "totalAgentsScanned": 1855,
-    "totalAttestationsWritten": 1854,
+    "totalAgentsScanned": 1858,
+    "totalAttestationsWritten": 1857,
+    "attestationsWithIPFS": 3,
+    "attestationsWithoutIPFS": 1854,
     "scoreDistribution": {
       "trusted": { "range": "70-100", "count": 6 },
       "fair": { "range": "30-69", "count": 38 },
-      "flagged": { "range": "0-29", "count": 1811 }
+      "flagged": { "range": "0-29", "count": 1814 }
     },
     "flaggedPercentage": 97.6,
     "topRiskFlags": [
@@ -34,57 +36,147 @@
     },
     {
       "action": "update_metadata",
-      "description": "Updated agent metadata from AgentGuard to Sentinel8004",
+      "description": "Renamed from AgentGuard to Sentinel8004 (discovered existing AgentGuard agent on Base)",
       "txHash": "0x947185526ae3f791babd118abb3a2b068d38548ca16c133fb16c5880dc3de8b7",
       "explorer": "https://celoscan.io/tx/0x947185526ae3f791babd118abb3a2b068d38548ca16c133fb16c5880dc3de8b7",
       "timestamp": "2026-03-15T04:17:12Z"
     },
     {
-      "action": "write_attestations",
-      "description": "Wrote 1,854 trust attestations to ReputationRegistry via giveFeedback()",
+      "action": "write_attestations_batch1",
+      "description": "Wrote 1,854 trust attestations (agents #1-1855, excluding self #1853). Empty feedbackURI due to Pinata rate limits.",
       "contract": "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
-      "explorer": "https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
       "count": 1854,
       "tag1": "agentguard",
-      "tag2": "trust-v2"
+      "tag2": "trust-v2",
+      "gasPerTx": "~217,000",
+      "knownIssues": [
+        "First attempt used hardcoded 200K gas limit, causing silent reverts on ~90% of agents. Fixed by letting node estimate gas.",
+        "All feedbackURI fields are empty (Pinata free tier rate-limited mid-batch). Immutable on-chain.",
+        "Pre-fix scores for agents #1849 (81) and #1850 (85) are from buggy L5 indexing. Immutable."
+      ]
+    },
+    {
+      "action": "write_attestations_batch2",
+      "description": "Wrote 3 new attestations with IPFS reports (agents #1856, #1857, #1858). Full pipeline proven end-to-end.",
+      "count": 3,
+      "tag1": "sentinel8004",
+      "tag2": "trust-v2",
+      "transactions": [
+        {
+          "agentId": 1856,
+          "txHash": "0x82de2552b7610c576e8f13c10f8dccdb8a692ee983154ab4302589214a99fa68",
+          "ipfsCID": "QmP9jJFr4ifivbdjapq61GjQeMv8NMFhnE7XXc46KJYgSJ",
+          "score": 20
+        },
+        {
+          "agentId": 1857,
+          "txHash": "0x9587efe0e8f6f82866757bc0cddb84758437af61f62b89b7bcd2a3c5a6fdcab2",
+          "ipfsCID": "QmSog72CJabALP1dDcRmFvCtRuS1gNXLvujAAVbCBFnBdM",
+          "score": 20
+        },
+        {
+          "agentId": 1858,
+          "txHash": "0x36644f7f5beaef0a018c74fed8797b1b33f44d24f94c6818e0577c39df8d953e",
+          "ipfsCID": "QmNs22eHR64SgRr2B86prvFLd2oJYRSnku67EanL9vESmP",
+          "score": 73
+        }
+      ],
+      "selfFeedbackBlocked": {
+        "agentId": 1853,
+        "reason": "Contract reverts with 'Self-feedback not allowed' when writer address owns the agent",
+        "writerAddress": "0xf9946775891a24462cD4ec885d0D4E2675C84355"
+      }
     }
   ],
   "executionLog": [
     {
       "session": 1,
       "phase": "discovery",
-      "actions": ["Read ERC-8004 spec", "Enumerate IdentityRegistry (1,855 agents)", "Build metadata parser (5 formats)"],
-      "decisions": ["Use ReputationRegistry (ValidationRegistry not deployed on Celo)"]
+      "actions": [
+        "Read ERC-8004 spec (EIP-8004)",
+        "Enumerate IdentityRegistry via ownerOf binary search (found 1,855 agents)",
+        "Build metadata parser for 5 formats: raw JSON, base64, gzip+base64, IPFS URI, HTTP URI"
+      ],
+      "decisions": [
+        "Use ReputationRegistry for scoring (ValidationRegistry not deployed on Celo)",
+        "Binary search for total count (no totalSupply exposed on the custom ERC-721)"
+      ]
     },
     {
       "session": 2,
       "phase": "scoring_engine",
-      "actions": ["Design 5-layer scoring", "Implement circuit breakers", "Test against known agents (Arca #2, babycaisubagent cluster)"],
-      "decisions": ["Cap mass registrars at 15/100", "Deterministic scoring (no LLM)"]
+      "actions": [
+        "Design 5-layer weighted scoring with circuit breakers",
+        "Implement L1 (registration), L2 (liveness), L3 (on-chain via Blockscout), L4 (Sybil), L5 (reputation)",
+        "Test against known agents: Arca #2 (fair), babycaisubagent cluster #50-1670 (capped at 15)"
+      ],
+      "decisions": [
+        "Cap mass registrars at 15/100 (MASS_REGISTRATION breaker)",
+        "Deterministic scoring (no LLM in pipeline)",
+        "Weight L1-L3 at 0.8x (easier to game), L4-L5 at 1.0x (harder to game)"
+      ]
     },
     {
       "session": 3,
       "phase": "on_chain_writes",
-      "actions": ["Write 1,854 attestations", "Build IPFS pinning pipeline", "Register as agent #1853"],
-      "decisions": ["Let node estimate gas per-tx (hardcoded 200K caused silent reverts)", "Skip self-feedback (contract blocks it)"]
+      "actions": [
+        "Write 1,854 attestations to ReputationRegistry",
+        "Debug gas issue: hardcoded 200K limit caused silent reverts, switched to node-estimated gas",
+        "Register Sentinel8004 as agent #1853"
+      ],
+      "failures": [
+        "~90% of first write attempt reverted (hardcoded gas too low for giveFeedback at ~217K)",
+        "IPFS pinning via Pinata rate-limited mid-batch, all feedbackURI fields empty",
+        "Self-feedback blocked by contract for agent #1853"
+      ],
+      "decisions": [
+        "Let node estimate gas per-tx",
+        "Proceed with empty feedbackURI (scores+hashes still on-chain, reports in repo)",
+        "Skip self-feedback (contract design, not a bug)"
+      ]
     },
     {
       "session": 4,
       "phase": "interfaces",
-      "actions": ["Build MCP server (3 tools)", "Build static dashboard", "Deploy to GitHub Pages"],
-      "decisions": ["Static site over server-rendered (simpler, free hosting)"]
+      "actions": [
+        "Build MCP server with 3 tools (check_agent_trust, list_flagged_agents, get_agent_report)",
+        "Build static dashboard (index, registry, methodology) with dark mode CSS system",
+        "Deploy to GitHub Pages"
+      ],
+      "decisions": [
+        "Static site over server-rendered (simpler, free hosting)",
+        "MCP over REST API (designed for AI-to-AI consumption)"
+      ]
     },
     {
       "session": 5,
       "phase": "bug_fixes",
-      "actions": ["Fix reputation.ts 0-based indexing", "Fix liveness.ts operator precedence", "Fix onchain.ts case sensitivity"],
-      "decisions": ["On-chain attestations immutable - document pre-fix scores"]
+      "actions": [
+        "Fix reputation.ts: readFeedback used 0-based index, contract uses 1-based",
+        "Fix liveness.ts: operator precedence in score calculation",
+        "Fix onchain.ts: case sensitivity in address comparison"
+      ],
+      "decisions": [
+        "On-chain attestations are immutable. Document pre-fix scores for #1849/#1850 as known limitation."
+      ]
     },
     {
       "session": 6,
-      "phase": "identity",
-      "actions": ["Rename AgentGuard to Sentinel8004", "Update on-chain metadata"],
-      "decisions": ["New name after discovering existing AgentGuard agent on Base"]
+      "phase": "identity_and_polish",
+      "actions": [
+        "Rename AgentGuard to Sentinel8004 (discovered existing agent on Base)",
+        "Update on-chain metadata via setAgentURI",
+        "Write 3 new attestations with IPFS reports (proven end-to-end)",
+        "Build trust-gate consumer demo (scripts/trust-gate.ts)",
+        "Verify MCP server via JSON-RPC stdin pipe (all 3 tools working)",
+        "Verify dashboard responsive at 1280x800 and 375x812"
+      ],
+      "decisions": [
+        "Switch IPFS provider code to support Lighthouse + Pinata fallback",
+        "Fix writer to block on IPFS failure (never write without verifiable report)",
+        "Fix MCP server to use absolute paths (works from any cwd)",
+        "Fix reputation layer to use getLastIndex instead of hardcoded index"
+      ]
     }
   ]
 }

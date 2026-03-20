@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registry — Sentinel8004</title>
-<meta name="description" content="Explore all 1,855 ERC-8004 AI agents on Celo with trust scores and risk flags.">
+<meta name="description" content="Browse and search all ERC-8004 AI agents on Celo with trust scores, risk flags, and layer breakdowns.">
 <meta property="og:title" content="Agent Registry — Sentinel8004">
-<meta property="og:description" content="Search, filter, and inspect every ERC-8004 AI agent on Celo.">
-<meta property="og:image" content="https://yonkoo11.github.io/sentinel8004/og-image.svg">
+<meta property="og:description" content="Browse and search all ERC-8004 AI agents on Celo with trust scores, risk flags, and layer breakdowns.">
+<meta property="og:image" content="https://yonkoo11.github.io/sentinel8004/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -342,11 +342,12 @@
   </div>
   <div class="nav-right">
     <span class="nav-meta" id="scan-date"></span>
-    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" class="nav-cta">Verify on CeloScan</a>
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer" class="nav-cta">Verify on CeloScan</a>
   </div>
 </nav>
 
 <!-- Page -->
+<main>
 <div class="container">
 
   <!-- Header -->
@@ -409,7 +410,7 @@
 
   <!-- Table -->
   <div class="table-wrap">
-    <table>
+    <table id="agent-table">
       <thead>
         <tr>
           <th style="width: 60px;">ID</th>
@@ -419,7 +420,7 @@
           <th style="width: 140px;">Flags</th>
         </tr>
       </thead>
-      <tbody id="agent-table">
+      <tbody id="agent-table-body">
         <tr id="loading-row"><td colspan="5" style="padding: 0;">
           <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
           <div class="skeleton-row"><div class="skeleton skeleton-cell skeleton-cell-sm"></div><div class="skeleton skeleton-cell skeleton-cell-lg"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-md"></div><div class="skeleton skeleton-cell skeleton-cell-sm"></div></div>
@@ -433,14 +434,15 @@
   <button class="load-more-btn hidden" id="load-more">Load more</button>
 
 </div>
+</main>
 
 <!-- Footer -->
 <footer class="site-footer" style="margin-top: var(--space-16);">
   <div class="footer-inner">
-    <div class="footer-left">Sentinel8004 v2 &middot; 1,854 attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> &middot; Built on Celo</div>
+    <div class="footer-left">Sentinel8004 v2 &middot; <span id="footer-attestations">...</span> attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> &middot; Built on Celo</div>
     <div class="footer-links">
-      <a href="https://github.com/yonkoo11/sentinel8004" target="_blank">GitHub</a>
-      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank">CeloScan</a>
+      <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">CeloScan</a>
     </div>
   </div>
 </footer>

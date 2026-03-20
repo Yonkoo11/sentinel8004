@@ -45,11 +45,24 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
 
     for (const client of clientsToCheck) {
       try {
+        // Get the most recent feedback index for this client
+        const lastIndex = await publicClient.readContract({
+          address: REPUTATION_REGISTRY_ADDRESS,
+          abi: REPUTATION_REGISTRY_ABI,
+          functionName: 'getLastIndex',
+          args: [BigInt(agentId), client],
+        }) as bigint;
+
+        if (lastIndex === 0n) {
+          details.push(`Client ${client.slice(0, 8)}...: no feedback entries`);
+          continue;
+        }
+
         const feedback = await publicClient.readContract({
           address: REPUTATION_REGISTRY_ADDRESS,
           abi: REPUTATION_REGISTRY_ABI,
           functionName: 'readFeedback',
-          args: [BigInt(agentId), client, 1n],
+          args: [BigInt(agentId), client, lastIndex],
         }) as [bigint, number, string, string, boolean];
 
         const [value, , tag1, , isRevoked] = feedback;

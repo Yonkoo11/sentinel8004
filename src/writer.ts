@@ -94,7 +94,7 @@ export async function writeFeedback(
       continue;
     }
 
-    // Pin report to IPFS
+    // Pin report to IPFS (required for verifiable attestations)
     let ipfsCID: string | null = null;
     if (!skipPinning) {
       try {
@@ -102,7 +102,15 @@ export async function writeFeedback(
         console.log(`${progress} #${report.agentId} pinned: ${ipfsCID}`);
       } catch (e) {
         console.error(`${progress} #${report.agentId} pin failed: ${(e as Error).message}`);
-        // Continue without pinning
+        // IPFS failure = skip this agent. Never write on-chain without a verifiable report.
+        results.push({
+          agentId: report.agentId,
+          txHash: null,
+          ipfsCID: null,
+          error: `IPFS pin failed: ${(e as Error).message}`,
+          skipped: false,
+        });
+        continue;
       }
     }
 

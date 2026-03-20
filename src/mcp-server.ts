@@ -5,9 +5,13 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { readFileSync, existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { TrustReport } from './types.js';
 
-const RESULTS_PATH = 'data/scan-results.json';
+// Resolve path relative to project root (one level up from src/)
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const RESULTS_PATH = resolve(__dirname, '..', 'data', 'scan-results.json');
 
 interface ScanData {
   totalAgents: number;
@@ -110,7 +114,14 @@ export async function startMCPServer() {
 
     switch (name) {
       case 'check_agent_trust': {
-        const agentId = (args as { agentId: number }).agentId;
+        const rawId = (args as { agentId?: unknown }).agentId;
+        const agentId = typeof rawId === 'number' && Number.isInteger(rawId) && rawId > 0 ? rawId : NaN;
+        if (isNaN(agentId)) {
+          return {
+            content: [{ type: 'text' as const, text: 'Invalid agentId: must be a positive integer.' }],
+            isError: true,
+          };
+        }
         const report = findReport(agentId);
         if (!report) {
           return {
@@ -150,7 +161,7 @@ export async function startMCPServer() {
 
       case 'list_flagged_agents': {
         const maxScore = (args as { maxScore?: number }).maxScore ?? 30;
-        const limit = (args as { limit?: number }).limit ?? 20;
+        const limit = Math.min((args as { limit?: number }).limit ?? 20, 100);
         const data = loadScanData();
 
         if (!data) {
@@ -188,7 +199,14 @@ export async function startMCPServer() {
       }
 
       case 'get_agent_report': {
-        const agentId = (args as { agentId: number }).agentId;
+        const rawReportId = (args as { agentId?: unknown }).agentId;
+        const agentId = typeof rawReportId === 'number' && Number.isInteger(rawReportId) && rawReportId > 0 ? rawReportId : NaN;
+        if (isNaN(agentId)) {
+          return {
+            content: [{ type: 'text' as const, text: 'Invalid agentId: must be a positive integer.' }],
+            isError: true,
+          };
+        }
         const report = findReport(agentId);
 
         if (!report) {

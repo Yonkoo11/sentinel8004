@@ -50,18 +50,21 @@ async function pinViaLighthouse(data: unknown, name: string, apiKey: string): Pr
 }
 
 async function pinViaPinata(data: unknown, name: string, jwt: string): Promise<string> {
-  const body = JSON.stringify({
-    pinataContent: data,
-    pinataMetadata: { name },
-  });
+  // Use pinFileToIPFS with exact JSON bytes to ensure the CID matches
+  // what we hash on-chain (pinJSONToIPFS may re-serialize differently)
+  const jsonStr = JSON.stringify(data);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
 
-  const response = await fetchWithTimeout('https://api.pinata.cloud/pinning/pinJSONToIPFS', 15000, {
+  const formData = new FormData();
+  formData.append('file', blob, `${name}.json`);
+  formData.append('pinataMetadata', JSON.stringify({ name }));
+
+  const response = await fetchWithTimeout('https://api.pinata.cloud/pinning/pinFileToIPFS', 30000, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
-    body,
+    body: formData,
   });
 
   if (!response.ok) {

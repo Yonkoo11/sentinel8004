@@ -14,6 +14,15 @@ interface ScanOptions {
   skipMetadata?: boolean;
 }
 
+async function safeOwnerOf(agentId: number): Promise<string | null> {
+  try {
+    return await ownerOf(agentId);
+  } catch (e) {
+    // RPC errors during binary search are fatal — we cannot trust the result
+    throw new Error(`RPC error during agent enumeration (id=${agentId}): ${(e as Error).message}`);
+  }
+}
+
 export async function findTotalAgents(): Promise<number> {
   // Binary search for the last valid agentId
   let low = 1;
@@ -21,7 +30,7 @@ export async function findTotalAgents(): Promise<number> {
   const MAX_BOUND = 100_000; // Safety cap to prevent infinite loop
 
   // First find an upper bound
-  while (await ownerOf(high) !== null) {
+  while (await safeOwnerOf(high) !== null) {
     high *= 2;
     if (high > MAX_BOUND) {
       high = MAX_BOUND;
@@ -32,7 +41,7 @@ export async function findTotalAgents(): Promise<number> {
   // Binary search between low and high
   while (low < high) {
     const mid = Math.floor((low + high + 1) / 2);
-    const owner = await ownerOf(mid);
+    const owner = await safeOwnerOf(mid);
     if (owner !== null) {
       low = mid;
     } else {
