@@ -157,6 +157,17 @@ npx tsx scripts/generate-dashboard.ts
 open dashboard/index.html
 ```
 
+### Trust Gate (consumer demo)
+
+```bash
+# Another agent checks if it's safe to interact with agent #132
+npx tsx scripts/trust-gate.ts 132
+# → SAFE to interact (57/100)
+
+npx tsx scripts/trust-gate.ts 50
+# → DO NOT INTERACT (11/100, MASS_REGISTRATION circuit breaker)
+```
+
 ### Register Sentinel8004 as an agent
 
 ```bash
