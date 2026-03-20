@@ -6,14 +6,20 @@ const OUTPUT = 'dashboard/data/scores.json';
 const raw = readFileSync(INPUT, 'utf-8');
 const data = JSON.parse(raw);
 
-// Try to load write results for on-chain stats
+// Try to load write results for on-chain stats + IPFS CID map
 let onchainWritten = 0;
+const cidMap = new Map<number, string>();
 try {
   const writeData = JSON.parse(readFileSync('data/write-results.json', 'utf-8'));
   // Count both newly written and already-scored (both exist on-chain)
   onchainWritten = writeData.filter((r: any) =>
     (r.txHash && !r.error) || r.skipReason === 'already-scored'
   ).length;
+  // Build CID map for IPFS links
+  for (const r of writeData) {
+    if (r.ipfsCID) cidMap.set(r.agentId, r.ipfsCID);
+  }
+  if (cidMap.size > 0) console.log(`Loaded ${cidMap.size} IPFS CIDs from write results`);
 } catch {
   // No write results yet, that's fine
 }
@@ -38,6 +44,7 @@ const output = {
     layers: r.layers,
     circuitBreakers: r.circuitBreakers,
     errors: r.errors,
+    ipfsCID: cidMap.get(r.agentId) || null,
   })),
 };
 

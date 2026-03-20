@@ -1,4 +1,4 @@
-import { fetchWithTimeout } from './utils.js';
+import { fetchWithTimeout, canonicalJSON } from './utils.js';
 
 const LIGHTHOUSE_API_URL = 'https://upload.lighthouse.storage/api/v0/add';
 
@@ -22,7 +22,7 @@ export async function pinJSON(data: unknown, name: string): Promise<string> {
 }
 
 async function pinViaLighthouse(data: unknown, name: string, apiKey: string): Promise<string> {
-  const jsonStr = JSON.stringify(data);
+  const jsonStr = canonicalJSON(data);
   const blob = new Blob([jsonStr], { type: 'application/json' });
 
   const formData = new FormData();
@@ -52,7 +52,7 @@ async function pinViaLighthouse(data: unknown, name: string, apiKey: string): Pr
 async function pinViaPinata(data: unknown, name: string, jwt: string): Promise<string> {
   // Use pinFileToIPFS with exact JSON bytes to ensure the CID matches
   // what we hash on-chain (pinJSONToIPFS may re-serialize differently)
-  const jsonStr = JSON.stringify(data);
+  const jsonStr = canonicalJSON(data);
   const blob = new Blob([jsonStr], { type: 'application/json' });
 
   const formData = new FormData();

@@ -1,46 +1,50 @@
 # Sentinel8004 - Progress
 
-## Status: SCANNING NEW AGENTS (March 20, 2026, Session 3)
+## Status: CRITIQUE FIXES IN PROGRESS (March 20, 2026, Session 4)
 
 ## What's Done This Session
 
-### Session 2 (completed)
-- Fixed 15 issues across code, dashboard, docs (commit af1320d, pushed)
-- IPFS hash mismatch, writer IPFS enforcement, MCP paths, L5 reputation, ownerOf, dashboard hardcoded numbers, OG image, README, agent_log.json, package.json version
+### Critique-Driven Fixes
+1. **Canonical JSON serialization** - Added `canonicalJSON()` to utils.ts, used in writer.ts and ipfs.ts. Fixes feedbackHash determinism issue (JSON.stringify key order not guaranteed).
+2. **Worked example on methodology page** - Two real agents: Toppa #1870 (95/100, clean) and Scarlet Orbit #1900 (15/100, MASS_REGISTRATION breaker). Shows exact layer math.
+3. **IPFS report links in registry** - Updated generate-dashboard.ts to include CID map from write-results.json. Registry detail view shows "IPFS Report" link when CID available.
+4. **Search debounce** - 200ms debounce on registry search input.
+5. **Cost/tx corrected** - Updated from ~0.006 to ~0.009 CELO everywhere (index.html, methodology.html, CLAUDE.md).
 
-### Session 3 (current)
-1. **Committed and pushed** all session 2 fixes (af1320d)
-2. **Added `--output` flag** to scanner CLI for parallel scans
-3. **Created merge script** at `scripts/merge-scans.ts`
-4. **Old agents scan complete** — `data/scan-old.json`: 1,860 reports (L1-only, agents #1-1860)
-5. **New agents smart scan IN PROGRESS** — background PID running, writing to `data/scan-results.json` (agents #1859-2902+, smart mode with L2-L5)
-   - At 260/1044 as of last check, ~55 min remaining
-   - Most new agents are a spam cluster scoring 15/100
-6. **Updated hackathon-draft.md** — counts to 2,900+, tracks to include Open Track
-7. **Verified GitHub Pages** — deploys from `dashboard/` via Actions workflow, triggers on `dashboard/**` pushes
+### On-Chain Writes (STILL RUNNING)
+- Background writer at #2206/2902 as of last check
+- Balance: 23.68 CELO (plenty for all remaining agents)
+- All new writes include IPFS pinning (Lighthouse)
+- 334+ IPFS CIDs so far
 
-## What's In Progress
-- **Background smart scan** running for agents 1859-2902+ (PID from `nohup` in /tmp/sentinel-scan.log)
+## What's Next
+1. **Wait for writes to complete** - check `tail -2 /tmp/sentinel-write.log`
+2. **Regenerate dashboard** - `npx tsx scripts/generate-dashboard.ts` (will include IPFS CIDs)
+3. **Commit + push all changes** - critique fixes + updated dashboard
+4. **Verify dashboard live** - check GitHub Pages deployment
+5. **Update hackathon draft** with final numbers
 
-## What's Next (after smart scan finishes)
-1. **Merge scans**: `npx tsx scripts/merge-scans.ts data/scan-old.json data/scan-results.json`
-2. **Write new attestations**: `npx tsx src/index.ts write --own-agent-id 1853`
-   - Budget: 4.39 CELO = ~731 writes at 0.006 CELO each
-   - Writer auto-skips already-scored agents (1-1858 already on-chain)
-   - Need LIGHTHOUSE_API_KEY or PINATA_JWT for IPFS
-3. **Regenerate dashboard**: `npx tsx scripts/generate-dashboard.ts`
-4. **Commit + push** — triggers GitHub Pages deploy
-5. **Update agent_log.json** with batch 3 stats
-6. **Synthesis API key** — User needs to recover from nsb.dev/synthesis-chat or @synthesis_md
-   - Need key to update tracks (add Open Track) and conversation log
-   - Project UUID: 44047eed8b3545f28c33779685d88e00
-   - Track UUIDs: ff26ab4933c84eea856a5c6bf513370b (Celo), 3bf41be958da497bbb69f1a150c76af9 (ERC-8004), fdb76d08812b43f6a5f454744b66f590 (Open)
+## Critique Issues Addressed
+- [x] feedbackHash non-determinism (canonical JSON)
+- [x] No worked example on methodology page
+- [x] No per-agent IPFS links in registry
+- [x] No search debounce
+- [x] Wrong cost/tx number (0.006 vs 0.009)
 
-## Synthesis Update
-- Team confirmed: "You can ask your agent to modify tracks. Changes are allowed till the deadline."
-- API key still lost. User should ask at nsb.dev/synthesis-chat or DM @synthesis_md
-- Project UUID: 44047eed8b3545f28c33779685d88e00
-- Current tracks: Best Agent on Celo + Agents With Receipts (missing: Open Track)
+## Critique Issues NOT Addressed (documented trade-offs)
+- [ ] 3.5MB scores.json (pagination would help, but 2,902 agents loads in <2s on modern connections)
+- [ ] Nonce desync risk (sequential writes avoid this; a full recovery system is over-engineering for hackathon)
+- [ ] Multi-wallet Sybil bypass (documented in methodology Known Limitations)
+- [ ] Zero tests (time trade-off: on-chain writes are more impactful for judges)
+- [ ] Weight calibration (documented as intuition-based in methodology, honest about it)
+- [ ] Zero adoption evidence (would need another builder to integrate, can't force this)
+
+## Key Numbers
+- Celo IdentityRegistry: 2,904+ agents
+- Scanned: 2,902 agents
+- On-chain attestations: ~2,200+ and counting (batch 3 with IPFS)
+- Balance: ~23.68 CELO
+- Gas cost: ~0.009 CELO per write
 
 ## Key Credentials
 - Synthesis participantId: 8d8b221bbac34e76a05fd64c22ee934d
@@ -51,9 +55,3 @@
 - User wallet: 0x67FbCB8A3C9136eAA83A550ef0aA17a5549aFB52
 - Celo agent: #1853
 - Writer address: 0xf9946775891a24462cD4ec885d0D4E2675C84355
-
-## Agent Count
-- Celo IdentityRegistry: 2,904 agents (as of this session)
-- Previously scanned: 1-1858
-- Currently scanning: 1859-2904 (smart mode, background)
-- On-chain attestations: 1,857 (1,854 without IPFS + 3 with IPFS)

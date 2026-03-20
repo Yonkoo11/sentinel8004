@@ -180,9 +180,14 @@
                     <div class="detail-heading" style="margin-top: 12px;">Errors</div>
                     ${r.errors.map(e => `<div style="color: var(--red); opacity: 0.7; font-size: 11px;">${escapeHtml(e)}</div>`).join('')}
                   ` : ''}
-                  <a href="https://celoscan.io/nft/${IDENTITY_REGISTRY}/${r.agentId}" target="_blank" class="celoscan-link" style="display: inline-block; margin-top: 12px;">
-                    View on CeloScan &#8599;
-                  </a>
+                  <div style="display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap;">
+                    <a href="https://celoscan.io/nft/${IDENTITY_REGISTRY}/${r.agentId}" target="_blank" class="celoscan-link">
+                      View on CeloScan &#8599;
+                    </a>
+                    ${r.ipfsCID ? `<a href="https://gateway.lighthouse.storage/ipfs/${r.ipfsCID}" target="_blank" style="font-family: var(--mono); font-size: 11px; color: var(--celo); text-decoration: none;">
+                      IPFS Report &#8599;
+                    </a>` : ''}
+                  </div>
                 </div>
               </div>
             </div>
@@ -209,7 +214,11 @@
       }
     }
 
-    searchInput.addEventListener('input', () => { displayLimit = 50; render(); });
+    let searchTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => { displayLimit = 50; render(); }, 200);
+    });
     scoreFilter.addEventListener('change', () => { displayLimit = 50; render(); });
     sortBy.addEventListener('change', render);
     loadMore.addEventListener('click', () => { displayLimit += 50; render(); });

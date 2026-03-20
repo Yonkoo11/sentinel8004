@@ -304,6 +304,7 @@
       <a href="#breakers">04 Breakers</a>
       <a href="#attestation">05 On-Chain</a>
       <a href="#limitations">06 Limits</a>
+      <a href="#example">07 Example</a>
     </nav>
 
     <!-- Principles -->
@@ -524,7 +525,7 @@
         After scoring, the composite score and content hash are written to the ReputationRegistry contract on Celo mainnet using the <code class="mono" style="font-size: 12px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">giveFeedback()</code> function. The pipeline is designed to pin full reports to IPFS before writing, linking each on-chain attestation to a verifiable report via <code class="mono" style="font-size: 12px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">feedbackURI</code>.
       </p>
       <p class="body-sm reveal mt-4" style="line-height: 1.8;">
-        Each write costs approximately 0.006 CELO (~217K gas at 27.5 gwei). The writer processes agents sequentially to avoid nonce collisions, and skips agents that have already been scored.
+        Each write costs approximately 0.009 CELO (~217K gas). The writer processes agents sequentially to avoid nonce collisions, and skips agents that have already been scored.
       </p>
       <p class="body-sm reveal mt-4" style="line-height: 1.8; color: var(--text-muted); font-style: italic;">
         Note: The initial batch of 1,852 attestations was written without IPFS URIs due to a provider limitation at the time of writing. Subsequent attestations include pinned IPFS reports. All content hashes are on-chain; full reports are available in the open-source repository.
@@ -555,6 +556,98 @@
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Self-scoring blocked by contract</div>
           <p class="body-sm mt-2" style="font-size: 12px;">Sentinel8004 (agent #1853) cannot write its own score on-chain. The ReputationRegistry blocks self-feedback by design.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Worked Example -->
+    <div class="method-section" id="example">
+      <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">07</span> Worked Example</div>
+      <p class="body-sm reveal mb-6">Two real agents scored by the pipeline. Click to verify on CeloScan.</p>
+
+      <!-- Example 1: Toppa (high score) -->
+      <div class="surface-card reveal" style="padding: var(--space-5); margin-bottom: var(--space-4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+          <div>
+            <span class="mono" style="font-size: 12px; color: var(--text-muted);">#1870</span>
+            <span style="font-weight: 600; margin-left: 8px;">Toppa</span>
+          </div>
+          <span class="mono" style="font-size: 24px; font-weight: 700; color: var(--celo);">95/100</span>
+        </div>
+        <div style="display: grid; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L1 Registration</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">25/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;0.8 = 20</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L2 Liveness</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">24/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;0.8 = 19.2</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L3 On-Chain</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">20/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;0.8 = 16</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L4 Sybil</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">25/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;1.0 = 25</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L5 Reputation</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">15/15</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;1.0 = 15</span></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+            <span style="font-size: 12px; font-weight: 600;">Composite (sum, rounded)</span>
+            <span class="mono" style="font-size: 14px; font-weight: 700; color: var(--celo);">95</span>
+          </div>
+        </div>
+        <div style="margin-top: var(--space-3); font-size: 11px; color: var(--text-muted);">
+          15/16 endpoints live. 423 on-chain feedback clients. No circuit breakers triggered.
+          <a href="https://celoscan.io/nft/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/1870" target="_blank" rel="noopener noreferrer" style="color: var(--celo); margin-left: 8px;">Verify on CeloScan &#8599;</a>
+        </div>
+      </div>
+
+      <!-- Example 2: Scarlet Orbit (flagged) -->
+      <div class="surface-card reveal reveal-d1" style="padding: var(--space-5); border-left: 3px solid var(--red);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+          <div>
+            <span class="mono" style="font-size: 12px; color: var(--text-muted);">#1900</span>
+            <span style="font-weight: 600; margin-left: 8px;">Scarlet Orbit</span>
+          </div>
+          <span class="mono" style="font-size: 24px; font-weight: 700; color: var(--red);">15/100</span>
+        </div>
+        <div style="display: grid; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L1 Registration</span>
+            <span class="mono" style="font-size: 12px;">25/25 &times;0.8 = 20</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L2 Liveness</span>
+            <span class="mono" style="font-size: 12px;">12/25 &times;0.8 = 9.6</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L3 On-Chain</span>
+            <span class="mono" style="font-size: 12px;">14/25 &times;0.8 = 11.2</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L4 Sybil</span>
+            <span class="mono" style="font-size: 12px; color: var(--red);">0/25 &times;1.0 = 0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
+            <span style="font-size: 12px;">L5 Reputation</span>
+            <span class="mono" style="font-size: 12px;">0/15 &times;1.0 = 0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+            <span style="font-size: 12px; font-weight: 600;">Raw composite</span>
+            <span class="mono" style="font-size: 14px; text-decoration: line-through; color: var(--text-muted);">41</span>
+          </div>
+        </div>
+        <div style="margin-top: var(--space-3); background: var(--red-dim); border: 1px solid rgba(239,68,68,0.15); border-radius: 6px; padding: 8px 12px;">
+          <span class="mono" style="font-size: 11px; color: var(--red); font-weight: 600;">CIRCUIT BREAKER: MASS_REGISTRATION</span>
+          <span style="font-size: 11px; color: var(--text-secondary); display: block; margin-top: 2px;">Owner registered 991 agents from one address. Score capped to 15/100.</span>
+        </div>
+        <div style="margin-top: var(--space-3); font-size: 11px; color: var(--text-muted);">
+          Part of a 991-agent cluster with auto-generated names. Good metadata, but spam pattern caps the score.
+          <a href="https://celoscan.io/nft/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/1900" target="_blank" rel="noopener noreferrer" style="color: var(--celo); margin-left: 8px;">Verify on CeloScan &#8599;</a>
         </div>
       </div>
     </div>

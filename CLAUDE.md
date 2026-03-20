@@ -43,7 +43,7 @@ Sentinel8004 is an autonomous ERC-8004 trust scoring agent on Celo. It scans eve
 - Skip our own agentId (self-feedback is blocked by contract).
 - After a batch write, verify a sample on CeloScan before declaring success.
 - NEVER hardcode gas limits. The ReputationRegistry's giveFeedback needs ~217K gas per call. Let the node estimate per-tx. Hardcoding 200K caused silent reverts across 90% of agents.
-- Budget: ~0.006 CELO per write at current gas prices. Full 1853-agent batch costs ~11 CELO.
+- Budget: ~0.009 CELO per write at current gas prices.
 
 ### 6. Dashboard accuracy
 - Dashboard data must match on-chain data. Never show stale scores after a re-scan.

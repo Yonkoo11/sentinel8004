@@ -3,6 +3,7 @@ import { keccak256, toBytes } from 'viem';
 import { publicClient, getWalletClient, getAccount } from './chain.js';
 import { REPUTATION_REGISTRY_ADDRESS, REPUTATION_REGISTRY_ABI } from './config.js';
 import { pinJSON } from './ipfs.js';
+import { canonicalJSON } from './utils.js';
 import type { TrustReport } from './types.js';
 
 interface WriteResult {
@@ -128,7 +129,7 @@ export async function writeFeedback(
 
     // Write to chain
     try {
-      const reportJSON = JSON.stringify(report);
+      const reportJSON = canonicalJSON(report);
       const feedbackHash = keccak256(toBytes(reportJSON));
       const feedbackURI = ipfsCID ? `ipfs://${ipfsCID}` : '';
 

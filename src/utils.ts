@@ -61,6 +61,22 @@ export function jaccard(setA: Set<string>, setB: Set<string>): number {
   return intersection.size / union.size;
 }
 
+/**
+ * Canonical JSON serialization with sorted keys.
+ * Ensures deterministic output for hashing: same object always produces the same string.
+ */
+export function canonicalJSON(obj: unknown): string {
+  return JSON.stringify(obj, (_key, value) => {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return Object.keys(value).sort().reduce((sorted: Record<string, unknown>, key) => {
+        sorted[key] = (value as Record<string, unknown>)[key];
+        return sorted;
+      }, {});
+    }
+    return value;
+  });
+}
+
 export function wordSet(text: string): Set<string> {
   return new Set(
     text
