@@ -116,6 +116,7 @@ export function generateEcosystemReport(dataPath: string): string {
   ln(`- NEGATIVE_REPUTATION (net negative on-chain feedback) → capped at 30/100`);
   ln(`- ALL_ENDPOINTS_DEAD → capped at 35/100`);
   ln(`- NO_METADATA → capped at 20/100`);
+  ln(`- SYBIL_BOOSTED (L5 inflated by sock puppet wallets) → capped at 40/100`);
   ln();
   ln(`### Design Principles`);
   ln(`- **No neutral inflation**: Missing data scores 0, not middle-of-range. Unknown is not positive.`);
@@ -132,7 +133,7 @@ export function generateEcosystemReport(dataPath: string): string {
   ln(`| L2 Liveness | ~$5/mo (any server) | A server responds | Server does anything useful |`);
   ln(`| L3 On-Chain | ~$10+ (fund wallet, make txs) | Wallet has history | Wallet belongs to a real agent |`);
   ln(`| L4 Sybil | High (need many wallets + varied metadata) | Owner isn't mass-registering | Coordination between owners |`);
-  ln(`| L5 Reputation | Very High (need independent clients to vouch) | Other clients trust this agent | Clients aren't colluding |`);
+  ln(`| L5 Reputation | Low (~$5 for 400+ sock puppet wallets; mitigated by tx-count + uniformity filters) | Other clients trust this agent | Clients aren't colluding |`);
   ln();
   ln(`The scoring system is designed so that the cheapest-to-game layers (L1, L2) carry the least weight, while the hardest-to-game layers (L4, L5) carry the most.`);
   ln(`Circuit breakers ensure that a single strong negative signal can't be drowned out by easy positive signals.`);

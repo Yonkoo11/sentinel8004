@@ -122,11 +122,80 @@ Full first-principles audit. No code written. All findings in `ai/architecture-a
 - [ ] Tag standardization (happens automatically during rescore)
 - [ ] Disclosure document for ERC-8004 team
 
+## Session 10: On-Chain Write Batch 2 (March 22, 2026)
+
+**Problem found:** write-results.json only had 469 successful tx entries but 2,338 agents were already on-chain.
+Writer was re-writing agents 1-12 (wasted ~0.1 CELO, created duplicate entries).
+
+**Fix applied:**
+1. Binary search found on-chain cutoff: agents 1-2338 written, 2339+ not written
+2. Rebuilt write-results.json with 2,338 entries marked as already-written
+3. Fixed src/index.ts: dry-run no longer overwrites write-results.json
+4. Updated checkpoint to lastAgentId=2338
+
+**Batch 2+3 write results:**
+- 231 agents written in batch 2 (Filebase IPFS + on-chain)
+- 9 agents written in batch 3 before Filebase quota hit
+- Total on-chain: 2,569 of 3,219 agents
+- 650 remaining (need IPFS provider)
+
+**IPFS provider status:**
+- Filebase: QUOTA EXCEEDED (5GB free tier full)
+- Pinata: BLOCKED (plan usage limit)
+- Lighthouse: NOT CONFIGURED (need API key from files.lighthouse.storage)
+- **ipfs.ts now has fallback logic**: tries all providers in order instead of failing on first
+
+**Code fixes this session:**
+- `src/ipfs.ts`: Added provider fallback (was fail-fast, now tries Filebase > Lighthouse > Pinata)
+- `src/index.ts`: write-results.json merge instead of overwrite (preserves prior on-chain data)
+- `src/index.ts`: dry-run no longer clobbers write-results.json
+
+**Duplicate cleanup needed:**
+- Agents 1-5, 7-12 have lastIndex=2 (duplicate entries from accidental re-write)
+- Script at scripts/revoke-duplicates.ts ready to run
+
+## Session 11: Scoring Critique + SYBIL_BOOSTED Fix (March 22, 2026)
+
+**Deep scoring critique — 6 bugs found:**
+
+1. **SYBIL_BOOSTED not a circuit breaker (CRITICAL, FIXED):** Flag was set by L5 but never capped score. Toppa scored 80 despite 431 sock puppets. Added SYBIL_BOOSTED to CIRCUIT_BREAKERS map with cap at 40. Toppa now scores 40/100. Verified on live chain.
+
+2. **Reporter adversarial analysis wrong about L5 (FIXED):** Claimed "Very High" gaming cost. Corrected to "Low (~$5 for 400+ sock puppet wallets; mitigated by tx-count + uniformity filters)."
+
+3. **L2 domain verification counts Telegram URLs (NOT FIXED):** t.me returns 200 for .well-known checks. Toppa gets domainVerified partly from Telegram bot URL. Low priority — only affects 5 points.
+
+4. **L3 wallet age uses wrong window (NOT FIXED):** Only fetches 100 txs, uses oldest in window as "wallet age." Active wallets show 0 days. Would need Blockscout pagination or different API. Low priority.
+
+5. **Score distribution is bimodal (NOT FIXED, documented):** 98.7% of agents score below 30. The 0-100 range is misleading. System is effectively a binary spam detector. This is actually correct behavior given the registry is 98%+ spam.
+
+6. **L5 only checks first 20 external clients (NOT FIXED):** `.slice(0, 20)` limits check scope. Uniformity filter catches coordinated attacks anyway. Low priority.
+
+**Files modified:**
+- `src/scorer.ts`: Added SYBIL_BOOSTED circuit breaker (cap 40)
+- `src/reporter.ts`: Fixed L5 adversarial analysis, added SYBIL_BOOSTED to breaker list
+- `tests/scorer.test.ts`: Added SYBIL_BOOSTED to test breaker map + new test case
+- `dashboard/methodology.html`: Added SYBIL_BOOSTED card, updated Toppa worked example (80→40)
+- `dashboard/data/scores.json`: Regenerated with corrected Toppa score
+- `data/scan-results.json`: Updated Toppa from 80 to 40
+- `CLAUDE.md`: Updated scoring reference table
+
+**Corrected top 5:**
+1. AgentDashboard (#1869): 85
+2. CRIA (#2335): 77
+3. Celo GovAI Hub (#2807): 75
+4. Fixr (#1873): 74
+5. OG_Bot (#3040): 72
+
+Toppa (#1870): 40 (was 80, capped by SYBIL_BOOSTED)
+
+**Verification:** 22/22 tests pass, clean tsc compile, live chain scoring verified.
+
 ## NOT Done
-- Changes not committed or pushed yet
-- Dashboard not visually verified (no screenshots)
+- 650 agents need IPFS + on-chain write (blocked on IPFS provider)
+- ACTION NEEDED: Get Lighthouse API key from files.lighthouse.storage, add LIGHTHOUSE_API_KEY to .env
+- Duplicate revocation pending
+- Dashboard regeneration (do after all writes complete)
 - Timing cluster script never ran to completion
-- On-chain writes status unknown (was running in session 3-4)
 
 ## Key Credentials
 - Synthesis participantId: 8d8b221bbac34e76a05fd64c22ee934d

@@ -49,6 +49,10 @@ const CIRCUIT_BREAKERS: Record<string, { maxScore: number; reason: string }> = {
     maxScore: 20,
     reason: 'No parseable metadata at all',
   },
+  SYBIL_BOOSTED: {
+    maxScore: 40,
+    reason: 'L5 reputation inflated by sock puppet wallets with <5 total txs',
+  },
 };
 
 // Weight multipliers: normalize each layer to its target weight

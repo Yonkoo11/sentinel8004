@@ -19,6 +19,7 @@ describe('scoring formula', () => {
     METADATA_CLONE: 25,
     NEGATIVE_REPUTATION: 30,
     NO_METADATA: 20,
+    SYBIL_BOOSTED: 40,
   };
 
   function computeScore(
@@ -100,6 +101,18 @@ describe('scoring formula', () => {
       { layer: 'reputation', score: 0, maxScore: 15, flags: [] },
     ];
     expect(computeScore(layers)).toBe(0);
+  });
+
+  it('caps at 40 for SYBIL_BOOSTED breaker (Toppa #1870 with sock puppets)', () => {
+    const layers = [
+      { layer: 'registration', score: 25, maxScore: 25, flags: [] },
+      { layer: 'liveness', score: 24, maxScore: 25, flags: [] },
+      { layer: 'onchain', score: 20, maxScore: 25, flags: [] },
+      { layer: 'sybil', score: 25, maxScore: 25, flags: [] },
+      { layer: 'reputation', score: 0, maxScore: 15, flags: ['SYBIL_BOOSTED'] },
+    ];
+    // Raw: 25*0.8 + 24*0.8 + 20*0.8 + 25 + 0 = 20 + 19.2 + 16 + 25 + 0 = 80.2 → capped at 40
+    expect(computeScore(layers)).toBe(40);
   });
 
   it('max possible score is 100', () => {

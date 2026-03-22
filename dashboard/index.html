@@ -885,7 +885,7 @@ nav {
       <div class="code-panel active" id="tab-contract">
 <pre><span class="cmt">// Read trust score for any agent</span>
 <span class="kw">const</span> feedback = <span class="kw">await</span> registry.getFeedback(agentId);
-<span class="cmt">// => { value: 95n, tag1: "sentinel8004" }</span>
+<span class="cmt">// => { value: 80n, tag1: "sentinel8004/trust-v2" }</span>
 
 <span class="kw">if</span> (feedback.value &lt; <span class="num">30n</span>) {
   <span class="kw">throw</span> <span class="str">"Blocked by trust gate"</span>;

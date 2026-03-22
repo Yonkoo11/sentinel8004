@@ -110,7 +110,7 @@ npx tsx scripts/register-agent.ts [--dry-run]
 | L2 Liveness | 25 | 0.8x | 20 | ALL_ENDPOINTS_DEAD(35) |
 | L3 On-Chain | 25 | 0.8x | 20 | -- |
 | L4 Sybil | 25 | 1.0x | 25 | MASS_REGISTRATION(15), METADATA_CLONE(25) |
-| L5 Reputation | 15 | 1.0x | 15 | NEGATIVE_REPUTATION(30) |
+| L5 Reputation | 15 | 1.0x | 15 | NEGATIVE_REPUTATION(30), SYBIL_BOOSTED(40) |
 | **Total** | | | **100** | |
 
 ## Verification Agents
