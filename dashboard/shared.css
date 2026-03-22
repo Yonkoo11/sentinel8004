@@ -7,16 +7,16 @@
 
 /* ── Tokens ── */
 :root {
-  /* Backgrounds — rich dark, NOT flat black */
-  --bg-base: #0a0d0c;
-  --bg-surface: #121614;
-  --bg-elevated: #1b201c;
+  /* Backgrounds */
+  --bg-base: #0c0f0e;
+  --bg-surface: #141916;
+  --bg-elevated: #1c211e;
   --bg-hover: #242a26;
 
   /* Text */
-  --text-primary: #f0f2f0;
-  --text-secondary: #a1aaa4;
-  --text-muted: #8a9690;
+  --text-primary: #eef1ef;
+  --text-secondary: #a3a8a5;
+  --text-muted: #6b706d;
 
   /* Radius */
   --radius-sm: 8px;
@@ -38,8 +38,8 @@
   --blue-dim: rgba(107, 138, 255, 0.10);
 
   /* Border */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.15);
+  --border: rgba(238, 241, 239, 0.07);
+  --border-hover: rgba(238, 241, 239, 0.15);
 
   /* Glass */
   --glass-bg: rgba(255, 255, 255, 0.06);
@@ -71,8 +71,8 @@
   --space-24: 96px;
 
   /* Layout */
-  --max-width: 1140px;
-  --nav-height: 64px;
+  --max-width: 1080px;
+  --nav-height: 56px;
 }
 
 /* ── Base ── */
@@ -135,7 +135,7 @@ body::after {
   justify-content: space-between;
   padding: 0 var(--space-8);
   z-index: 100;
-  background: rgba(8, 8, 10, 0.8);
+  background: rgba(12, 15, 14, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
@@ -146,9 +146,9 @@ body::after {
   gap: var(--space-8);
 }
 .nav-wordmark {
-  font-family: var(--sans);
-  font-size: 16px;
-  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text-primary);
   text-decoration: none;
   letter-spacing: -0.02em;
@@ -186,23 +186,27 @@ body::after {
 }
 .nav-meta {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 .nav-cta {
+  font-family: var(--mono);
   font-size: 13px;
   font-weight: 500;
-  color: var(--bg-base);
-  background: var(--celo);
-  padding: 8px 18px;
-  border-radius: var(--radius-sm);
+  color: var(--celo);
+  background: transparent;
+  padding: 8px 16px;
+  border: 1px solid rgba(53, 208, 127, 0.2);
+  border-radius: 6px;
   text-decoration: none;
-  min-height: 36px;
   display: inline-flex;
   align-items: center;
-  transition: opacity var(--duration-fast) ease;
+  transition: background var(--duration-fast) ease, border-color var(--duration-fast) ease;
 }
-.nav-cta:hover { opacity: 0.85; }
+.nav-cta:hover {
+  background: rgba(53, 208, 127, 0.06);
+  border-color: rgba(53, 208, 127, 0.35);
+}
 .nav-cta:focus-visible {
   outline: 2px solid var(--celo);
   outline-offset: 2px;
@@ -232,7 +236,7 @@ body::after {
     top: var(--nav-height);
     left: 0;
     right: 0;
-    background: rgba(8, 8, 10, 0.95);
+    background: rgba(12, 15, 14, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--border);
@@ -278,21 +282,6 @@ body::after {
   margin: 0 auto;
   max-width: 600px;
 }
-.section-divider-glow {
-  height: 1px;
-  max-width: 480px;
-  margin: 0 auto;
-  background: linear-gradient(90deg, transparent 0%, var(--celo) 50%, transparent 100%);
-  opacity: 0.2;
-  position: relative;
-}
-.section-divider-glow::after {
-  content: '';
-  position: absolute;
-  inset: -4px 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(53, 208, 127, 0.15) 50%, transparent 100%);
-  filter: blur(4px);
-}
 
 /* ── Typography ── */
 .mono { font-family: var(--mono); }
@@ -336,7 +325,7 @@ body::after {
 }
 .label {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.10em;
@@ -488,27 +477,6 @@ body::after {
   vertical-align: middle;
 }
 
-/* ── Pulsing Dot ── */
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--celo);
-  position: relative;
-  display: inline-block;
-}
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 1.5px solid var(--celo);
-  animation: pulse-ring 2s ease-out infinite;
-}
-@keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
 
 /* ── Progress Bar ── */
 .progress-track {
@@ -540,7 +508,7 @@ body::after {
   align-items: center;
 }
 .footer-left {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 .footer-links {
@@ -548,7 +516,7 @@ body::after {
   gap: var(--space-6);
 }
 .footer-links a {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   text-decoration: none;
   transition: color var(--duration-fast) ease;

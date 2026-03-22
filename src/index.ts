@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { enumerateAgents, findTotalAgents } from './scanner.js';
 import { scoreAgent, buildOwnerProfiles } from './scorer.js';
 import { scoreRegistration } from './layers/registration.js';
-import { writeFeedback } from './writer.js';
+import { writeFeedback, revokeAllFeedback } from './writer.js';
 import { startMCPServer } from './mcp-server.js';
 import { generateEcosystemReport } from './reporter.js';
 import type { AgentRecord, TrustReport, LayerScore } from './types.js';
@@ -272,6 +272,133 @@ async function write(args: string[]) {
   console.log(`Write results saved to ${RESULTS_DIR}/write-results.json`);
 }
 
+/**
+ * Incremental rescan: only scan agents registered AFTER the last scan.
+ * Merges new results into the existing scan-results.json.
+ */
+async function rescan(args: string[]) {
+  const scanFile = `${RESULTS_DIR}/scan-results.json`;
+  let existingReports: TrustReport[] = [];
+  let lastAgentId = 0;
+
+  if (existsSync(scanFile)) {
+    const raw = readFileSync(scanFile, 'utf-8');
+    const data = JSON.parse(raw);
+    existingReports = data.reports || [];
+    lastAgentId = Math.max(...existingReports.map((r: TrustReport) => r.agentId), 0);
+    console.log(`Existing scan: ${existingReports.length} agents, last ID: ${lastAgentId}`);
+  }
+
+  const totalOnChain = await findTotalAgents();
+  if (totalOnChain <= lastAgentId) {
+    console.log(`No new agents (on-chain total: ${totalOnChain}, last scanned: ${lastAgentId})`);
+    return;
+  }
+
+  const newCount = totalOnChain - lastAgentId;
+  console.log(`Found ${newCount} new agent(s) to scan (${lastAgentId + 1} to ${totalOnChain})`);
+
+  // Scan only new agents
+  const newAgents = await enumerateAgents({
+    startFrom: lastAgentId + 1,
+    maxAgents: undefined,
+    skipMetadata: false,
+  });
+
+  if (newAgents.length === 0) {
+    console.log('No new agents found after enumeration');
+    return;
+  }
+
+  // Build owner profiles from existing scan data + new agents (no extra network calls)
+  const existingAsRecords = existingReports.map(r => ({
+    agentId: r.agentId,
+    owner: r.owner,
+    metadata: r.name ? { name: r.name } : null,
+    metadataFormat: 'cached',
+    tokenURI: '',
+    agentWallet: '',
+    metadataError: null,
+  })) as unknown as AgentRecord[];
+  const ownerProfileMap = buildOwnerProfiles([...existingAsRecords, ...newAgents]);
+
+  const skipLiveness = args.includes('--skip-liveness');
+  const skipOnchain = args.includes('--skip-onchain');
+  const skipReputation = args.includes('--skip-reputation');
+
+  const newReports: TrustReport[] = [];
+  for (let i = 0; i < newAgents.length; i++) {
+    const agent = newAgents[i];
+    const progress = `[${i + 1}/${newAgents.length}]`;
+    try {
+      const report = await scoreAgent(agent, ownerProfileMap, {
+        skipLiveness,
+        skipOnchain,
+        skipReputation,
+      });
+      newReports.push(report);
+      console.log(`${progress} #${agent.agentId} "${report.name}" → ${report.compositeScore}/100`);
+    } catch (e) {
+      console.error(`${progress} #${agent.agentId} FAILED: ${(e as Error).message}`);
+      newReports.push({
+        agentId: agent.agentId,
+        owner: agent.owner,
+        name: agent.metadata?.name || 'Unknown',
+        compositeScore: 0,
+        confidence: 'low',
+        layers: [],
+        circuitBreakers: [],
+        scannedAt: new Date().toISOString(),
+        reportVersion: 'trust-v2',
+        errors: [(e as Error).message],
+      });
+    }
+  }
+
+  // Merge: replace any existing reports with same agentId, add truly new ones
+  const reportMap = new Map<number, TrustReport>();
+  for (const r of existingReports) reportMap.set(r.agentId, r);
+  for (const r of newReports) reportMap.set(r.agentId, r);
+
+  const mergedReports = [...reportMap.values()].sort((a, b) => a.agentId - b.agentId);
+
+  const output = {
+    totalAgents: mergedReports.length,
+    scannedAt: new Date().toISOString(),
+    scanMode: 'incremental-v2',
+    reports: mergedReports,
+  };
+
+  mkdirSync(RESULTS_DIR, { recursive: true });
+  writeFileSync(scanFile, JSON.stringify(output, null, 2));
+  console.log(`\nMerged ${newReports.length} new + ${existingReports.length} existing = ${mergedReports.length} total`);
+  console.log(`Saved to ${scanFile}`);
+}
+
+/**
+ * Revoke all existing Sentinel feedback. Used before a full rescore.
+ */
+async function revoke(args: string[]) {
+  const dryRun = args.includes('--dry-run');
+  console.log('=== Sentinel8004 Revoke ===');
+  if (dryRun) console.log('DRY RUN MODE');
+
+  // Load scan results to get agent IDs
+  let agentIds: number[];
+  try {
+    const raw = readFileSync(`${RESULTS_DIR}/scan-results.json`, 'utf-8');
+    const data = JSON.parse(raw);
+    agentIds = (data.reports as TrustReport[]).map(r => r.agentId);
+  } catch {
+    console.error('No scan results found. Run "scan" first.');
+    return;
+  }
+
+  console.log(`Checking ${agentIds.length} agents for existing feedback...`);
+  const result = await revokeAllFeedback(agentIds, { dryRun });
+  console.log(`\nRevoked: ${result.revoked}, Errors: ${result.errors}`);
+}
+
 // CLI dispatch
 const command = process.argv[2];
 const args = process.argv.slice(3);
@@ -280,11 +407,17 @@ switch (command) {
   case 'scan':
     scan(args).catch(console.error);
     break;
+  case 'rescan':
+    rescan(args).catch(console.error);
+    break;
   case 'info':
     info().catch(console.error);
     break;
   case 'write':
     write(args).catch(console.error);
+    break;
+  case 'revoke':
+    revoke(args).catch(console.error);
     break;
   case 'serve':
     startMCPServer().catch(console.error);
@@ -293,10 +426,12 @@ switch (command) {
     console.log(generateEcosystemReport(`${RESULTS_DIR}/scan-results.json`));
     break;
   default:
-    console.log('Usage: tsx src/index.ts <scan|info|write|serve|report>');
-    console.log('  scan [--max N] [--start N] [--layer1] [--smart] [--skip-metadata] [--skip-liveness] [--skip-onchain] [--skip-reputation]');
+    console.log('Usage: tsx src/index.ts <scan|rescan|info|write|revoke|serve|report>');
+    console.log('  scan [--max N] [--start N] [--smart] [--skip-liveness] [--skip-onchain] [--skip-reputation]');
+    console.log('  rescan               Incremental: scan only new agents, merge with existing');
     console.log('  info                 Show total agent count');
     console.log('  write [--dry-run]    Write scores to chain');
+    console.log('  revoke [--dry-run]   Revoke all existing Sentinel feedback');
     console.log('  serve                Start MCP server');
     console.log('  report               Generate ecosystem report');
 }

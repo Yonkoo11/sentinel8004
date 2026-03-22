@@ -35,7 +35,7 @@
   }
   .method-toc a {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
     text-decoration: none;
     padding: 4px 10px;
@@ -118,7 +118,7 @@
   }
   .layer-weight {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
     background: var(--bg-elevated);
     padding: 2px 10px;
@@ -137,7 +137,7 @@
   }
   .signal-tag {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 11px;
     padding: 2px 8px;
     border-radius: 4px;
     background: var(--bg-elevated);
@@ -166,13 +166,13 @@
     margin-bottom: var(--space-2);
   }
   .cb-desc {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.5;
   }
   .cb-cap {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--red);
     margin-top: var(--space-3);
     display: inline-block;
@@ -190,7 +190,7 @@
   }
   .weight-table th {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-muted);
@@ -292,8 +292,6 @@
     </div>
   </div>
 
-  <div class="section-divider-glow" style="margin: 0 auto var(--space-8);"></div>
-
   <div class="method-content" id="method-content">
 
     <!-- TOC -->
@@ -338,19 +336,19 @@
       <div style="display: flex; flex-direction: column; gap: var(--space-3);">
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Deterministic Scoring</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">No LLM, no randomness. Other infrastructure can depend on Sentinel scores because the same input always produces the same output. This is a prerequisite for on-chain verifiability.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">No LLM, no randomness. Other infrastructure can depend on Sentinel scores because the same input always produces the same output. This is a prerequisite for on-chain verifiability.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Circuit Breakers</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">A single strong negative signal (mass Sybil spam) cannot be overcome by good metadata. Without this, any scoring system is trivially gameable. Downstream consumers can trust that a score above 70 has no critical flags.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">A single strong negative signal (mass Sybil spam) cannot be overcome by good metadata. Without this, any scoring system is trivially gameable. Downstream consumers can trust that a score above 70 has no critical flags.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">IPFS Pinning</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">Every attestation links to a full JSON report on IPFS via feedbackURI. This makes scores auditable by anyone, not just Sentinel. Downstream systems can verify exactly why an agent received its score.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">Every attestation links to a full JSON report on IPFS via feedbackURI. This makes scores auditable by anyone, not just Sentinel. Downstream systems can verify exactly why an agent received its score.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Standard Contract Interface</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">Scores are written to the existing ReputationRegistry using its standard giveFeedback() function. No custom contracts needed. Any contract or agent that reads the registry automatically has access to Sentinel scores.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">Scores are written to the existing ReputationRegistry using its standard giveFeedback() function. No custom contracts needed. Any contract or agent that reads the registry automatically has access to Sentinel scores.</p>
         </div>
       </div>
     </div>
@@ -547,7 +545,7 @@
     <div class="method-section" id="attestation">
       <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">05</span> On-Chain Attestation</div>
       <p class="body-sm reveal" style="line-height: 1.8;">
-        After scoring, the composite score and content hash are written to the ReputationRegistry contract on Celo mainnet using the <code class="mono" style="font-size: 12px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">giveFeedback()</code> function. The pipeline is designed to pin full reports to IPFS before writing, linking each on-chain attestation to a verifiable report via <code class="mono" style="font-size: 12px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">feedbackURI</code>.
+        After scoring, the composite score and content hash are written to the ReputationRegistry contract on Celo mainnet using the <code class="mono" style="font-size: 13px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">giveFeedback()</code> function. The pipeline is designed to pin full reports to IPFS before writing, linking each on-chain attestation to a verifiable report via <code class="mono" style="font-size: 13px; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px;">feedbackURI</code>.
       </p>
       <p class="body-sm reveal mt-4" style="line-height: 1.8;">
         Each write costs approximately 0.009 CELO (~217K gas). The writer processes agents sequentially to avoid nonce collisions, and skips agents that have already been scored.
@@ -689,23 +687,23 @@
       <div style="display: flex; flex-direction: column; gap: var(--space-3);">
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Single-snapshot scoring</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">Scores reflect a point-in-time scan. No longitudinal tracking or trend analysis yet.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">Scores reflect a point-in-time scan. No longitudinal tracking or trend analysis yet.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Address-based Sybil detection</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">L4 detects mass registration from the same address. Multi-wallet Sybils using different addresses are not detected by the primary scorer. A supplementary timing-cluster analysis script checks for agents registered within 60 seconds across different owners with similar metadata (Jaccard &gt; 0.6), but this is not yet part of the automated pipeline.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">L4 detects mass registration from the same address. Multi-wallet Sybils using different addresses are not detected by the primary scorer. A supplementary timing-cluster analysis script checks for agents registered within 60 seconds across different owners with similar metadata (Jaccard &gt; 0.6), but this is not yet part of the automated pipeline.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Liveness checks, not functionality</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">L2 probes check if endpoints respond (HTTP 2xx), not whether they return meaningful results.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">L2 probes check if endpoints respond (HTTP 2xx), not whether they return meaningful results.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Low ReputationRegistry adoption</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">L5 depends on existing on-chain feedback. With few participants, this layer has limited signal for most agents.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">L5 depends on existing on-chain feedback. With few participants, this layer has limited signal for most agents.</p>
         </div>
         <div class="surface-card reveal" style="padding: var(--space-4) var(--space-5);">
           <div class="heading-sm" style="font-size: 13px;">Self-scoring blocked by contract</div>
-          <p class="body-sm mt-2" style="font-size: 12px;">Sentinel8004 (agent #1853) cannot write its own score on-chain. The ReputationRegistry blocks self-feedback by design.</p>
+          <p class="body-sm mt-2" style="font-size: 13px;">Sentinel8004 (agent #1853) cannot write its own score on-chain. The ReputationRegistry blocks self-feedback by design.</p>
         </div>
       </div>
     </div>
@@ -715,43 +713,47 @@
       <div class="heading-base reveal mb-4" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);"><span class="mono" style="color: var(--text-muted); font-size: 13px; margin-right: 8px;">08</span> Worked Example</div>
       <p class="body-sm reveal mb-6">Two real agents scored by the pipeline. Click to verify on CeloScan.</p>
 
-      <!-- Example 1: Toppa (high score) -->
-      <div class="surface-card reveal" style="padding: var(--space-5); margin-bottom: var(--space-4);">
+      <!-- Example 1: Toppa (Sybil-corrected) -->
+      <div class="surface-card reveal" style="padding: var(--space-5); margin-bottom: var(--space-4); border-left: 3px solid var(--yellow);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
           <div>
-            <span class="mono" style="font-size: 12px; color: var(--text-muted);">#1870</span>
+            <span class="mono" style="font-size: 13px; color: var(--text-muted);">#1870</span>
             <span style="font-weight: 600; margin-left: 8px;">Toppa</span>
+            <span class="mono" style="font-size: 11px; padding: 2px 6px; background: var(--red-dim); color: var(--red); border-radius: 3px; margin-left: 8px;">SYBIL_BOOSTED</span>
           </div>
-          <span class="mono" style="font-size: 24px; font-weight: 700; color: var(--celo);">95/100</span>
+          <div style="text-align: right;">
+            <span class="mono" style="font-size: 24px; font-weight: 700; color: var(--celo);">80/100</span>
+            <div class="mono" style="font-size: 11px; color: var(--text-muted);"><span style="text-decoration: line-through;">95</span> before L5 correction</div>
+          </div>
         </div>
         <div style="display: grid; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L1 Registration</span>
-            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">25/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;0.8 = 20</span></span>
+            <span style="font-size: 13px;">L1 Registration</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 13px; color: var(--celo);">25/25</span><span class="mono" style="font-size: 12px; color: var(--text-muted);">&times;0.8 = 20</span></span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L2 Liveness</span>
-            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">24/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;0.8 = 19.2</span></span>
+            <span style="font-size: 13px;">L2 Liveness</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 13px; color: var(--celo);">24/25</span><span class="mono" style="font-size: 12px; color: var(--text-muted);">&times;0.8 = 19.2</span></span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L3 On-Chain</span>
-            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">20/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;0.8 = 16</span></span>
+            <span style="font-size: 13px;">L3 On-Chain</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 13px; color: var(--celo);">20/25</span><span class="mono" style="font-size: 12px; color: var(--text-muted);">&times;0.8 = 16</span></span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L4 Sybil</span>
-            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">25/25</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;1.0 = 25</span></span>
+            <span style="font-size: 13px;">L4 Sybil</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 13px; color: var(--celo);">25/25</span><span class="mono" style="font-size: 12px; color: var(--text-muted);">&times;1.0 = 25</span></span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L5 Reputation</span>
-            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 12px; color: var(--celo);">15/15</span><span class="mono" style="font-size: 11px; color: var(--text-muted);">&times;1.0 = 15</span></span>
+            <span style="font-size: 13px;">L5 Reputation</span>
+            <span style="display: flex; align-items: center; gap: 8px;"><span class="mono" style="font-size: 13px; color: var(--red);">0/15</span><span class="mono" style="font-size: 12px; color: var(--red);">431 sock puppets filtered</span></span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
-            <span style="font-size: 12px; font-weight: 600;">Composite (sum, rounded)</span>
-            <span class="mono" style="font-size: 14px; font-weight: 700; color: var(--celo);">95</span>
+            <span style="font-size: 13px; font-weight: 600;">Composite (sum, rounded)</span>
+            <span class="mono" style="font-size: 14px; font-weight: 700; color: var(--celo);">80</span>
           </div>
         </div>
-        <div style="margin-top: var(--space-3); font-size: 11px; color: var(--text-muted);">
-          15/16 endpoints live. 423 on-chain feedback clients. No circuit breakers triggered.
+        <div style="margin-top: var(--space-3); font-size: 12px; color: var(--text-muted);">
+          431 feedback clients detected as sock puppets (2 txs each, funded by agent owner). L5 score corrected from 15 to 0. Despite the Sybil boost, Toppa is a real working agent with functional API endpoints.
           <a href="https://celoscan.io/nft/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/1870" target="_blank" rel="noopener noreferrer" style="color: var(--celo); margin-left: 8px;">Verify on CeloScan &#8599;</a>
         </div>
       </div>
@@ -760,42 +762,42 @@
       <div class="surface-card reveal reveal-d1" style="padding: var(--space-5); border-left: 3px solid var(--red);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
           <div>
-            <span class="mono" style="font-size: 12px; color: var(--text-muted);">#1900</span>
+            <span class="mono" style="font-size: 13px; color: var(--text-muted);">#1900</span>
             <span style="font-weight: 600; margin-left: 8px;">Scarlet Orbit</span>
           </div>
           <span class="mono" style="font-size: 24px; font-weight: 700; color: var(--red);">15/100</span>
         </div>
         <div style="display: grid; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L1 Registration</span>
-            <span class="mono" style="font-size: 12px;">25/25 &times;0.8 = 20</span>
+            <span style="font-size: 13px;">L1 Registration</span>
+            <span class="mono" style="font-size: 13px;">25/25 &times;0.8 = 20</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L2 Liveness</span>
-            <span class="mono" style="font-size: 12px;">12/25 &times;0.8 = 9.6</span>
+            <span style="font-size: 13px;">L2 Liveness</span>
+            <span class="mono" style="font-size: 13px;">12/25 &times;0.8 = 9.6</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L3 On-Chain</span>
-            <span class="mono" style="font-size: 12px;">14/25 &times;0.8 = 11.2</span>
+            <span style="font-size: 13px;">L3 On-Chain</span>
+            <span class="mono" style="font-size: 13px;">14/25 &times;0.8 = 11.2</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L4 Sybil</span>
-            <span class="mono" style="font-size: 12px; color: var(--red);">0/25 &times;1.0 = 0</span>
+            <span style="font-size: 13px;">L4 Sybil</span>
+            <span class="mono" style="font-size: 13px; color: var(--red);">0/25 &times;1.0 = 0</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border);">
-            <span style="font-size: 12px;">L5 Reputation</span>
-            <span class="mono" style="font-size: 12px;">0/15 &times;1.0 = 0</span>
+            <span style="font-size: 13px;">L5 Reputation</span>
+            <span class="mono" style="font-size: 13px;">0/15 &times;1.0 = 0</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
-            <span style="font-size: 12px; font-weight: 600;">Raw composite</span>
+            <span style="font-size: 13px; font-weight: 600;">Raw composite</span>
             <span class="mono" style="font-size: 14px; text-decoration: line-through; color: var(--text-muted);">41</span>
           </div>
         </div>
         <div style="margin-top: var(--space-3); background: var(--red-dim); border: 1px solid rgba(239,68,68,0.15); border-radius: 6px; padding: 8px 12px;">
-          <span class="mono" style="font-size: 11px; color: var(--red); font-weight: 600;">CIRCUIT BREAKER: MASS_REGISTRATION</span>
-          <span style="font-size: 11px; color: var(--text-secondary); display: block; margin-top: 2px;">Owner registered 991 agents from one address. Score capped to 15/100.</span>
+          <span class="mono" style="font-size: 12px; color: var(--red); font-weight: 600;">CIRCUIT BREAKER: MASS_REGISTRATION</span>
+          <span style="font-size: 12px; color: var(--text-secondary); display: block; margin-top: 2px;">Owner registered 991 agents from one address. Score capped to 15/100.</span>
         </div>
-        <div style="margin-top: var(--space-3); font-size: 11px; color: var(--text-muted);">
+        <div style="margin-top: var(--space-3); font-size: 12px; color: var(--text-muted);">
           Part of a 991-agent cluster with auto-generated names. Good metadata, but spam pattern caps the score.
           <a href="https://celoscan.io/nft/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/1900" target="_blank" rel="noopener noreferrer" style="color: var(--celo); margin-left: 8px;">Verify on CeloScan &#8599;</a>
         </div>

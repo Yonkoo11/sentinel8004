@@ -123,7 +123,7 @@
       for (const r of showing) {
         const flags = getFlags(r);
         const flagTypes = [...new Set(flags.map(f => f.split(':')[0]))];
-        const redFlagSet = new Set(['MASS_REGISTRATION', 'METADATA_CLONE', 'ALL_ENDPOINTS_DEAD', 'NEGATIVE_REPUTATION', 'UNLIMITED_APPROVALS']);
+        const redFlagSet = new Set(['MASS_REGISTRATION', 'METADATA_CLONE', 'ALL_ENDPOINTS_DEAD', 'NEGATIVE_REPUTATION', 'UNLIMITED_APPROVALS', 'SYBIL_BOOSTED']);
         const sc = scoreClass(r.compositeScore);
         const rowId = `expand-${r.agentId}`;
 
@@ -184,7 +184,7 @@
                     <a href="https://celoscan.io/nft/${IDENTITY_REGISTRY}/${r.agentId}" target="_blank" class="celoscan-link">
                       View on CeloScan &#8599;
                     </a>
-                    ${r.ipfsCID ? `<a href="https://gateway.lighthouse.storage/ipfs/${r.ipfsCID}" target="_blank" style="font-family: var(--mono); font-size: 11px; color: var(--celo); text-decoration: none;">
+                    ${r.ipfsCID ? `<a href="https://ipfs.filebase.io/ipfs/${r.ipfsCID}" target="_blank" style="font-family: var(--mono); font-size: 11px; color: var(--celo); text-decoration: none;">
                       IPFS Report &#8599;
                     </a>` : ''}
                   </div>

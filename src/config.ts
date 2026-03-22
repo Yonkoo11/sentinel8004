@@ -8,7 +8,7 @@ export const BLOCKSCOUT_API_URL = 'https://explorer.celo.org/mainnet/api';
 export const CELOSCAN_API_URL = 'https://api.celoscan.io/api';
 
 export const IPFS_GATEWAYS = [
-  'https://gateway.pinata.cloud/ipfs/',
+  'https://ipfs.filebase.io/ipfs/',
   'https://ipfs.io/ipfs/',
   'https://cloudflare-ipfs.com/ipfs/',
 ];
@@ -19,6 +19,10 @@ export const HTTP_PROBE_TIMEOUT_MS = 5000;
 export const HTTP_METADATA_TIMEOUT_MS = 10000;
 export const IPFS_FETCH_TIMEOUT_MS = 10000;
 export const BLOCKSCOUT_RATE_LIMIT_PER_SEC = 5;
+
+// Sentinel's writer address — excluded from L5 reputation reads to prevent
+// self-referential scoring loops on rescan. See architecture-audit.md §Finding 1.
+export const SENTINEL_WRITER_ADDRESS = '0xf9946775891a24462cD4ec885d0D4E2675C84355' as const;
 
 // Minimal ABIs - only the functions we call
 export const IDENTITY_REGISTRY_ABI = [
@@ -142,6 +146,16 @@ export const REPUTATION_REGISTRY_ABI = [
     name: 'getLastIndex',
     outputs: [{ name: '', type: 'uint64' }],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { name: 'agentId', type: 'uint256' },
+      { name: 'feedbackIndex', type: 'uint64' },
+    ],
+    name: 'revokeFeedback',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const;

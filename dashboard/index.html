@@ -15,373 +15,692 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="shared.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ── Hero ── */
-  .hero-wrap {
-    min-height: 0;
-    padding: calc(var(--nav-height) + var(--space-16)) 0 var(--space-12);
-  }
-  .hero-inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 var(--space-8);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-12);
-    align-items: center;
-  }
-  .hero-left {
-    max-width: 560px;
-  }
-  .hero-number {
-    font-family: var(--mono);
-    font-size: clamp(80px, 14vw, 140px);
-    font-weight: 700;
-    line-height: 0.9;
-    letter-spacing: -0.05em;
-    color: var(--text-primary);
-    transition: opacity 0.4s ease;
-  }
-  .hero-number-label {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    margin-top: var(--space-3);
-  }
-  .hero-statement {
-    font-size: clamp(18px, 2.2vw, 22px);
-    line-height: 1.5;
-    color: var(--text-secondary);
-    margin-top: var(--space-6);
-    max-width: 440px;
-  }
-  .hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.10em;
-    color: var(--celo);
-    margin-bottom: var(--space-4);
-  }
-  .hero-tag-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--celo);
-  }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* ── Stat Row (right column) ── */
-  .stat-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
-  }
-  .stat-item {
-    padding: var(--space-5) 0;
-    border-top: 1px solid var(--border);
-  }
-  .stat-value {
-    font-family: var(--mono);
-    font-size: 32px;
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: var(--space-1);
-    letter-spacing: 0.02em;
-  }
+:root {
+  --bg-base: #0c0f0e;
+  --bg-surface: #141916;
+  --bg-elevated: #1c211e;
+  --celo: #35D07F;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --text-primary: #eef1ef;
+  --text-secondary: #a3a8a5;
+  --text-muted: #6b706d;
+  --border: rgba(238,241,239,0.07);
+  --border-strong: rgba(238,241,239,0.12);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --max-width: 1080px;
+  --nav-height: 56px;
+  --radius: 10px;
+}
 
-  /* ── Problem Section ── */
-  .problem-section {
-    padding: var(--space-16) 0;
-  }
-  .problem-inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 var(--space-8);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-8);
-    align-items: start;
-  }
-  .problem-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--red);
-    border-radius: 0 12px 12px 0;
-    padding: var(--space-8) var(--space-8);
-  }
-  .problem-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--red);
-    margin-bottom: var(--space-4);
-    opacity: 0.8;
-  }
-  .spam-number {
-    font-family: var(--mono);
-    font-size: clamp(56px, 10vw, 96px);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    color: var(--text-primary);
-  }
-  .spam-sub {
-    font-size: clamp(16px, 2vw, 20px);
-    color: var(--text-secondary);
-    margin-top: var(--space-3);
-    line-height: 1.5;
-  }
-  .spam-detail {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: var(--space-4);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border);
-  }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  /* ── Flag Pills ── */
-  .flags-wrap {
-    margin-top: 0;
-  }
-  .flags-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    margin-bottom: var(--space-4);
-  }
-  .flag-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-  .flag-pill {
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 5px 12px;
-    border-radius: 4px;
-    border: 1px solid;
-    background: transparent;
-    cursor: default;
-  }
-  .flag-pill-red {
-    color: var(--red);
-    border-color: rgba(239,68,68,0.25);
-    background: var(--red-dim);
-  }
-  .flag-pill-yellow {
-    color: var(--yellow);
-    border-color: rgba(245,158,11,0.25);
-    background: var(--yellow-dim);
-  }
+a { color: inherit; text-decoration: none; }
 
-  /* ── How It Works ── */
-  .how-section {
-    padding: var(--space-16) 0;
-  }
-  .how-inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 var(--space-8);
-  }
-  .how-header {
-    max-width: 480px;
-    margin-bottom: var(--space-8);
-  }
+.skip-link {
+  position: absolute; left: -9999px; top: auto;
+  padding: 8px 16px; background: var(--celo); color: var(--bg-base);
+  font-size: 14px; font-weight: 600; border-radius: 4px; z-index: 9999;
+}
+.skip-link:focus { left: 16px; top: 16px; }
 
-  /* ── Pipeline ── */
-  .pipeline {
-    display: flex;
-    align-items: flex-start;
-    gap: 0;
-    position: relative;
-    margin-bottom: var(--space-8);
-  }
-  .pipe-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    position: relative;
-    z-index: 1;
-  }
-  .pipe-num {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 700;
-    background: var(--bg-base);
-    border: 2px solid var(--border);
-    color: var(--text-secondary);
-    position: relative;
-    z-index: 2;
-    transition: border-color 0.3s ease;
-  }
-  .pipe-step:last-child .pipe-num {
-    border-color: var(--celo);
-    color: var(--celo);
-  }
-  .pipe-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-top: var(--space-2);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .pipe-desc {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    text-align: center;
-    max-width: 90px;
-    opacity: 0.6;
-  }
-  .pipe-line {
-    position: absolute;
-    top: 18px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: var(--border);
-    z-index: 0;
-  }
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-height);
+  background: rgba(12,15,14,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+}
+.nav-wordmark {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.nav-links { display: flex; gap: 28px; margin-left: 40px; }
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.nav-link:hover, .nav-link.active { color: var(--text-primary); }
+.nav-left { display: flex; align-items: center; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-meta {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--celo);
+  padding: 8px 16px;
+  border: 1px solid rgba(53,208,127,0.2);
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.nav-cta:hover {
+  background: rgba(53,208,127,0.06);
+  border-color: rgba(53,208,127,0.35);
+}
+.nav-toggle { display: none; }
 
-  /* ── Proof Card ── */
-  .proof-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    max-width: 520px;
-    overflow: hidden;
-  }
-  .proof-header {
-    padding: var(--space-3) var(--space-5);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-  }
-  .proof-header-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--celo);
-  }
-  .proof-header-text {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-  .proof-body {
-    padding: var(--space-4) var(--space-5);
-  }
-  .proof-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-2) 0;
-  }
-  .proof-row + .proof-row {
-    border-top: 1px solid rgba(255,255,255,0.04);
-  }
-  .proof-key {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-  .proof-val {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  .proof-val a {
-    color: var(--celo);
-    text-decoration: none;
-  }
-  .proof-val a:hover {
-    text-decoration: underline;
-  }
-  .proof-progress {
-    padding: var(--space-3) var(--space-5) var(--space-4);
-    border-top: 1px solid var(--border);
-  }
+/* ── Reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-  /* ── CTA Section ── */
-  .cta-section {
-    text-align: center;
-    padding: var(--space-12) 0 var(--space-16);
-    position: relative;
-  }
-  .cta-inner {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 0 var(--space-8);
-  }
+/* ══════════════════════════════════════════════════════════════
+   HERO — asymmetric, no donut
+   ══════════════════════════════════════════════════════════════ */
+.hero {
+  padding: calc(var(--nav-height) + 80px) 0 0;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
 
-  /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .hero-wrap { padding-top: calc(var(--nav-height) + var(--space-12)); padding-bottom: var(--space-10); }
-    .hero-inner { grid-template-columns: 1fr; gap: var(--space-8); }
-    .hero-number { font-size: 80px; }
-    .stat-row { grid-template-columns: 1fr 1fr; }
-    .problem-inner { grid-template-columns: 1fr; }
-    .problem-card { padding: var(--space-6) var(--space-6); }
-    .pipeline { flex-wrap: wrap; justify-content: center; gap: var(--space-1); }
-    .pipe-line { display: none; }
-    .pipe-step { flex: 0 0 30%; margin-bottom: var(--space-4); }
-    .proof-card { max-width: 100%; }
-    .how-section, .problem-section { padding: var(--space-16) 0; }
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.hero-eyebrow span { color: var(--celo); }
+
+.hero-title {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.0;
+  color: var(--text-primary);
+  max-width: 700px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 20px;
+  line-height: 1.55;
+  max-width: 540px;
+}
+
+/* ── Score bar (replaces donut) ── */
+.score-bar-section {
+  margin-top: 48px;
+  margin-bottom: 80px;
+}
+
+.score-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.score-bar {
+  flex: 1;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  background: var(--bg-surface);
+}
+.score-bar-seg {
+  height: 100%;
+  transition: width 0.6s ease;
+  position: relative;
+}
+.score-bar-seg.trusted { background: var(--celo); }
+.score-bar-seg.fair { background: var(--yellow); }
+.score-bar-seg.flagged { background: var(--red); opacity: 0.85; }
+
+.score-bar-labels {
+  display: flex;
+  gap: 24px;
+  margin-top: 14px;
+}
+.score-bar-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.score-bar-label .swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  position: relative;
+  top: 1px;
+}
+.score-bar-label .val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.score-bar-label .lbl {
+  font-size: 14px;
+  color: var(--text-muted);
+  position: relative;
+  top: -1px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FINDINGS — asymmetric grid, not 3 equal cards
+   ══════════════════════════════════════════════════════════════ */
+.findings {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 72px 0;
+}
+.findings-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.findings-heading {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+  line-height: 1.2;
+}
+
+.findings-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.finding {
+  background: var(--bg-base);
+  padding: 28px 32px 32px;
+}
+.finding-num {
+  font-family: var(--mono);
+  font-size: 40px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.finding-label {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+.finding-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+.finding:first-child {
+  grid-row: span 1;
+}
+.finding:first-child .finding-num {
+  font-size: 56px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SYBIL DISCOVERY
+   ══════════════════════════════════════════════════════════════ */
+.sybil-section {
+  padding: 72px 0;
+  background: var(--bg-base);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.sybil-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.sybil-eyebrow {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+.sybil-heading {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1.25;
+  max-width: 700px;
+  margin-bottom: 12px;
+}
+.sybil-desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 640px;
+  margin-bottom: 36px;
+}
+.sybil-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.sybil-agent {
+  background: var(--bg-surface);
+  padding: 24px 28px;
+}
+.sybil-agent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.sybil-agent-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+.sybil-id {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.sybil-score-change {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--yellow);
+}
+.sybil-arrow { color: var(--text-muted); margin: 0 2px; }
+.sybil-badge-red {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--red);
+  background: rgba(239,68,68,0.1);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+.sybil-stat {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.sybil-evidence {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.sybil-fix {
+  background: var(--bg-surface);
+  border: 1px solid rgba(53,208,127,0.15);
+  border-left: 3px solid var(--celo);
+  border-radius: 6px;
+  padding: 20px 24px;
+}
+.sybil-fix-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--celo);
+  margin-bottom: 6px;
+}
+.sybil-fix-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+@media (max-width: 768px) {
+  .sybil-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PIPELINE — numbered steps, not dots on a line
+   ══════════════════════════════════════════════════════════════ */
+.pipeline-section {
+  padding: 80px 0;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.pipeline-heading {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+  line-height: 1.2;
+  max-width: 480px;
+}
+
+.pipeline-steps {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  position: relative;
+}
+.pipeline-steps::before {
+  content: '';
+  position: absolute;
+  top: 19px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--border-strong);
+}
+.pipe-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.pipe-num {
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.pipe-step:last-child .pipe-num {
+  background: rgba(53,208,127,0.1);
+  border-color: rgba(53,208,127,0.25);
+  color: var(--celo);
+}
+.pipe-name {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 14px;
+}
+.pipe-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  text-align: center;
+}
+
+/* ── Proof + Integration side by side ── */
+.proof-integration {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 56px;
+}
+
+/* ── Proof card ── */
+.proof-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.proof-header {
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.proof-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+}
+.proof-row + .proof-row {
+  border-top: 1px solid var(--border);
+}
+.proof-key {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.proof-val {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.proof-val a {
+  color: var(--celo);
+  text-decoration: none;
+}
+.proof-val a:hover { text-decoration: underline; }
+
+/* ── Code card ── */
+.code-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.code-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.code-tab {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 12px 20px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.2s, background 0.2s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.code-tab:hover { color: var(--text-secondary); }
+.code-tab.active {
+  color: var(--celo);
+  border-bottom-color: var(--celo);
+  background: rgba(53,208,127,0.03);
+}
+.code-panel {
+  display: none;
+  padding: 20px 24px;
+}
+.code-panel.active { display: block; }
+.code-panel pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre;
+  overflow-x: auto;
+}
+.code-panel pre .kw { color: var(--celo); }
+.code-panel pre .str { color: var(--yellow); }
+.code-panel pre .cmt { color: var(--text-muted); }
+.code-panel pre .num { color: var(--yellow); }
+
+/* ══════════════════════════════════════════════════════════════
+   CTA — left-aligned, integrated
+   ══════════════════════════════════════════════════════════════ */
+.cta-section {
+  padding: 64px 0 80px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+.cta-text {
+  max-width: 420px;
+}
+.cta-heading {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.cta-sub {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.btn-primary {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--bg-base);
+  background: var(--celo);
+  padding: 14px 32px;
+  border-radius: 8px;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+.btn-primary:hover { opacity: 0.88; }
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 32px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { color: var(--text-muted); transition: color 0.2s; }
+.footer-links a:hover { color: var(--text-secondary); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-toggle {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; background: none; border: none;
+    color: var(--text-muted); cursor: pointer; margin-left: 12px;
   }
-  @media (max-width: 480px) {
-    .hero-number { font-size: 64px; }
-    .spam-number { font-size: 56px; }
-    .stat-value { font-size: 24px; }
-    .stat-row { grid-template-columns: 1fr 1fr; }
-    .pipe-step { flex: 0 0 45%; }
+  .nav-toggle svg { width: 20px; height: 20px; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: var(--nav-height); left: 0; right: 0;
+    background: var(--bg-base); border-bottom: 1px solid var(--border);
+    padding: 16px 20px; gap: 12px;
   }
+  .nav-right .nav-meta { display: none; }
+
+  .hero { padding-top: calc(var(--nav-height) + 48px); }
+  .hero-title { font-size: 36px; }
+  .hero-subtitle { font-size: 16px; }
+
+  .score-bar-labels { flex-wrap: wrap; gap: 16px; }
+
+  .findings-grid { grid-template-columns: 1fr; }
+  .finding:first-child .finding-num { font-size: 40px; }
+
+  .pipeline-steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 0;
+  }
+  .pipeline-steps::before { display: none; }
+
+  .proof-integration { grid-template-columns: 1fr; }
+
+  .cta-section { flex-direction: column; gap: 24px; text-align: center; }
+  .cta-text { max-width: 100%; }
+
+  .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 30px; }
+  .pipeline-steps { grid-template-columns: repeat(2, 1fr); }
+  .score-bar-label .val { font-size: 16px; }
+}
 </style>
 </head>
 <body data-page="home">
 <a href="#main" class="skip-link">Skip to content</a>
 
-<!-- Navigation -->
-<nav class="nav">
+<nav>
   <div class="nav-left">
     <a href="index.html" class="nav-wordmark">Sentinel8004</a>
     <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-links">
-      <a href="index.html" class="nav-link" data-page="home">Home</a>
+      <a href="index.html" class="nav-link active" data-page="home">Home</a>
       <a href="registry.html" class="nav-link" data-page="registry">Registry</a>
       <a href="methodology.html" class="nav-link" data-page="methodology">Methodology</a>
     </div>
@@ -392,117 +711,148 @@
   </div>
 </nav>
 
-<!-- ═══════════════════ HERO + STATS ═══════════════════ -->
 <main id="main">
-<section class="hero-wrap">
-  <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-tag reveal">
-        <span class="hero-tag-dot"></span>
-        ERC-8004 Trust Report
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-eyebrow reveal"><span>ERC-8004</span> on Celo Mainnet</div>
+  <h1 class="hero-title reveal">We scored every agent.<br>Most failed.</h1>
+  <p class="hero-subtitle reveal">Sentinel8004 scans all <span id="hero-total">2,902</span> agents on Celo's IdentityRegistry. Five independent scoring layers. Circuit breakers for spam. Every result written on-chain with IPFS proofs.</p>
+
+  <div class="score-bar-section reveal">
+    <div class="score-bar-wrap">
+      <div class="score-bar">
+        <div class="score-bar-seg trusted" id="bar-trusted" style="width: 0%;"></div>
+        <div class="score-bar-seg fair" id="bar-fair" style="width: 0%;"></div>
+        <div class="score-bar-seg flagged" id="bar-flagged" style="width: 0%;"></div>
       </div>
-      <div class="hero-number reveal reveal-d1" id="hero-count" style="opacity: 0.3;">...</div>
-      <div class="hero-number-label reveal reveal-d1">agents scanned</div>
-      <p class="hero-statement reveal reveal-d2">
-        Infrastructure-grade trust layer for ERC-8004 agents. Every agent scored, verified, and queryable on-chain.
-      </p>
-      <p class="reveal reveal-d3" style="font-size: 13px; color: var(--text-muted); margin-top: var(--space-3); max-width: 440px; line-height: 1.5;">
-        ERC-8004 agents are on-chain identities for autonomous AI services registered on Celo's IdentityRegistry contract.
-      </p>
     </div>
-    <div class="stat-row reveal reveal-d3">
-      <div class="stat-item">
-        <div class="stat-value text-primary" id="stat-total">0</div>
-        <div class="stat-label">Scanned</div>
+    <div class="score-bar-labels">
+      <div class="score-bar-label">
+        <span class="swatch" style="background: var(--celo);"></span>
+        <span class="val" id="stat-trusted">--</span>
+        <span class="lbl">trusted (70+)</span>
       </div>
-      <div class="stat-item">
-        <div class="stat-value text-celo" id="stat-trusted">0</div>
-        <div class="stat-label">Trusted (70+)</div>
+      <div class="score-bar-label">
+        <span class="swatch" style="background: var(--yellow);"></span>
+        <span class="val" id="stat-fair">--</span>
+        <span class="lbl">fair (30-69)</span>
       </div>
-      <div class="stat-item">
-        <div class="stat-value text-yellow" id="stat-fair">0</div>
-        <div class="stat-label">Fair (30-69)</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value text-red" id="stat-flagged">0</div>
-        <div class="stat-label">Flagged (&lt;30)</div>
+      <div class="score-bar-label">
+        <span class="swatch" style="background: var(--red); opacity: 0.85;"></span>
+        <span class="val" id="stat-flagged">--</span>
+        <span class="lbl">flagged (&lt;30)</span>
       </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider-glow"></div>
-
-<!-- ═══════════════════ PROBLEM (spam + flags) ═══════════════════ -->
-<section class="problem-section">
-  <div class="problem-inner">
-    <div class="problem-card reveal">
-      <div class="problem-label">The problem</div>
-      <div class="spam-number reveal reveal-d1" id="spam-pct">...</div>
-      <p class="spam-sub reveal reveal-d2">are spam, dormant, or untrustworthy.</p>
-      <div class="spam-detail reveal reveal-d2">
-        <span id="flagged-count">...</span> of <span id="spam-total">...</span> agents score below 30/100
+<!-- ═══════════════════ FINDINGS ═══════════════════ -->
+<section class="findings">
+  <div class="findings-inner">
+    <div class="findings-heading reveal">What we found in the registry.</div>
+    <div class="findings-grid reveal">
+      <div class="finding">
+        <div class="finding-label">Spam cluster</div>
+        <div class="finding-num" id="diag-spam">--</div>
+        <div class="finding-desc">Agents from a single address. One owner mass-registered clones with identical metadata.</div>
       </div>
-    </div>
-    <div class="flags-wrap reveal reveal-d3">
-      <div class="flags-label">Most common risk flags</div>
-      <div class="flag-pills" id="flag-pills"></div>
+      <div class="finding">
+        <div class="finding-label">Dead endpoints</div>
+        <div class="finding-num" id="diag-dead">--</div>
+        <div class="finding-desc">Feedback URIs that don't resolve. Registered but never deployed.</div>
+      </div>
+      <div class="finding">
+        <div class="finding-label">No metadata</div>
+        <div class="finding-num" id="diag-nometa">--</div>
+        <div class="finding-desc">Placeholder names, no description, no service endpoints declared.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="section-divider-glow"></div>
+<!-- ═══════════════════ SYBIL DISCOVERY ═══════════════════ -->
+<section class="sybil-section">
+  <div class="sybil-inner">
+    <div class="sybil-eyebrow reveal">Live finding</div>
+    <div class="sybil-heading reveal">We found 1,797 sock puppet wallets gaming the ReputationRegistry.</div>
+    <p class="sybil-desc reveal">Three agents inflated their trust scores by creating hundreds of wallets, each with exactly 2 transactions (fund + giveFeedback). The on-chain reputation layer was returning attacker-controlled data.</p>
 
-<!-- ═══════════════════ HOW IT WORKS (pipeline + proof) ═══════════════════ -->
-<section class="how-section">
-  <div class="how-inner">
-    <div class="how-header">
-      <div class="label reveal mb-3">How it works</div>
-      <p class="body-lg reveal reveal-d1">
-        Five independent scoring layers with circuit breakers. Every score written on-chain.
-      </p>
-    </div>
-
-    <div class="pipeline reveal reveal-d2" style="position: relative;">
-      <div class="pipe-line"></div>
-      <div class="pipe-step">
-        <div class="pipe-num">1</div>
-        <div class="pipe-label">REG</div>
-        <div class="pipe-desc">Read registry</div>
+    <div class="sybil-grid reveal">
+      <div class="sybil-agent">
+        <div class="sybil-agent-header">
+          <span class="sybil-agent-name">Toppa <span class="sybil-id">#1870</span></span>
+          <span class="sybil-score-change">95 <span class="sybil-arrow">&rarr;</span> 80</span>
+        </div>
+        <div class="sybil-stat">431 sock puppets filtered</div>
+        <div class="sybil-evidence">Every puppet wallet: exactly 2 txs, funded from same source</div>
       </div>
-      <div class="pipe-step">
-        <div class="pipe-num">2</div>
-        <div class="pipe-label">SCAN</div>
-        <div class="pipe-desc">Probe endpoints</div>
+      <div class="sybil-agent">
+        <div class="sybil-agent-header">
+          <span class="sybil-agent-name">Loopuman <span class="sybil-id">#17</span></span>
+          <span class="sybil-badge-red">936 puppets</span>
+        </div>
+        <div class="sybil-stat">getSummary returned 98. Actual score: 35.</div>
+        <div class="sybil-evidence">On-chain reputation data is actively compromised</div>
       </div>
-      <div class="pipe-step">
-        <div class="pipe-num">3</div>
-        <div class="pipe-label">5x</div>
-        <div class="pipe-desc">Score layers</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-num">4</div>
-        <div class="pipe-label">CB</div>
-        <div class="pipe-desc">Circuit breakers</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-num">5</div>
-        <div class="pipe-label">SUM</div>
-        <div class="pipe-desc">Composite</div>
-      </div>
-      <div class="pipe-step">
-        <div class="pipe-num">6</div>
-        <div class="pipe-label">CELO</div>
-        <div class="pipe-desc">Write on-chain</div>
+      <div class="sybil-agent">
+        <div class="sybil-agent-header">
+          <span class="sybil-agent-name">Agent <span class="sybil-id">#1865</span></span>
+          <span class="sybil-badge-red">437 puppets</span>
+        </div>
+        <div class="sybil-stat">Zero wallet overlap with other clusters</div>
+        <div class="sybil-evidence">Separate funding sources, same attack pattern</div>
       </div>
     </div>
 
-    <div class="proof-card reveal reveal-d3">
-      <div class="proof-header">
-        <span class="proof-header-dot"></span>
-        <span class="proof-header-text">On-chain proof</span>
-      </div>
-      <div class="proof-body">
+    <div class="sybil-fix reveal">
+      <div class="sybil-fix-label">Our fix</div>
+      <div class="sybil-fix-text">L5 now filters providers by on-chain tx history. Wallets with &lt;5 total transactions are excluded as likely sock puppets. Verified against all 3 attack clusters and 2 clean agents on live chain.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PIPELINE + PROOF + INTEGRATION ═══════════════════ -->
+<section class="pipeline-section">
+  <div class="pipeline-heading reveal">Five layers, one score, written on-chain.</div>
+
+  <div class="pipeline-steps reveal">
+    <div class="pipe-step">
+      <div class="pipe-num">1</div>
+      <div class="pipe-name">Read</div>
+      <div class="pipe-desc">Registry data</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">2</div>
+      <div class="pipe-name">Probe</div>
+      <div class="pipe-desc">Endpoints</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">3</div>
+      <div class="pipe-name">Score</div>
+      <div class="pipe-desc">5 layers</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">4</div>
+      <div class="pipe-name">Breakers</div>
+      <div class="pipe-desc">Cap spam</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">5</div>
+      <div class="pipe-name">Compose</div>
+      <div class="pipe-desc">0-100</div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">&#10003;</div>
+      <div class="pipe-name">Write</div>
+      <div class="pipe-desc">On-chain</div>
+    </div>
+  </div>
+
+  <div class="proof-integration reveal">
+    <div class="proof-card">
+      <div class="proof-header">On-chain proof</div>
+      <div>
         <div class="proof-row">
           <span class="proof-key">contract</span>
           <span class="proof-val"><a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">0x8004...9dE9b63</a></span>
@@ -512,8 +862,8 @@
           <span class="proof-val"><a href="https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank" rel="noopener noreferrer">0x8004...9a432</a></span>
         </div>
         <div class="proof-row">
-          <span class="proof-key">scored on-chain</span>
-          <span class="proof-val"><span class="flex items-center gap-2"><span class="pulse-dot"></span> <span id="proof-written">Loading...</span></span></span>
+          <span class="proof-key">written</span>
+          <span class="proof-val" id="proof-written">Loading...</span>
         </div>
         <div class="proof-row">
           <span class="proof-key">writer</span>
@@ -524,89 +874,59 @@
           <span class="proof-val">~0.009 CELO</span>
         </div>
       </div>
-      <div class="proof-progress">
-        <div class="progress-track">
-          <div class="progress-fill" id="onchain-bar"></div>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 6px;">
-          <span class="mono" style="font-size: 11px; color: var(--text-muted);" id="onchain-label">Loading...</span>
-          <span class="mono" style="font-size: 11px; color: var(--text-muted);">written on-chain</span>
-        </div>
-      </div>
     </div>
 
-    <div class="mt-8" style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
-      <a href="methodology.html" class="btn-ghost reveal">Read full methodology</a>
-      <div class="reveal reveal-d1" style="display: flex; align-items: center; gap: var(--space-2);">
-        <span style="font-size: 12px; color: var(--text-muted);">Try it:</span>
-        <code class="mono" style="font-size: 11px; background: var(--bg-elevated); padding: 4px 10px; border-radius: 4px; color: var(--text-secondary);">npx tsx scripts/trust-gate.ts 1870</code>
+    <div class="code-card">
+      <div class="code-tabs">
+        <button class="code-tab active" data-tab="contract">Contract</button>
+        <button class="code-tab" data-tab="mcp">MCP</button>
+        <button class="code-tab" data-tab="json">JSON</button>
       </div>
-    </div>
-  </div>
-</section>
+      <div class="code-panel active" id="tab-contract">
+<pre><span class="cmt">// Read trust score for any agent</span>
+<span class="kw">const</span> feedback = <span class="kw">await</span> registry.getFeedback(agentId);
+<span class="cmt">// => { value: 95n, tag1: "sentinel8004" }</span>
 
-<div class="section-divider-glow"></div>
-
-<!-- ═══════════════════ INTEGRATION ═══════════════════ -->
-<section class="how-section">
-  <div class="how-inner">
-    <div class="how-header">
-      <div class="label reveal mb-3">Integration</div>
-      <p class="body-lg reveal reveal-d1">
-        Other agents and dApps consume trust scores directly from the ReputationRegistry contract.
-      </p>
-    </div>
-
-    <div class="proof-card reveal reveal-d2" style="max-width: 640px;">
-      <div class="proof-header">
-        <span class="proof-header-dot"></span>
-        <span class="proof-header-text">Read trust scores on-chain</span>
+<span class="kw">if</span> (feedback.value &lt; <span class="num">30n</span>) {
+  <span class="kw">throw</span> <span class="str">"Blocked by trust gate"</span>;
+}</pre>
       </div>
-      <div class="proof-body" style="padding: var(--space-5);">
-        <pre style="margin: 0; font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--text-secondary); overflow-x: auto; white-space: pre;"><span style="color: var(--text-muted);">// Any agent or contract can query trust scores</span>
-<span style="color: var(--celo);">const</span> feedback = <span style="color: var(--celo);">await</span> registry.getFeedback(agentId);
-<span style="color: var(--text-muted);">// → { value: 95n, tag1: "sentinel8004", feedbackURI: "ipfs://..." }</span>
+      <div class="code-panel" id="tab-mcp">
+<pre><span class="cmt">// AI agents query trust via MCP</span>
+{
+  <span class="str">"tool"</span>: <span class="str">"check_agent_trust"</span>,
+  <span class="str">"input"</span>: { <span class="str">"agentId"</span>: <span class="num">1870</span> }
+}
+<span class="cmt">// => { score: 12, flags: ["MASS_REG"] }</span></pre>
+      </div>
+      <div class="code-panel" id="tab-json">
+<pre><span class="cmt">// Static JSON for dashboards</span>
+<span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"data/scores.json"</span>);
+<span class="kw">const</span> { reports } = <span class="kw">await</span> res.json();
 
-<span style="color: var(--celo);">if</span> (feedback.value < <span style="color: var(--yellow);">30n</span>) <span style="color: var(--celo);">throw</span> <span style="color: var(--red);">"Agent untrusted"</span>;</pre>
-      </div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-6); max-width: 640px;" class="reveal reveal-d3">
-      <div class="surface-card" style="padding: var(--space-4);">
-        <div class="mono" style="font-size: 11px; color: var(--celo); margin-bottom: 4px;">Direct Contract</div>
-        <div style="font-size: 12px; color: var(--text-secondary);">Call getFeedback() from any Solidity or viem client</div>
-      </div>
-      <div class="surface-card" style="padding: var(--space-4);">
-        <div class="mono" style="font-size: 11px; color: var(--celo); margin-bottom: 4px;">MCP Server</div>
-        <div style="font-size: 12px; color: var(--text-secondary);">AI agents query via check_agent_trust MCP tool</div>
-      </div>
-      <div class="surface-card" style="padding: var(--space-4);">
-        <div class="mono" style="font-size: 11px; color: var(--celo); margin-bottom: 4px;">Dashboard API</div>
-        <div style="font-size: 12px; color: var(--text-secondary);">Static JSON at scores.json for lightweight reads</div>
+<span class="kw">const</span> agent = reports.find(
+  r => r.agentId === <span class="num">132</span>
+);
+<span class="cmt">// => { name: "Clenja", score: 57 }</span></pre>
       </div>
     </div>
   </div>
 </section>
-
-<div class="section-divider-glow"></div>
 
 <!-- ═══════════════════ CTA ═══════════════════ -->
 <section class="cta-section">
-  <div class="cta-inner">
-    <div class="heading-md reveal mb-4">Explore the full registry</div>
-    <p class="body-sm reveal reveal-d1 mb-6" style="max-width: 400px; margin-left: auto; margin-right: auto;">
-      Search, filter, and inspect all <span id="cta-total">...</span> agents.
-    </p>
-    <a href="registry.html" class="btn-primary reveal reveal-d2" style="padding: 14px 32px; font-size: 15px;">Open Registry &#8594;</a>
+  <div class="cta-text">
+    <div class="cta-heading reveal">Browse the full registry</div>
+    <p class="cta-sub reveal">Search, filter, and inspect all <span id="cta-total">--</span> agents and their individual reports.</p>
   </div>
+  <a href="registry.html" class="btn-primary reveal">Open Registry</a>
 </section>
 
 </main>
 
-<!-- Footer -->
 <footer class="site-footer">
   <div class="footer-inner">
-    <div class="footer-left">Sentinel8004 v2 &middot; <span id="footer-attestations">...</span> attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">ERC-8004</a> &middot; Built on Celo</div>
+    <div>Sentinel8004 v2 &middot; Agent #1853 &middot; <span id="footer-attestations">--</span> attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted);">ERC-8004</a> &middot; Celo Mainnet</div>
     <div class="footer-links">
       <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" rel="noopener noreferrer">GitHub</a>
       <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">CeloScan</a>
@@ -617,9 +937,19 @@
 <script src="shared.js"></script>
 <script>
 (async function () {
+  // Tab switching
+  document.querySelectorAll('.code-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
   try {
     const res = await fetch('data/scores.json');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     const reports = data.reports || [];
 
@@ -627,92 +957,77 @@
     const trusted = reports.filter(r => r.compositeScore >= 70).length;
     const fair = reports.filter(r => r.compositeScore >= 30 && r.compositeScore < 70).length;
     const flagged = reports.filter(r => r.compositeScore < 30).length;
-    const spamPct = total > 0 ? ((flagged / total) * 100).toFixed(1) : '0';
 
-    // Hero
-    const heroEl = document.getElementById('hero-count');
-    heroEl.textContent = total.toLocaleString();
-    heroEl.style.opacity = '1';
-    document.getElementById('spam-pct').textContent = spamPct + '%';
-    document.getElementById('flagged-count').textContent = flagged.toLocaleString();
-    document.getElementById('spam-total').textContent = total.toLocaleString();
-    document.getElementById('cta-total').textContent = total.toLocaleString();
+    // Hero total
+    const heroTotal = document.getElementById('hero-total');
+    if (heroTotal) heroTotal.textContent = total.toLocaleString();
 
-    // Stats count-up
-    countUp(document.getElementById('stat-total'), total);
+    // Stats
     countUp(document.getElementById('stat-trusted'), trusted);
     countUp(document.getElementById('stat-fair'), fair);
     countUp(document.getElementById('stat-flagged'), flagged);
 
-    // Grey out zero stats
-    if (trusted === 0) document.getElementById('stat-trusted').style.color = 'var(--text-muted)';
-    if (fair === 0) document.getElementById('stat-fair').style.color = 'var(--text-muted)';
+    // Score bar
+    const pctTrusted = total > 0 ? (trusted / total) * 100 : 0;
+    const pctFair = total > 0 ? (fair / total) * 100 : 0;
+    const pctFlagged = total > 0 ? (flagged / total) * 100 : 0;
 
-    // Editorial callout if 0 trusted
-    if (trusted === 0) {
-      const callout = document.createElement('div');
-      callout.className = 'reveal mt-6';
-      callout.style.cssText = 'background: var(--red-dim); border: 1px solid rgba(239,68,68,0.15); border-radius: 10px; padding: 16px 20px; text-align: center;';
-      callout.innerHTML = '<span style="font-size: 13px; color: var(--red);">Zero agents scored above 70. The entire registry needs work.</span>';
-      document.querySelector('.stats-grid')?.parentElement?.appendChild(callout);
-    }
+    // Ensure tiny segments are still visible
+    const minPct = 0.8;
+    document.getElementById('bar-trusted').style.width = Math.max(pctTrusted, minPct).toFixed(2) + '%';
+    document.getElementById('bar-fair').style.width = Math.max(pctFair, minPct).toFixed(2) + '%';
+    document.getElementById('bar-flagged').style.width = Math.max(pctFlagged, minPct).toFixed(2) + '%';
 
-    // Flag pills — count unique agents per flag type (not instances)
-    const allFlags = {};
+    document.getElementById('cta-total').textContent = total.toLocaleString();
+
+    // Diagnostics
+    const ownerCounts = {};
     for (const r of reports) {
-      const seen = new Set();
-      for (const layer of (r.layers || [])) {
-        for (const flag of (layer.flags || [])) {
-          const key = flag.split(':')[0];
-          if (!seen.has(key)) {
-            seen.add(key);
-            allFlags[key] = (allFlags[key] || 0) + 1;
-          }
-        }
+      ownerCounts[r.owner] = (ownerCounts[r.owner] || 0) + 1;
+    }
+    const maxSpam = Math.max(...Object.values(ownerCounts), 0);
+    document.getElementById('diag-spam').textContent = maxSpam.toLocaleString();
+
+    let deadCount = 0;
+    for (const r of reports) {
+      const flags = r.layers ? r.layers.flatMap(l => l.flags || []) : [];
+      if (flags.some(f => f.startsWith('DEAD_ENDPOINT') || f === 'ALL_ENDPOINTS_DEAD')) {
+        deadCount++;
       }
     }
-    const sorted = Object.entries(allFlags).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const redFlags = ['MASS_REGISTRATION', 'METADATA_CLONE', 'ALL_ENDPOINTS_DEAD', 'NEGATIVE_REPUTATION', 'UNLIMITED_APPROVALS'];
-    document.getElementById('flag-pills').innerHTML = sorted.map(([flag, count]) => {
-      const cls = redFlags.includes(flag) ? 'flag-pill-red' : 'flag-pill-yellow';
-      return `<span class="flag-pill ${cls}" title="${count.toLocaleString()} agents with this flag">${flag.replace(/_/g, ' ')} <span style="opacity:0.7; margin-left: 4px;">${count.toLocaleString()}</span></span>`;
-    }).join('');
+    document.getElementById('diag-dead').textContent = deadCount + '+';
 
-    // Footer attestation count
-    const footerEl = document.getElementById('footer-attestations');
-    if (footerEl) footerEl.textContent = (data.onchainStats?.written || total).toLocaleString();
+    let noMetaCount = 0;
+    for (const r of reports) {
+      const flags = r.layers ? r.layers.flatMap(l => l.flags || []) : [];
+      if (flags.includes('NO_METADATA') || flags.includes('METADATA_CLONE') || !r.name || r.name === 'Unknown') {
+        noMetaCount++;
+      }
+    }
+    document.getElementById('diag-nometa').textContent = noMetaCount.toLocaleString();
 
     // On-chain stats
     const oc = data.onchainStats;
     if (oc) {
       const w = oc.written || 0;
       const t = oc.total || total;
-      document.getElementById('proof-written').textContent = `${w.toLocaleString()} / ${t.toLocaleString()}`;
-      document.getElementById('onchain-label').textContent = `${w.toLocaleString()} / ${t.toLocaleString()}`;
-      setTimeout(() => {
-        const pct = t > 0 ? (w / t) * 100 : 0;
-        // Minimum 2% width so the bar is visible even at very low values
-        document.getElementById('onchain-bar').style.width = (pct > 0 ? Math.max(pct, 2) : 0) + '%';
-      }, 500);
+      document.getElementById('proof-written').textContent = w.toLocaleString() + ' / ' + t.toLocaleString();
     } else {
       document.getElementById('proof-written').textContent = 'Pending';
-      document.getElementById('onchain-label').textContent = 'Pending';
     }
+
+    // Footer
+    const footerEl = document.getElementById('footer-attestations');
+    if (footerEl) footerEl.textContent = (data.onchainStats?.written || total).toLocaleString();
 
     // Scan date
     if (data.scannedAt) {
       const d = new Date(data.scannedAt);
       document.getElementById('scan-date').textContent = 'Last scan: ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
+
   } catch (e) {
     console.error('Failed to load data:', e);
-    document.getElementById('hero-count').textContent = '—';
-    document.getElementById('spam-pct').textContent = '—';
-    const errMsg = document.createElement('p');
-    errMsg.className = 'body-sm mt-4';
-    errMsg.style.cssText = 'color: var(--red); text-align: center; font-family: var(--mono); font-size: 12px;';
-    errMsg.textContent = 'Unable to load scan data. Check back later.';
-    document.querySelector('.hero-left')?.appendChild(errMsg);
   }
 })();
 </script>

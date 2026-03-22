@@ -3,18 +3,22 @@ import { publicClient } from '../chain.js';
 import {
   REPUTATION_REGISTRY_ADDRESS,
   REPUTATION_REGISTRY_ABI,
+  SENTINEL_WRITER_ADDRESS,
+  BLOCKSCOUT_API_URL,
 } from '../config.js';
+import { fetchWithTimeout } from '../utils.js';
 
 /**
  * Layer 5: Existing On-Chain Reputation (0-15 bonus)
  *
  * Reads existing feedback from the ReputationRegistry to see if other
- * clients have already evaluated this agent. This is the only layer
- * that incorporates external trust signals rather than our own checks.
+ * independent clients have already evaluated this agent.
  *
- * Why this matters: If independent clients have already given positive
- * feedback on-chain, that's a stronger signal than any metadata check.
- * If an agent has clients but all feedback is negative, that's a red flag.
+ * ANTI-SYBIL MEASURES (post architecture audit, March 2026):
+ * 1. Exclude Sentinel's own address (prevents self-referential loop on rescan)
+ * 2. Exclude providers with <5 total transactions (sock puppet filter)
+ * 3. Exclude providers whose scores are all >90 (uniformity filter)
+ * 4. Flag agents whose non-Sentinel providers are mostly filtered out
  */
 export async function scoreReputation(agentId: number): Promise<LayerScore> {
   const details: string[] = [];
@@ -22,7 +26,6 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
   let score = 0;
 
   try {
-    // Get all feedback clients for this agent
     const clients = await publicClient.readContract({
       address: REPUTATION_REGISTRY_ADDRESS,
       abi: REPUTATION_REGISTRY_ABI,
@@ -35,17 +38,48 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
       return { layer: 'reputation', score: 0, maxScore: 15, details, flags };
     }
 
-    details.push(`${clients.length} feedback client(s) found`);
+    // Step 1: Exclude Sentinel's own address
+    const externalClients = clients.filter(
+      c => c.toLowerCase() !== SENTINEL_WRITER_ADDRESS.toLowerCase()
+    );
 
-    // Read feedback from each client (up to 10 to avoid rate limits)
-    const clientsToCheck = clients.slice(0, 10);
-    let positiveCount = 0;
-    let negativeCount = 0;
-    let totalValue = 0n;
+    if (externalClients.length === 0) {
+      details.push(`${clients.length} client(s) found, all are Sentinel — skipping L5`);
+      return { layer: 'reputation', score: 0, maxScore: 15, details, flags };
+    }
+
+    details.push(`${clients.length} client(s) found, ${externalClients.length} external`);
+
+    // Step 2: Filter clients by on-chain history (sock puppet detection)
+    const clientsToCheck = externalClients.slice(0, 20);
+    const qualified: `0x${string}`[] = [];
+    let filteredCount = 0;
 
     for (const client of clientsToCheck) {
+      const txCount = await getAddressTxCount(client);
+      if (txCount < 5) {
+        details.push(`Client ${client.slice(0, 8)}...: filtered (${txCount} txs, min 5)`);
+        filteredCount++;
+        continue;
+      }
+      qualified.push(client);
+    }
+
+    if (qualified.length === 0) {
+      if (filteredCount > 0) {
+        details.push(`All ${filteredCount} external client(s) filtered as low-activity (likely sock puppets)`);
+        flags.push('SYBIL_BOOSTED');
+      }
+      return { layer: 'reputation', score: 0, maxScore: 15, details, flags };
+    }
+
+    // Step 3: Read feedback from qualified clients
+    let positiveCount = 0;
+    let negativeCount = 0;
+    const scores: number[] = [];
+
+    for (const client of qualified) {
       try {
-        // Get the most recent feedback index for this client
         const lastIndex = await publicClient.readContract({
           address: REPUTATION_REGISTRY_ADDRESS,
           abi: REPUTATION_REGISTRY_ABI,
@@ -68,32 +102,41 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
         const [value, , tag1, , isRevoked] = feedback;
 
         if (isRevoked) {
-          details.push(`Client ${client.slice(0, 8)}... revoked feedback`);
+          details.push(`Client ${client.slice(0, 8)}...: revoked`);
           continue;
         }
 
+        const numValue = Number(value);
+        scores.push(numValue);
+
         if (value > 0n) {
           positiveCount++;
-          totalValue += value;
-          details.push(`Client ${client.slice(0, 8)}...: positive (tag: ${tag1 || 'none'})`);
+          details.push(`Client ${client.slice(0, 8)}...: positive ${numValue} (tag: ${tag1 || 'none'})`);
         } else if (value < 0n) {
           negativeCount++;
-          totalValue += value;
-          details.push(`Client ${client.slice(0, 8)}...: negative (tag: ${tag1 || 'none'})`);
+          details.push(`Client ${client.slice(0, 8)}...: negative ${numValue} (tag: ${tag1 || 'none'})`);
         } else {
           details.push(`Client ${client.slice(0, 8)}...: neutral`);
         }
       } catch {
-        // Individual feedback read failures are non-fatal
         details.push(`Client ${client.slice(0, 8)}...: read error`);
       }
     }
 
-    // Score based on feedback distribution
-    // Having multiple independent positive signals is strong evidence
+    // Step 4: Uniformity check — if all scores are >90, likely coordinated
+    if (scores.length >= 3) {
+      const allHigh = scores.every(s => s > 90);
+      if (allHigh) {
+        details.push(`Uniformity filter: all ${scores.length} scores >90 — likely coordinated`);
+        flags.push('SYBIL_BOOSTED');
+        return { layer: 'reputation', score: 0, maxScore: 15, details, flags };
+      }
+    }
+
+    // Step 5: Score based on filtered feedback
     if (positiveCount >= 3) {
       score = 15;
-      details.push(`+15 Strong positive reputation (${positiveCount} positive clients)`);
+      details.push(`+15 Strong positive reputation (${positiveCount} qualified positive clients)`);
     } else if (positiveCount >= 1 && negativeCount === 0) {
       score = 10;
       details.push(`+10 Positive reputation (${positiveCount} positive, 0 negative)`);
@@ -106,9 +149,12 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
       flags.push('NEGATIVE_REPUTATION');
     }
 
-    // Flag if only self-related feedback (same owner patterns)
-    if (clients.length === 1) {
-      details.push('Note: Only 1 feedback client (limited signal)');
+    // Note filtered-out providers for transparency
+    if (filteredCount > 0) {
+      details.push(`${filteredCount} additional client(s) filtered as low-activity`);
+      if (filteredCount > qualified.length * 3) {
+        flags.push('SYBIL_BOOSTED');
+      }
     }
 
   } catch (e) {
@@ -117,4 +163,31 @@ export async function scoreReputation(agentId: number): Promise<LayerScore> {
   }
 
   return { layer: 'reputation', score, maxScore: 15, details, flags };
+}
+
+// In-memory cache for tx counts across agents in the same scan run.
+// Sock puppet wallets appear across multiple agents' client lists.
+const txCountCache = new Map<string, number>();
+
+/**
+ * Get total transaction count for an address via Blockscout.
+ * Low tx count (<5) is a strong sock puppet indicator.
+ * Results cached for the duration of the scan.
+ */
+async function getAddressTxCount(address: string): Promise<number> {
+  const key = address.toLowerCase();
+  const cached = txCountCache.get(key);
+  if (cached !== undefined) return cached;
+
+  try {
+    const url = `${BLOCKSCOUT_API_URL}?module=account&action=txlist&address=${address}&page=1&offset=5`;
+    const res = await fetchWithTimeout(url, 8000);
+    if (!res.ok) return 999; // fail open — don't filter on API errors
+    const data = (await res.json()) as { result?: unknown[] };
+    const count = Array.isArray(data.result) ? data.result.length : 999;
+    txCountCache.set(key, count);
+    return count;
+  } catch {
+    return 999; // fail open
+  }
 }

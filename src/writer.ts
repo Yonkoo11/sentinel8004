@@ -2,7 +2,7 @@ import pLimit from 'p-limit';
 import { keccak256, toBytes } from 'viem';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { publicClient, getWalletClient, getAccount } from './chain.js';
-import { REPUTATION_REGISTRY_ADDRESS, REPUTATION_REGISTRY_ABI } from './config.js';
+import { REPUTATION_REGISTRY_ADDRESS, REPUTATION_REGISTRY_ABI, SENTINEL_WRITER_ADDRESS } from './config.js';
 import { pinJSON } from './ipfs.js';
 import { canonicalJSON } from './utils.js';
 import type { TrustReport } from './types.js';
@@ -244,4 +244,77 @@ export async function writeFeedback(
   }
 
   return results;
+}
+
+/**
+ * Revoke all existing Sentinel feedback for the given agent IDs.
+ * Must be called before rescore to prevent stale data accumulation.
+ * See architecture-audit.md §Rescore Decision.
+ */
+export async function revokeAllFeedback(
+  agentIds: number[],
+  options: { dryRun?: boolean } = {}
+): Promise<{ revoked: number; errors: number }> {
+  const { dryRun = false } = options;
+  let revoked = 0;
+  let errors = 0;
+
+  const walletClient = dryRun ? null : getWalletClient();
+  const account = dryRun ? null : getAccount();
+
+  const limit = pLimit(20);
+
+  // First, find all agents where Sentinel has existing feedback
+  const agentsWithFeedback: { agentId: number; lastIndex: bigint }[] = [];
+
+  console.log(`Checking ${agentIds.length} agents for existing Sentinel feedback...`);
+  const checks = agentIds.map(agentId =>
+    limit(async () => {
+      try {
+        const lastIndex = await publicClient.readContract({
+          address: REPUTATION_REGISTRY_ADDRESS,
+          abi: REPUTATION_REGISTRY_ABI,
+          functionName: 'getLastIndex',
+          args: [BigInt(agentId), SENTINEL_WRITER_ADDRESS],
+        }) as bigint;
+        if (lastIndex > 0n) {
+          agentsWithFeedback.push({ agentId, lastIndex });
+        }
+      } catch {
+        // No feedback for this agent
+      }
+    })
+  );
+  await Promise.all(checks);
+
+  console.log(`Found ${agentsWithFeedback.length} agents with existing Sentinel feedback`);
+
+  // Revoke each one
+  for (const { agentId, lastIndex } of agentsWithFeedback) {
+    if (dryRun) {
+      console.log(`DRY RUN: would revoke agent #${agentId} index ${lastIndex}`);
+      revoked++;
+      continue;
+    }
+
+    try {
+      const { request } = await publicClient.simulateContract({
+        account: account!,
+        address: REPUTATION_REGISTRY_ADDRESS,
+        abi: REPUTATION_REGISTRY_ABI,
+        functionName: 'revokeFeedback',
+        args: [BigInt(agentId), lastIndex],
+      });
+
+      const txHash = await walletClient!.writeContract(request);
+      await publicClient.waitForTransactionReceipt({ hash: txHash });
+      console.log(`Revoked #${agentId} index ${lastIndex}: ${txHash}`);
+      revoked++;
+    } catch (e) {
+      console.error(`Revoke #${agentId} failed: ${(e as Error).message.slice(0, 80)}`);
+      errors++;
+    }
+  }
+
+  return { revoked, errors };
 }

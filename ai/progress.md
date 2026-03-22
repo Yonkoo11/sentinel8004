@@ -1,6 +1,6 @@
 # Sentinel8004 - Progress
 
-## Status: ALL CRITIQUE FIXES COMPLETE (March 20, 2026, Session 5)
+## Status: ARCHITECTURE AUDIT COMPLETE (March 21, 2026, Session 6-7)
 
 ## What's Done (Sessions 3-5)
 
@@ -41,6 +41,86 @@
 ## Files Modified/Created This Session
 - Modified: dashboard/index.html, dashboard/methodology.html, ai/hackathon-draft.md, scripts/trust-gate.ts, src/writer.ts, scripts/generate-dashboard.ts, package.json
 - Created: vitest.config.ts, tests/scorer.test.ts, tests/canonical-json.test.ts, tests/sybil.test.ts, scripts/weight-sensitivity.ts, scripts/threshold-analysis.ts, scripts/timing-cluster-analysis.ts
+
+## Session 6-7: Deep Architecture Audit (March 21, 2026)
+
+Full first-principles audit. No code written. All findings in `ai/architecture-audit.md`.
+
+**Key Findings:**
+1. L5 compromised: Toppa (#1870) scored 95 but true score is 80. 431 sock puppets added +15 via L5.
+2. Loopuman (#17) has 931 sock puppets, getSummary returns 98 vs Sentinel's 35.
+3. Agent #1865 has 437 sock puppets.
+4. Zero legitimate third-party scorers exist. 466/480 scored agents = Sentinel-only.
+5. 1,797 total sock puppet wallets across 3 agents, zero overlap.
+6. getSummary is actively returning attacker-controlled data on mainnet.
+7. Contract owner identified: Leonard Tan (Web3Auth CTO), single EOA, 40+ chains.
+8. IPFS hash integrity verified (5/5 match).
+9. ValidationRegistry also gamed by same Toppa owner (25 coordinated validations).
+10. AgentDashboard (#1869, score 85) is the true #1 agent.
+
+**Corrected ranking (top 3):**
+1. AgentDashboard (#1869): 85 (clean)
+2. Toppa (#1870): 80 (was 95, -15 from L5 sock puppet removal)
+3. CRIA (#2335): 77 (clean)
+
+**Required changes (priority order):**
+1. Fix L5: filter providers by tx history + funding independence
+2. Revoke-before-rescore: call revokeFeedback before new writes
+3. TrustGate consumer library: readAllFeedback with scorer whitelist
+4. Dashboard fraud indicators: Sybil alerts for #17, #1865, #1870
+5. Tag standardization: "sentinel8004/trust-v2" consistently
+
+**Full details:** ai/architecture-audit.md
+
+## Session 8: Implementation (March 21, 2026)
+
+**IPFS Provider Switch:**
+- Pinata limits hit. Added Filebase (S3-compatible, 5GB free) as primary IPFS provider.
+- Modified: `src/ipfs.ts` (added `pinViaFilebase` with AWS4 signing), `.env`, `.env.example`
+- Tested: pinned test JSON, got CID `QmfGPfGYyCe37T3K7sZrQXttA2dYm9L7o6mdvyrV9wjR79`
+- Provider priority: Filebase > Lighthouse > Pinata
+
+**L5 Fix (Priority #1 from audit):**
+- Modified: `src/layers/reputation.ts` (full rewrite with 3 anti-Sybil filters)
+  1. Excludes SENTINEL_WRITER_ADDRESS from client list (prevents self-referential loop)
+  2. Excludes providers with <5 total txs (sock puppet filter via Blockscout)
+  3. Uniformity filter: all scores >90 from qualified providers = SYBIL_BOOSTED flag
+- Modified: `src/config.ts` (added SENTINEL_WRITER_ADDRESS constant)
+- **VERIFIED ON LIVE CHAIN**: 5/5 agents pass
+  - Toppa (#1870): 431 puppets filtered, score 0/15, SYBIL_BOOSTED flag
+  - Loopuman (#17): 936 external clients filtered, score 0/15, SYBIL_BOOSTED flag
+  - Agent #1865: 437 puppets filtered, score 0/15, SYBIL_BOOSTED flag
+  - AgentDashboard (#1869): Sentinel-only, score 0/15, no flag (correct)
+  - CRIA (#2335): Sentinel-only, score 0/15, no flag (correct)
+
+**Revoke Capability (Priority #2):**
+- Added `revokeAllFeedback()` to `src/writer.ts`
+- Added `revokeFeedback` ABI to `src/config.ts`
+- NOT YET TESTED on-chain (requires gas)
+
+**Dashboard Updates:**
+- `SYBIL_BOOSTED` added to red flag set in `app.js`
+- IPFS gateway switched from Lighthouse to Filebase across all files
+- Methodology worked example updated: Toppa now shows 80/100 with Sybil correction explanation
+- `src/config.ts` IPFS_GATEWAYS updated
+
+**All tests pass:** 21/21, clean compile.
+
+**Session 9: Rescan + L5 Correction (March 21, 2026)**
+
+- Incremental rescan: 317 new agents (IDs 2903-3219), merged to 3,219 total
+- L5 re-scored for 2 agents with non-zero reputation:
+  - Toppa #1870: 95 → 80 (430 sock puppets filtered, SYBIL_BOOSTED flag)
+  - Orbiting Parity #2259: stays 15 (1 legitimate external client, 85+ txs)
+- Dashboard regenerated: scores.json now matches methodology page (Toppa = 80)
+- All new agents scored 15-20 (mass registration spam, no metadata)
+- 21/21 tests pass, clean tsc compile
+
+**Remaining from audit:**
+- [ ] Full revoke-and-rescore (~42 CELO) - revokes old on-chain scores, rewrites with corrected L5
+- [ ] TrustGate consumer library
+- [ ] Tag standardization (happens automatically during rescore)
+- [ ] Disclosure document for ERC-8004 team
 
 ## NOT Done
 - Changes not committed or pushed yet
