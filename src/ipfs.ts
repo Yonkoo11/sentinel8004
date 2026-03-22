@@ -7,23 +7,40 @@ const LIGHTHOUSE_API_URL = 'https://upload.lighthouse.storage/api/v0/add';
  * Provider priority: Filebase (S3) > Lighthouse > Pinata.
  */
 export async function pinJSON(data: unknown, name: string): Promise<string> {
+  const errors: string[] = [];
+
   const filebaseKey = process.env.FILEBASE_ACCESS_KEY;
   const filebaseSecret = process.env.FILEBASE_SECRET_KEY;
   const filebaseBucket = process.env.FILEBASE_BUCKET || 'sentinel8004';
   if (filebaseKey && filebaseSecret) {
-    return pinViaFilebase(data, name, filebaseKey, filebaseSecret, filebaseBucket);
+    try {
+      return await pinViaFilebase(data, name, filebaseKey, filebaseSecret, filebaseBucket);
+    } catch (e) {
+      errors.push(`Filebase: ${(e as Error).message}`);
+    }
   }
 
   const lighthouseKey = process.env.LIGHTHOUSE_API_KEY;
   if (lighthouseKey) {
-    return pinViaLighthouse(data, name, lighthouseKey);
+    try {
+      return await pinViaLighthouse(data, name, lighthouseKey);
+    } catch (e) {
+      errors.push(`Lighthouse: ${(e as Error).message}`);
+    }
   }
 
   const pinataJwt = process.env.PINATA_JWT;
   if (pinataJwt) {
-    return pinViaPinata(data, name, pinataJwt);
+    try {
+      return await pinViaPinata(data, name, pinataJwt);
+    } catch (e) {
+      errors.push(`Pinata: ${(e as Error).message}`);
+    }
   }
 
+  if (errors.length > 0) {
+    throw new Error(`All IPFS providers failed: ${errors.join('; ')}`);
+  }
   throw new Error('No IPFS provider configured. Set FILEBASE_ACCESS_KEY+FILEBASE_SECRET_KEY, LIGHTHOUSE_API_KEY, or PINATA_JWT.');
 }
 

@@ -266,10 +266,29 @@ async function write(args: string[]) {
   console.log(`Skipped: ${skipped}`);
   console.log(`Failed:  ${failed}`);
 
-  // Save write results for dashboard
-  mkdirSync(RESULTS_DIR, { recursive: true });
-  writeFileSync(`${RESULTS_DIR}/write-results.json`, JSON.stringify(results, null, 2));
-  console.log(`Write results saved to ${RESULTS_DIR}/write-results.json`);
+  // Merge write results into existing file (preserves prior on-chain data)
+  if (!dryRun) {
+    mkdirSync(RESULTS_DIR, { recursive: true });
+    const writeResultsPath = `${RESULTS_DIR}/write-results.json`;
+    let existing: typeof results = [];
+    try {
+      existing = JSON.parse(readFileSync(writeResultsPath, 'utf-8'));
+    } catch { /* no existing file */ }
+
+    // Build map of existing results, then overlay new results
+    const merged = new Map<number, (typeof results)[0]>();
+    for (const wr of existing) merged.set(wr.agentId, wr);
+    for (const wr of results) {
+      const prev = merged.get(wr.agentId);
+      // Keep the better result: prefer entries with successful txHash
+      if (!prev || (wr.txHash && !wr.error) || (!prev.txHash || prev.error)) {
+        merged.set(wr.agentId, wr);
+      }
+    }
+    const mergedArr = [...merged.values()].sort((a, b) => a.agentId - b.agentId);
+    writeFileSync(writeResultsPath, JSON.stringify(mergedArr, null, 2));
+    console.log(`Write results merged and saved to ${writeResultsPath} (${mergedArr.length} entries)`);
+  }
 }
 
 /**

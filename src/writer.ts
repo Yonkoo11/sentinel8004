@@ -72,31 +72,42 @@ export async function writeFeedback(
     console.log(`Writer address: ${account.address}`);
   }
 
-  // Check which agents we've already scored (batch with concurrency)
+  // Pre-filter using write-results.json (avoids thousands of RPC calls)
   const alreadyScoredSet = new Set<number>();
-  if (!dryRun && account) {
-    console.log('Checking existing feedback...');
-    const limit = pLimit(20);
-    const checks = reports.map(report =>
-      limit(async () => {
-        try {
-          const clients = await publicClient.readContract({
-            address: REPUTATION_REGISTRY_ADDRESS,
-            abi: REPUTATION_REGISTRY_ABI,
-            functionName: 'getClients',
-            args: [BigInt(report.agentId)],
-          });
-          if ((clients as string[]).includes(account!.address)) {
-            alreadyScoredSet.add(report.agentId);
-          }
-        } catch {
-          // getClients may fail for agents with no feedback yet
-        }
-      })
-    );
-    await Promise.all(checks);
+  try {
+    const writeResults = JSON.parse(readFileSync('data/write-results.json', 'utf-8')) as WriteResult[];
+    for (const wr of writeResults) {
+      if (wr.txHash && !wr.error) alreadyScoredSet.add(wr.agentId);
+    }
     if (alreadyScoredSet.size > 0) {
-      console.log(`Skipping ${alreadyScoredSet.size} already-scored agents`);
+      console.log(`Pre-filtered ${alreadyScoredSet.size} already-written agents from write-results.json`);
+    }
+  } catch {
+    // No write-results.json, fall back to on-chain check for all agents
+    if (!dryRun && account) {
+      console.log('No write-results.json, checking on-chain (this may be slow)...');
+      const limit = pLimit(20);
+      const checks = reports.map(report =>
+        limit(async () => {
+          try {
+            const clients = await publicClient.readContract({
+              address: REPUTATION_REGISTRY_ADDRESS,
+              abi: REPUTATION_REGISTRY_ABI,
+              functionName: 'getClients',
+              args: [BigInt(report.agentId)],
+            });
+            if ((clients as string[]).includes(account!.address)) {
+              alreadyScoredSet.add(report.agentId);
+            }
+          } catch {
+            // getClients may fail for agents with no feedback yet
+          }
+        })
+      );
+      await Promise.all(checks);
+      if (alreadyScoredSet.size > 0) {
+        console.log(`Skipping ${alreadyScoredSet.size} already-scored agents`);
+      }
     }
   }
 
