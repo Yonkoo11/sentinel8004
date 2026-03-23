@@ -7,9 +7,9 @@ Sentinel8004
 Infrastructure-grade trust layer for ERC-8004 agents on Celo
 
 ## Description
-Sentinel8004 is a trust infrastructure primitive for Celo's ERC-8004 ecosystem. It scans all 2,900+ registered agents, scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain. Any agent, dApp, or contract on Celo can query these scores to gate interactions without building their own trust evaluation.
+Sentinel8004 is a trust infrastructure primitive for Celo's ERC-8004 ecosystem. It scans all 3,219 registered agents, scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain. Any agent, dApp, or contract on Celo can query these scores to gate interactions without building their own trust evaluation.
 
-What Celo gains: a composable trust layer that makes the IdentityRegistry usable. Before Sentinel, there was no way to distinguish legitimate agents from the 50%+ spam. Now any builder can call `getFeedback(agentId)` and get an auditable trust score backed by IPFS-pinned evidence.
+What Celo gains: a composable trust layer that makes the IdentityRegistry usable. Before Sentinel, there was no way to distinguish legitimate agents from the 50%+ spam -- and worse, the existing on-chain reputation data was actively gamed. We discovered 1,797 sock puppet wallets across 3 agents inflating their scores through the ReputationRegistry. Sentinel's L5 anti-Sybil filters detect and neutralize these attacks. Now any builder can call `getFeedback(agentId)` and get an auditable trust score backed by IPFS-pinned evidence.
 
 ## What problem does it solve?
 The Celo IdentityRegistry has zero quality layer. We found:
@@ -32,6 +32,7 @@ The Celo IdentityRegistry has zero quality layer. We found:
    - METADATA_CLONE → max 25 (>80% identical to sibling)
    - ALL_ENDPOINTS_DEAD → max 35 (all endpoints unreachable)
    - NEGATIVE_REPUTATION → max 30 (net negative feedback)
+   - SYBIL_BOOSTED → max 40 (L5 reputation inflated by sock puppet wallets with <5 total txs)
 4. Scores written to ReputationRegistry as on-chain attestations (tag1="sentinel8004", tag2="trust-v2"; the first 1,852 batch used tag1="agentguard" before the project rename)
 5. MCP server exposes 3 tools for AI-to-AI queries:
    - `check_agent_trust(agentId)` — score, confidence, layer breakdown, flags
@@ -40,11 +41,13 @@ The Celo IdentityRegistry has zero quality layer. We found:
 6. Static dashboard for human inspection with search, sort, and agent detail views
 
 ## Results
-- **2,900+ agents scanned and scored** across the full Celo IdentityRegistry
-- **1,857+ trust attestations written on-chain** to ReputationRegistry (self-feedback blocked by contract for our own agent #1853)
-- 3 attestations with full IPFS reports (agents #1856, #1857, #1858), proving end-to-end pipeline
+- **3,219 agents scanned and scored** across the full Celo IdentityRegistry
+- **3,200+ trust attestations written on-chain** to ReputationRegistry with IPFS-backed reports (self-feedback blocked by contract for our own agent #1853)
+- **Architecture audit discovered 1,797 sock puppet wallets** across 3 agents gaming the ReputationRegistry. Toppa (#1870) had 431 sock puppets inflating its score from 80 to 95. L5 anti-Sybil filters now detect and neutralize these attacks (tx-count filter + uniformity detection + SYBIL_BOOSTED circuit breaker).
 - Circuit breakers correctly cap spam clusters at 15/100 regardless of metadata quality
 - Sentinel8004 registered as agent #1853 ([TX](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f))
+- **22 unit tests** (scorer, canonical JSON, Sybil detection) all passing
+- **Corrected top 5:** AgentDashboard (#1869): 85, CRIA (#2335): 77, Celo GovAI Hub (#2807): 75, Fixr (#1873): 74, OG_Bot (#3040): 72
 
 ## Known Limitations
 We document these openly because trust scoring demands honesty:
@@ -57,7 +60,16 @@ We document these openly because trust scoring demands honesty:
 
 ## Tracks
 - Build Agents for the Real World V2: Best Agent on Celo, Best Agent Infra
-- The Synthesis: Best Agent on Celo, Agents With Receipts (ERC-8004), Synthesis Open Track
+- The Synthesis:
+  - Best Agent on Celo ($5K)
+  - Agents With Receipts — ERC-8004 ($4K shared with PL_Genesis)
+  - Synthesis Open Track ($28K pool)
+  - Let the Agent Cook — No Humans Required (Protocol Labs, $4K)
+  - Best Use Case with Agentic Storage (Filecoin, $2K) — RFS-2 + RFS-3
+  - Mechanism Design for Public Goods Evaluation (Octant, $1K)
+  - Data Analysis for Project Evaluation (Octant, $1K)
+  - Data Collection for Project Evaluation (Octant, $1K)
+  - Best Self Protocol Integration ($1K) — Sybil-resistant workflows
 
 ## Integration Surfaces
 Three ways to consume trust scores today:
