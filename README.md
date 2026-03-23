@@ -2,15 +2,15 @@
 
 Infrastructure-grade trust layer for ERC-8004 agents on Celo.
 
-Sentinel8004 scans all 3,219 registered agents on Celo's IdentityRegistry, scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain with IPFS-pinned evidence reports. Any agent, dApp, or contract can query these scores to gate interactions without building their own trust evaluation.
+Sentinel8004 scans all 3,766 registered agents on Celo's IdentityRegistry, scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain with IPFS-pinned evidence reports. Any agent, dApp, or contract can query these scores to gate interactions without building their own trust evaluation.
 
 **Live dashboard**: [yonkoo11.github.io/sentinel8004](https://yonkoo11.github.io/sentinel8004/)
 
-**On-chain**: 3,200+ trust attestations on [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) (Celo mainnet). Sentinel8004 registered as agent [#1853](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f).
+**On-chain**: 3,300+ trust attestations on [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) (Celo mainnet). Sentinel8004 registered as agent [#1853](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f).
 
 ## The Problem
 
-Celo's IdentityRegistry has 3,219 registered agents and growing. No quality layer exists. What we found:
+Celo's IdentityRegistry has 3,766 registered agents and growing. No quality layer exists. What we found:
 
 - **Sybil spam**: One address owns 991+ "babycaisubagent" clones with identical metadata
 - **Reputation gaming**: 1,797 sock puppet wallets across 3 agents were inflating their scores through the ReputationRegistry. Toppa (#1870) had 431 puppets, Loopuman (#17) had 936, Agent #1865 had 437.
@@ -224,8 +224,8 @@ npx tsx scripts/trust-gate.ts 50   # → DO NOT INTERACT (11/100, MASS_REGISTRAT
 
 ## Results
 
-- **3,219 agents scanned** across the full Celo IdentityRegistry
-- **3,200+ trust attestations written on-chain** with IPFS-backed reports
+- **3,766 agents scanned** across the full Celo IdentityRegistry
+- **3,300+ trust attestations written on-chain** with IPFS-backed reports
 - **1,797 sock puppet wallets discovered** gaming the ReputationRegistry across 3 agents
 - **22 unit tests** (scorer, canonical JSON, Sybil detection) all passing
 - **Top 5 agents**: AgentDashboard (85), CRIA (77), Celo GovAI Hub (75), Fixr (74), OG_Bot (72)
@@ -242,7 +242,7 @@ npx tsx scripts/trust-gate.ts 50   # → DO NOT INTERACT (11/100, MASS_REGISTRAT
 
 **Why document limitations?** Trust systems that hide their weaknesses aren't trustworthy. We publish what each layer proves, what it doesn't prove, and how much it costs to fake.
 
-**Why IPFS fallback chain?** Writing 3,200+ reports hit rate limits on every IPFS provider. The pipeline tries Filebase, then Pinata, then computes CIDs locally via `ipfs-only-hash` (identical CIDs without uploading). Reports are always available in `data/scan-results.json` and the `feedbackHash` on-chain matches regardless of pinning method.
+**Why IPFS fallback chain?** Writing 3,300+ reports hit rate limits on every IPFS provider. The pipeline tries Filebase, then Pinata, then computes CIDs locally via `ipfs-only-hash` (identical CIDs without uploading). Reports are always available in `data/scan-results.json` and the `feedbackHash` on-chain matches regardless of pinning method.
 
 ## Tech Stack
 
