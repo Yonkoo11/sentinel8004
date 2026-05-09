@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel8004 — ERC-8004 Trust Report</title>
+<meta name="description" content="Autonomous trust scoring for every AI agent on Celo's ERC-8004 registry. Scored. Verified. On-chain.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ══════════════════════════════════════════════════════════════
+     PROPOSAL 2 — EDITORIAL-ASYMMETRIC-BOLD-SPACIOUS-KINETIC
+     DNA: Security Report. The Pudding meets Stripe Annual Report.
+     ══════════════════════════════════════════════════════════════ */
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0d0c;
+    --text: #f0f2f0;
+    --text-dim: #8a8f8c;
+    --text-faint: #505553;
+    --celo: #35D07F;
+    --accent2: #6B8AFF;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --border: rgba(240, 242, 240, 0.08);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  a { color: var(--accent2); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: var(--celo); }
+
+  /* ── Navigation ── */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    background: rgba(10, 13, 12, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-left { display: flex; align-items: center; gap: 32px; }
+  .nav-wordmark {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; gap: 24px; }
+  .nav-link {
+    font-size: 13px;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover, .nav-link.active { color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--celo);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid rgba(53, 208, 127, 0.25);
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .nav-cta:hover {
+    background: rgba(53, 208, 127, 0.08);
+    color: var(--celo);
+  }
+
+  /* ── Scroll Reveal ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-d1 { transition-delay: 0.1s; }
+  .reveal-d2 { transition-delay: 0.2s; }
+  .reveal-d3 { transition-delay: 0.3s; }
+  .reveal-d4 { transition-delay: 0.4s; }
+  .reveal-d5 { transition-delay: 0.5s; }
+
+  /* ── Section Label (left margin) ── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-faint);
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    position: absolute;
+    left: 48px;
+    top: 0;
+  }
+
+  /* ── Asymmetric Layout ── */
+  .asym {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 64px;
+    align-items: start;
+  }
+  .asym-label {
+    padding-top: 8px;
+  }
+  .asym-label-text {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-faint);
+  }
+  .asym-label-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* ══════════════════════════════════════════
+     HERO — Full-width editorial opening
+     ══════════════════════════════════════════ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+  }
+  .hero-watermark {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    transform: translateY(-50%);
+    font-family: var(--mono);
+    font-size: 200px;
+    font-weight: 900;
+    color: var(--celo);
+    opacity: 0.06;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--celo);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-tag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--celo);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(53, 208, 127, 0.4); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(53, 208, 127, 0); }
+  }
+  .hero-headline {
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+    color: var(--text);
+  }
+  .hero-headline .num {
+    font-family: var(--mono);
+    color: var(--text);
+  }
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--text-dim);
+    margin-top: 32px;
+    max-width: 540px;
+    line-height: 1.6;
+  }
+  .hero-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 48px;
+    display: flex;
+    gap: 32px;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-meta-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--celo);
+  }
+
+  /* ══════════════════════════════════════════
+     STATS — Oversized standalone numbers
+     ══════════════════════════════════════════ */
+  .stats-section {
+    padding: 140px 0;
+    position: relative;
+  }
+  .stat-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+  .stat-big {
+    font-family: var(--mono);
+    font-size: clamp(56px, 8vw, 96px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .stat-big-label {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .stat-big-context {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 4px;
+  }
+  .text-green { color: var(--celo); }
+  .text-red { color: var(--red); }
+  .text-yellow { color: var(--yellow); }
+  .text-white { color: var(--text); }
+
+  /* ══════════════════════════════════════════
+     PROBLEM — Half-viewport red number
+     ══════════════════════════════════════════ */
+  .problem-section {
+    padding: 140px 0;
+    position: relative;
+  }
+  .problem-grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .problem-number {
+    font-family: var(--mono);
+    font-size: clamp(80px, 15vw, 180px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--red);
+  }
+  .problem-text {
+    max-width: 400px;
+  }
+  .problem-text h2 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .problem-text p {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .problem-text .detail {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Flag Pills ── */
+  .flags-section {
+    padding: 0 0 140px;
+  }
+  .flag-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .flag-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid;
+    background: transparent;
+  }
+  .flag-pill-red {
+    color: var(--red);
+    border-color: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.05);
+  }
+  .flag-pill-yellow {
+    color: var(--yellow);
+    border-color: rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.05);
+  }
+
+  /* ══════════════════════════════════════════
+     PIPELINE — Vertical timeline
+     ══════════════════════════════════════════ */
+  .pipeline-section {
+    padding: 140px 0;
+  }
+  .pipeline-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .pipeline-line {
+    position: absolute;
+    left: 15px;
+    top: 20px;
+    bottom: 20px;
+    width: 1px;
+    background: var(--border);
+  }
+  .pipeline-step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 24px;
+    align-items: start;
+    padding: 20px 0;
+    position: relative;
+  }
+  .pipeline-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .pipeline-step:last-child .pipeline-dot {
+    border-color: var(--celo);
+    color: var(--celo);
+  }
+  .pipeline-card {
+    background: rgba(240, 242, 240, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+  .pipeline-card-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .pipeline-card-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ══════════════════════════════════════════
+     PROOF — Full-width with green glow
+     ══════════════════════════════════════════ */
+  .proof-section {
+    padding: 140px 0;
+  }
+  .proof-card {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+  .proof-card-inner {
+    background: rgba(240, 242, 240, 0.015);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .proof-card-inner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--celo), transparent);
+    opacity: 0.6;
+  }
+  .proof-card-inner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 40px;
+    background: radial-gradient(ellipse at top, rgba(53, 208, 127, 0.08), transparent);
+    pointer-events: none;
+  }
+  .proof-header {
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .proof-header-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--celo);
+    box-shadow: 0 0 8px rgba(53, 208, 127, 0.4);
+  }
+  .proof-header-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .proof-body {
+    padding: 32px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 64px;
+  }
+  .proof-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .proof-key {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .proof-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .proof-val a {
+    color: var(--celo);
+    text-decoration: none;
+  }
+  .proof-val a:hover { text-decoration: underline; }
+  .proof-progress-bar {
+    padding: 24px 40px 28px;
+    border-top: 1px solid var(--border);
+  }
+  .progress-track {
+    width: 100%;
+    height: 3px;
+    background: rgba(240, 242, 240, 0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--celo);
+    border-radius: 2px;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  /* ══════════════════════════════════════════
+     INTEGRATION — Code block
+     ══════════════════════════════════════════ */
+  .integration-section {
+    padding: 140px 0;
+  }
+  .code-block {
+    background: rgba(240, 242, 240, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .code-header {
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .code-header-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--celo);
+  }
+  .code-header-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .code-body {
+    padding: 36px 40px;
+  }
+  .code-body pre {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text-dim);
+    overflow-x: auto;
+    white-space: pre;
+    margin: 0;
+  }
+  .code-body .kw { color: var(--celo); }
+  .code-body .str { color: var(--red); }
+  .code-body .num { color: var(--yellow); }
+  .code-body .cmt { color: var(--text-faint); }
+
+  .integration-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .integration-card {
+    background: rgba(240, 242, 240, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .integration-card-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--celo);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .integration-card-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ══════════════════════════════════════════
+     FOOTER — Minimal, centered
+     ══════════════════════════════════════════ */
+  .site-footer {
+    padding: 80px 48px 60px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-line {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    line-height: 1.8;
+  }
+  .footer-links {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+  }
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ══════════════════════════════════════════
+     RESPONSIVE
+     ══════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .nav { padding: 0 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .asym { grid-template-columns: 1fr; gap: 24px; padding: 0 24px; }
+    .asym-label { display: flex; gap: 8px; align-items: center; }
+    .problem-grid { grid-template-columns: 1fr; padding: 0 24px; }
+    .problem-number { font-size: 100px; }
+    .proof-body { grid-template-columns: 1fr; }
+    .proof-header, .proof-body, .proof-progress-bar { padding-left: 24px; padding-right: 24px; }
+    .proof-card { padding: 0 24px; }
+    .code-body { padding: 24px; }
+    .code-header { padding: 12px 24px; }
+    .integration-cards { grid-template-columns: 1fr; }
+    .nav-right { display: none; }
+    .hero-watermark { font-size: 120px; right: -10%; }
+  }
+  @media (max-width: 600px) {
+    .hero-headline { font-size: 32px; }
+    .hero-meta { flex-direction: column; gap: 8px; }
+    .stat-big { font-size: 48px; }
+    .problem-number { font-size: 72px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body data-page="home">
+
+<!-- ═══════════════════ NAVIGATION ═══════════════════ -->
+<nav class="nav">
+  <div class="nav-left">
+    <a href="index.html" class="nav-wordmark">Sentinel8004</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active" data-page="home">Home</a>
+      <a href="registry.html" class="nav-link" data-page="registry">Registry</a>
+      <a href="methodology.html" class="nav-link" data-page="methodology">Methodology</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-meta" id="scan-date"></span>
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer" class="nav-cta">Verify on CeloScan</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-watermark" id="hero-watermark" aria-hidden="true">2,871</div>
+
+  <div class="hero-tag reveal">
+    <span class="hero-tag-dot"></span>
+    ERC-8004 Trust Report
+  </div>
+
+  <h1 class="hero-headline reveal reveal-d1">
+    <span class="num" id="hero-pct">98.9%</span> of agents are untrustworthy.
+  </h1>
+
+  <p class="hero-sub reveal reveal-d2">
+    We scanned every AI agent on Celo's ERC-8004 IdentityRegistry. Five independent scoring layers. Circuit breakers for spam detection. Every result written on-chain with IPFS proofs.
+  </p>
+
+  <div class="hero-meta reveal reveal-d3">
+    <span><span class="hero-meta-dot"></span> <span id="hero-total">2,902</span> agents scanned</span>
+    <span><span class="hero-meta-dot"></span> <span id="hero-written">2,326</span> written on-chain</span>
+    <span><span class="hero-meta-dot"></span> Celo Mainnet</span>
+  </div>
+</section>
+
+<!-- ═══════════════════ KEY STATS ═══════════════════ -->
+<section class="stats-section">
+  <div class="asym">
+    <div class="asym-label reveal">
+      <div class="asym-label-text">01 / Overview</div>
+      <p class="asym-label-title">The numbers tell a story about the current state of the ERC-8004 ecosystem.</p>
+    </div>
+    <div class="stat-stack">
+      <div class="reveal">
+        <div class="stat-big text-white" id="stat-total">2,902</div>
+        <div class="stat-big-label">total agents in the IdentityRegistry</div>
+        <div class="stat-big-context">ERC-721 tokens on contract 0x8004...9a432</div>
+      </div>
+      <div class="reveal reveal-d1">
+        <div class="stat-big text-red" id="stat-flagged">2,871</div>
+        <div class="stat-big-label">scored below 30 out of 100 -- flagged as untrustworthy</div>
+        <div class="stat-big-context">Triggered by spam registration, dead endpoints, or missing metadata</div>
+      </div>
+      <div class="reveal reveal-d2">
+        <div class="stat-big text-yellow" id="stat-fair">24</div>
+        <div class="stat-big-label">scored between 30 and 69 -- fair but unverified</div>
+        <div class="stat-big-context">Partial metadata, some liveness, no strong trust signals</div>
+      </div>
+      <div class="reveal reveal-d3">
+        <div class="stat-big text-green" id="stat-trusted">7</div>
+        <div class="stat-big-label">scored 70 or above -- trusted agents</div>
+        <div class="stat-big-context">Complete metadata, live endpoints, clean on-chain history</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ THE PROBLEM ═══════════════════ -->
+<section class="problem-section">
+  <div class="problem-grid">
+    <div class="reveal">
+      <div class="problem-number" id="problem-pct">98.9%</div>
+    </div>
+    <div class="problem-text">
+      <h2 class="reveal reveal-d1">The registry is mostly noise.</h2>
+      <p class="reveal reveal-d2">
+        A single registrar account minted over 1,600 agents in a batch operation. Most have no metadata, no live endpoints, and no on-chain activity beyond the initial registration transaction. Without a trust layer, there is no way to separate signal from spam.
+      </p>
+      <p class="reveal reveal-d3">
+        That is the problem Sentinel8004 solves. Every agent gets a composite score across five independent layers, with circuit breakers that cap scores when spam patterns are detected.
+      </p>
+      <div class="detail reveal reveal-d4">
+        <span id="flagged-detail">2,871</span> of <span id="total-detail">2,902</span> agents score below 30/100. Average score across all agents: <span id="avg-score">20.7</span>/100.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ RISK FLAGS ═══════════════════ -->
+<section class="flags-section">
+  <div class="asym">
+    <div class="asym-label reveal">
+      <div class="asym-label-text">02 / Risk Flags</div>
+      <p class="asym-label-title">Circuit breakers fire when specific patterns are detected.</p>
+    </div>
+    <div>
+      <div class="flag-pills reveal reveal-d1" id="flag-pills"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PIPELINE ═══════════════════ -->
+<section class="pipeline-section">
+  <div class="asym">
+    <div class="asym-label reveal">
+      <div class="asym-label-text">03 / Pipeline</div>
+      <p class="asym-label-title">Six steps from registry read to on-chain attestation. Fully autonomous, no human in the loop.</p>
+    </div>
+    <div>
+      <div class="pipeline-list">
+        <div class="pipeline-line"></div>
+
+        <div class="pipeline-step reveal">
+          <div class="pipeline-dot">1</div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-title">Enumerate</div>
+            <div class="pipeline-card-desc">Read every token from the IdentityRegistry ERC-721 contract. Parse metadata from five formats: gzip, base64, IPFS, HTTP, and raw JSON.</div>
+          </div>
+        </div>
+
+        <div class="pipeline-step reveal reveal-d1">
+          <div class="pipeline-dot">2</div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-title">Probe</div>
+            <div class="pipeline-card-desc">Hit every declared endpoint with HTTP probes. Measure response times, status codes, and content types. Dead endpoints trigger circuit breakers.</div>
+          </div>
+        </div>
+
+        <div class="pipeline-step reveal reveal-d2">
+          <div class="pipeline-dot">3</div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-title">Score (5 Layers)</div>
+            <div class="pipeline-card-desc">Registration quality, endpoint liveness, on-chain wallet behavior via Blockscout, Sybil/spam detection, and existing reputation feedback. Each layer scores independently.</div>
+          </div>
+        </div>
+
+        <div class="pipeline-step reveal reveal-d3">
+          <div class="pipeline-dot">4</div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-title">Circuit Breakers</div>
+            <div class="pipeline-card-desc">Hard caps for known-bad patterns. Mass registration from a single wallet caps at 15. Cloned metadata caps at 25. Scores cannot be inflated past circuit breaker ceilings.</div>
+          </div>
+        </div>
+
+        <div class="pipeline-step reveal reveal-d4">
+          <div class="pipeline-dot">5</div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-title">Composite</div>
+            <div class="pipeline-card-desc">Weighted sum across all layers produces a final 0-100 score with a confidence level (high, medium, low) based on how many layers contributed data.</div>
+          </div>
+        </div>
+
+        <div class="pipeline-step reveal reveal-d5">
+          <div class="pipeline-dot">6</div>
+          <div class="pipeline-card">
+            <div class="pipeline-card-title">Write On-Chain</div>
+            <div class="pipeline-card-desc">Pin the full report to IPFS. Write the score, confidence hash, and IPFS URI to the ReputationRegistry contract on Celo. Every score is verifiable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ON-CHAIN PROOF ═══════════════════ -->
+<section class="proof-section">
+  <div class="proof-card">
+    <div class="proof-card-inner reveal">
+      <div class="proof-header">
+        <span class="proof-header-dot"></span>
+        <span class="proof-header-text">On-chain Proof</span>
+      </div>
+      <div class="proof-body">
+        <div class="proof-row">
+          <span class="proof-key">ReputationRegistry</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">0x8004...9dE9b63</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">IdentityRegistry</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank" rel="noopener noreferrer">0x8004...9a432</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Attestations written</span>
+          <span class="proof-val" id="proof-written">Loading...</span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Writer address</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0xf9946775891a24462cD4ec885d0D4E2675C84355" target="_blank" rel="noopener noreferrer">0xf994...4355</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Cost per transaction</span>
+          <span class="proof-val">~0.009 CELO</span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">Chain</span>
+          <span class="proof-val">Celo Mainnet (42220)</span>
+        </div>
+      </div>
+      <div class="proof-progress-bar">
+        <div class="progress-track">
+          <div class="progress-fill" id="onchain-bar"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="onchain-label">Loading...</span>
+          <span>written on-chain</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ INTEGRATION ═══════════════════ -->
+<section class="integration-section">
+  <div class="asym">
+    <div class="asym-label reveal">
+      <div class="asym-label-text">04 / Integration</div>
+      <p class="asym-label-title">Any agent or contract on Celo can read trust scores directly from the ReputationRegistry.</p>
+    </div>
+    <div>
+      <div class="code-block reveal reveal-d1">
+        <div class="code-header">
+          <span class="code-header-dot"></span>
+          <span class="code-header-text">Read trust scores on-chain</span>
+        </div>
+        <div class="code-body">
+          <pre><span class="cmt">// Any agent or contract can query trust scores</span>
+<span class="kw">const</span> feedback = <span class="kw">await</span> registry.getFeedback(agentId);
+<span class="cmt">// => { value: 95n, tag1: "sentinel8004", feedbackURI: "ipfs://..." }</span>
+
+<span class="cmt">// Gate untrusted agents before interaction</span>
+<span class="kw">if</span> (feedback.value &lt; <span class="num">30n</span>) {
+  <span class="kw">throw new</span> Error(<span class="str">"Agent untrusted — score below threshold"</span>);
+}
+
+<span class="cmt">// Verify the full report via IPFS</span>
+<span class="kw">const</span> report = <span class="kw">await</span> fetch(feedback.feedbackURI);
+<span class="kw">const</span> { compositeScore, layers, circuitBreakers } = <span class="kw">await</span> report.json();</pre>
+        </div>
+      </div>
+
+      <div class="integration-cards reveal reveal-d2">
+        <div class="integration-card">
+          <div class="integration-card-title">Direct Contract</div>
+          <div class="integration-card-desc">Call getFeedback() from any Solidity contract or viem/ethers client. No API key needed.</div>
+        </div>
+        <div class="integration-card">
+          <div class="integration-card-title">MCP Server</div>
+          <div class="integration-card-desc">AI agents query trust via the check_agent_trust MCP tool. Works with any MCP-compatible client.</div>
+        </div>
+        <div class="integration-card">
+          <div class="integration-card-title">Dashboard API</div>
+          <div class="integration-card-desc">Static JSON at scores.json for lightweight reads. Updated after every scan cycle.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section style="padding: 120px 0;">
+  <div style="text-align: center;">
+    <p class="reveal" style="font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 20px;">Explore all <span id="cta-total" style="font-family: var(--mono);">2,902</span> agents</p>
+    <p class="reveal reveal-d1" style="font-size: 15px; color: var(--text-dim); margin-bottom: 32px; max-width: 420px; margin-left: auto; margin-right: auto;">Search, filter, and inspect every agent in the registry. Every score links to its IPFS proof.</p>
+    <a href="registry.html" class="reveal reveal-d2" style="display: inline-block; font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--bg); background: var(--celo); padding: 14px 36px; border-radius: 6px; text-decoration: none; letter-spacing: 0.02em; transition: opacity 0.2s;">Open Registry &rarr;</a>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="site-footer">
+  <div class="footer-line">
+    Sentinel8004 v2 &middot; <span id="footer-attestations">...</span> attestations on-chain &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" style="color: var(--text-faint);">ERC-8004</a> &middot; Built on Celo
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">CeloScan</a>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+(async function () {
+  // ── Scroll Reveal (in case shared.js is not loaded) ──
+  if (typeof initReveals === 'undefined') {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  }
+
+  try {
+    const res = await fetch('data/scores.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const reports = data.reports || [];
+
+    const total = reports.length;
+    const trusted = reports.filter(r => r.compositeScore >= 70).length;
+    const fair = reports.filter(r => r.compositeScore >= 30 && r.compositeScore < 70).length;
+    const flagged = reports.filter(r => r.compositeScore < 30).length;
+    const spamPct = total > 0 ? ((flagged / total) * 100).toFixed(1) : '0';
+    const avgScore = total > 0 ? (reports.reduce((s, r) => s + r.compositeScore, 0) / total).toFixed(1) : '0';
+
+    // ── Hero ──
+    document.getElementById('hero-pct').textContent = spamPct + '%';
+    document.getElementById('hero-total').textContent = total.toLocaleString();
+    document.getElementById('hero-watermark').textContent = flagged.toLocaleString();
+
+    // ── Stats ──
+    document.getElementById('stat-total').textContent = total.toLocaleString();
+    document.getElementById('stat-flagged').textContent = flagged.toLocaleString();
+    document.getElementById('stat-fair').textContent = fair.toLocaleString();
+    document.getElementById('stat-trusted').textContent = trusted.toLocaleString();
+
+    // ── Problem ──
+    document.getElementById('problem-pct').textContent = spamPct + '%';
+    document.getElementById('flagged-detail').textContent = flagged.toLocaleString();
+    document.getElementById('total-detail').textContent = total.toLocaleString();
+    document.getElementById('avg-score').textContent = avgScore;
+
+    // ── CTA ──
+    document.getElementById('cta-total').textContent = total.toLocaleString();
+
+    // ── On-chain written ──
+    if (data.onchainStats) {
+      const w = data.onchainStats.written || 0;
+      document.getElementById('hero-written').textContent = w.toLocaleString();
+    }
+
+    // ── Flag pills ──
+    const allFlags = {};
+    for (const r of reports) {
+      const seen = new Set();
+      for (const layer of (r.layers || [])) {
+        for (const flag of (layer.flags || [])) {
+          const key = flag.split(':')[0];
+          if (!seen.has(key)) {
+            seen.add(key);
+            allFlags[key] = (allFlags[key] || 0) + 1;
+          }
+        }
+      }
+    }
+    const sorted = Object.entries(allFlags).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const redFlags = ['MASS_REGISTRATION', 'METADATA_CLONE', 'ALL_ENDPOINTS_DEAD', 'NEGATIVE_REPUTATION', 'UNLIMITED_APPROVALS'];
+    document.getElementById('flag-pills').innerHTML = sorted.map(([flag, count]) => {
+      const cls = redFlags.includes(flag) ? 'flag-pill-red' : 'flag-pill-yellow';
+      return '<span class="flag-pill ' + cls + '" title="' + count.toLocaleString() + ' agents">' + flag.replace(/_/g, ' ') + ' <span style="opacity:0.6; margin-left:6px;">' + count.toLocaleString() + '</span></span>';
+    }).join('');
+
+    // ── Footer attestation count ──
+    const footerEl = document.getElementById('footer-attestations');
+    if (footerEl) footerEl.textContent = (data.onchainStats?.written || total).toLocaleString();
+
+    // ── On-chain proof card ──
+    const oc = data.onchainStats;
+    if (oc) {
+      const w = oc.written || 0;
+      const t = oc.total || total;
+      document.getElementById('proof-written').textContent = w.toLocaleString() + ' / ' + t.toLocaleString();
+      document.getElementById('onchain-label').textContent = w.toLocaleString() + ' / ' + t.toLocaleString();
+      setTimeout(function () {
+        const pct = t > 0 ? (w / t) * 100 : 0;
+        document.getElementById('onchain-bar').style.width = (pct > 0 ? Math.max(pct, 2) : 0) + '%';
+      }, 800);
+    } else {
+      document.getElementById('proof-written').textContent = 'Pending';
+      document.getElementById('onchain-label').textContent = 'Pending';
+    }
+
+    // ── Scan date ──
+    if (data.scannedAt) {
+      const d = new Date(data.scannedAt);
+      document.getElementById('scan-date').textContent = 'Last scan: ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+  } catch (e) {
+    console.error('Failed to load data:', e);
+    document.getElementById('hero-pct').textContent = '---';
+  }
+})();
+</script>
+</body>
+</html>

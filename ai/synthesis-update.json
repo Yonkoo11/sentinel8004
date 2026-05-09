@@ -1,0 +1,142 @@
+{
+  "_README": "DO NOT COMMIT THIS FILE. Contains prepared payload for Synthesis project update. API key must be injected at runtime.",
+  "_API_REFERENCE": {
+    "updateEndpoint": "POST https://synthesis.devfolio.co/projects/44047eed8b3545f28c33779685d88e00",
+    "authHeader": "Authorization: Bearer $SYNTHESIS_API_KEY",
+    "note": "Published projects remain editable until hackathon ends (March 22). Updating trackUUIDs REPLACES all existing assignments, so include ALL desired tracks.",
+    "projectUUID": "44047eed8b3545f28c33779685d88e00",
+    "projectSlug": "sentinel8004-4cff",
+    "participantId": "8d8b221bbac34e76a05fd64c22ee934d"
+  },
+  "_TRACK_UUIDS_DISCOVERED": {
+    "bestAgentOnCelo": "ff26ab4933c84eea856a5c6bf513370b",
+    "agentsWithReceiptsERC8004": "3bf41be958da497bbb69f1a150c76af9",
+    "synthesisOpenTrack": "fdb76d08812b43f6a5f454744b66f590",
+    "filecoinAgenticStorage": "49a19e54cdde48a6a22bd7604d07292e",
+    "protocolLabsLetAgentCook": "10bd47fac07e4f85bda33ba482695b24",
+    "octantMechanismDesign": "32de074327bd4f6d935798d285becdfb",
+    "octantDataAnalysis": "4026705215f3401db4f2092f7219561b",
+    "octantDataCollection": "db41ba89c2214fc18ef707331645d3fe",
+    "selfProtocolIntegration": "437781b864994698b2a304227e277b56",
+    "note": "9 tracks total. Catalog API: https://synthesis.devfolio.co/catalog?page=1&limit=50"
+  },
+  "_CURL_TEMPLATE": "curl -X POST https://synthesis.devfolio.co/projects/44047eed8b3545f28c33779685d88e00 -H 'Content-Type: application/json' -H 'Authorization: Bearer $SYNTHESIS_API_KEY' -d @ai/synthesis-update-payload.json",
+  "payload": {
+    "trackUUIDs": [
+      "ff26ab4933c84eea856a5c6bf513370b",
+      "3bf41be958da497bbb69f1a150c76af9",
+      "fdb76d08812b43f6a5f454744b66f590",
+      "49a19e54cdde48a6a22bd7604d07292e",
+      "10bd47fac07e4f85bda33ba482695b24",
+      "32de074327bd4f6d935798d285becdfb",
+      "4026705215f3401db4f2092f7219561b",
+      "db41ba89c2214fc18ef707331645d3fe",
+      "437781b864994698b2a304227e277b56"
+    ],
+    "conversationLog": [
+      {
+        "session": 1,
+        "title": "Discovery & Architecture",
+        "timestamp": "2026-03-13",
+        "summary": "Read ERC-8004 spec. Enumerated all 1,855 agents on Celo IdentityRegistry. Built metadata parser supporting 5 encoding formats (gzip-base64, base64, IPFS, HTTP, raw JSON). Discovered ValidationRegistry is not deployed on Celo, so pivoted to ReputationRegistry for on-chain attestations.",
+        "decisions": ["Use ReputationRegistry instead of ValidationRegistry (not deployed on Celo)", "Support 5 metadata formats to handle real-world encoding diversity"],
+        "artifacts": ["src/scanner.ts", "src/metadata.ts", "src/config.ts"]
+      },
+      {
+        "session": 2,
+        "title": "5-Layer Scoring Engine with Circuit Breakers",
+        "timestamp": "2026-03-13",
+        "summary": "Designed and implemented 5-layer composite scoring (0-100): L1 Registration Quality, L2 Endpoint Liveness, L3 On-Chain Behavior, L4 Sybil/Spam Detection, L5 Existing Reputation. Added circuit breakers that cap scores when critical flags fire (MASS_REGISTRATION caps at 15, NO_METADATA at 20, METADATA_CLONE at 25). Tested against known agents: Arca #2 (fair score), babycaisubagent cluster #50-1670 (correctly capped at 15 for Sybil spam). Scoring is fully deterministic with no LLM in the pipeline.",
+        "decisions": ["Cap mass registrars at 15/100 regardless of other scores", "Deterministic scoring only (no LLM, no randomness)", "Circuit breakers ensure one strong negative signal overrides easy-to-game positives"],
+        "artifacts": ["src/scorer.ts", "src/layers/registration.ts", "src/layers/liveness.ts", "src/layers/onchain.ts", "src/layers/sybil.ts", "src/layers/reputation.ts"]
+      },
+      {
+        "session": 3,
+        "title": "On-Chain Attestation Writes & IPFS Pipeline",
+        "timestamp": "2026-03-14",
+        "summary": "Wrote 1,854 trust attestations to ReputationRegistry via giveFeedback(). Registered Sentinel8004 as agent #1853 on IdentityRegistry (TX: 0x336764f2...e47f). Built IPFS pinning pipeline via Pinata. Discovered hardcoded 200K gas limit caused silent reverts across 90% of agents. Fixed by letting the node estimate gas per-tx. Self-feedback correctly blocked by contract design (cannot score own agent).",
+        "decisions": ["Let node estimate gas per-tx instead of hardcoding (200K caused silent reverts)", "Skip self-feedback (contract blocks it, which is correct anti-gaming behavior)", "Sequential nonce management to avoid Celo nonce collisions"],
+        "artifacts": ["src/writer.ts", "src/ipfs.ts", "scripts/register-agent.ts"],
+        "onChainTx": "https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f"
+      },
+      {
+        "session": 4,
+        "title": "MCP Server & Dashboard",
+        "timestamp": "2026-03-14",
+        "summary": "Built MCP server exposing 3 tools for AI-to-AI queries: check_agent_trust(agentId), list_flagged_agents(maxScore, limit), get_agent_report(agentId). Built static dashboard with search, sort, and agent detail views. Deployed to GitHub Pages. Chose static site over server-rendered for simplicity and free hosting.",
+        "decisions": ["Static site on GitHub Pages (simpler, free, no server to maintain)", "MCP protocol for agent-to-agent trust queries"],
+        "artifacts": ["src/mcp-server.ts", "dashboard/index.html", "dashboard/agents.html", "dashboard/agent.html"]
+      },
+      {
+        "session": 5,
+        "title": "Bug Fixes & Data Integrity",
+        "timestamp": "2026-03-15",
+        "summary": "Fixed 3 bugs found during verification: (1) reputation.ts called readFeedback with index 0 but contract requires >= 1 (1-based indexing). (2) liveness.ts had operator precedence bug in parking page detection. (3) onchain.ts missing .toLowerCase() on tx.input for case safety. Documented that pre-fix on-chain attestations for agents #1849/#1850 are immutable. Updated on-chain metadata from AgentGuard to Sentinel8004.",
+        "decisions": ["Document pre-fix scores as known limitations rather than hiding them", "Rename from AgentGuard to Sentinel8004 after discovering existing AgentGuard agent on Base"],
+        "artifacts": ["src/layers/reputation.ts", "src/layers/liveness.ts", "src/layers/onchain.ts"],
+        "onChainTx": "https://celoscan.io/tx/0x947185526ae3f791babd118abb3a2b068d38548ca16c133fb16c5880dc3de8b7"
+      },
+      {
+        "session": 6,
+        "title": "Hackathon Submissions & Ecosystem Report",
+        "timestamp": "2026-03-16 to 2026-03-19",
+        "summary": "Researched both hackathons (Build Agents V2 + The Synthesis). Submitted to Karma Gap (ref: APP-SGZ0Y1A7-V4XQWM). Registered on Synthesis, created project draft, published as sentinel8004-4cff. Self-custody transfer completed to 0x67FbCB8A3C9136eAA83A550ef0aA17a5549aFB52 on Base. Generated agent_log.json with full execution log. Key findings from ecosystem scan: 97.6% of agents flagged, one address owns 500+ babycaisubagent clones, 88% score below 10.",
+        "decisions": ["Submit to both hackathons (prizes are independent)", "Open Track added for maximum coverage ($28K+ prize pool)"],
+        "artifacts": ["agent_log.json", "ai/hackathon-draft.md", "ai/karma-submission.md"],
+        "onChainTx": "https://basescan.org/tx/0xa6cabdf09c5cdb70002b109236aa539595e061648f47cd7ca6859e33360feeb3"
+      },
+      {
+        "session": 7,
+        "title": "Deep Architecture Audit",
+        "timestamp": "2026-03-21",
+        "summary": "First-principles audit of the entire system. Discovered L5 reputation layer was compromised: 1,797 sock puppet wallets across 3 agents (Toppa #1870: 431 puppets, Loopuman #17: 936 puppets, Agent #1865: 437 puppets) were inflating scores through the ReputationRegistry. Zero legitimate third-party scorers exist -- 466/480 scored agents are Sentinel-only. getSummary on mainnet was returning attacker-controlled data. Contract owner identified as Leonard Tan (Web3Auth CTO). IPFS hash integrity verified 5/5.",
+        "decisions": ["L5 must filter providers by tx history + funding independence", "Need revoke-before-rescore for corrected attestations", "TrustGate consumer library needed for safe score consumption"],
+        "artifacts": ["ai/architecture-audit.md"]
+      },
+      {
+        "session": 8,
+        "title": "L5 Anti-Sybil Fix & IPFS Provider Migration",
+        "timestamp": "2026-03-21",
+        "summary": "Fixed L5 reputation layer with 3 anti-Sybil filters: (1) exclude Sentinel's own writer address from client list, (2) exclude providers with <5 total txs (sock puppet filter via Blockscout), (3) uniformity filter flags all scores >90 from qualified providers as SYBIL_BOOSTED. Verified on live chain: Toppa 431 puppets filtered, Loopuman 936 filtered, Agent #1865 437 filtered. Added Filebase as primary IPFS provider (S3-compatible, 5GB free) after Pinata limits hit. Added revokeFeedback capability to writer.",
+        "decisions": ["3-filter anti-Sybil approach catches coordinated attacks at multiple levels", "Filebase S3 chosen over Lighthouse for IPFS (simpler auth, higher limits)", "IPFS provider priority: Filebase > Lighthouse > Pinata"],
+        "artifacts": ["src/layers/reputation.ts", "src/ipfs.ts", "src/writer.ts", "src/config.ts"]
+      },
+      {
+        "session": 9,
+        "title": "Incremental Rescan & L5 Correction",
+        "timestamp": "2026-03-21",
+        "summary": "Incremental rescan added 317 new agents (IDs 2903-3219), bringing total to 3,219. L5 re-scored for agents with non-zero reputation: Toppa #1870 dropped from 95 to 80 (430 sock puppets filtered, SYBIL_BOOSTED flag set). Orbiting Parity #2259 stayed at 15 (1 legitimate external client with 85+ txs passed filters). Dashboard regenerated with corrected scores.",
+        "decisions": ["Incremental scan approach (only new agents) saves RPC calls and time", "SYBIL_BOOSTED flag is informational -- score capping happens via circuit breaker"],
+        "artifacts": ["data/scan-results.json", "dashboard/data/scores.json"]
+      },
+      {
+        "session": 10,
+        "title": "On-Chain Write Pipeline Hardening",
+        "timestamp": "2026-03-22",
+        "summary": "Found writer was re-writing agents 1-12 (wasted gas). Binary search identified on-chain cutoff at agent 2338. Rebuilt write-results.json with 2,338 entries marked as already-written. Fixed dry-run mode to not overwrite write-results.json. Batch 2: 231 agents written. Batch 3: 9 agents before Filebase quota hit. Total on-chain: 2,569 of 3,219. Added IPFS provider fallback logic (tries all providers in order instead of fail-fast). 650 agents remaining, blocked on IPFS provider.",
+        "decisions": ["write-results.json merge instead of overwrite preserves prior on-chain data", "IPFS fallback chain prevents single provider failure from blocking writes"],
+        "artifacts": ["src/ipfs.ts", "src/index.ts", "data/write-results.json"]
+      },
+      {
+        "session": 11,
+        "title": "Scoring Critique & SYBIL_BOOSTED Circuit Breaker",
+        "timestamp": "2026-03-22",
+        "summary": "Deep scoring critique found 6 bugs. Critical fix: SYBIL_BOOSTED flag was set by L5 but never capped the score. Toppa scored 80 despite 431 sock puppets. Added SYBIL_BOOSTED to circuit breaker map with cap at 40. Toppa now correctly scores 40/100. Fixed reporter L5 adversarial analysis (was 'Very High' cost, actually 'Low ~$5'). Added local CID computation via ipfs-only-hash as IPFS fallback -- computes identical CIDs without uploading. Unblocked batch 4 write of remaining 650 agents. 22/22 tests pass.",
+        "decisions": ["SYBIL_BOOSTED circuit breaker cap at 40 (below NO_METADATA at 20 but above MASS_REGISTRATION at 15)", "Local CID computation as ultimate fallback when all IPFS providers fail", "Corrected top 5: AgentDashboard 85, CRIA 77, Celo GovAI Hub 75, Fixr 74, OG_Bot 72"],
+        "artifacts": ["src/scorer.ts", "src/reporter.ts", "src/ipfs.ts", "tests/scorer.test.ts"]
+      }
+    ]
+  },
+  "_NOTES": {
+    "updateMethod": "POST /projects/:projectUUID (NOT PUT or PATCH). Devfolio/Synthesis uses POST for updates.",
+    "trackBehavior": "trackUUIDs array REPLACES all existing tracks. Must include all 3 (Celo + ERC-8004 + Open Track).",
+    "conversationLogFormat": "String field, not strictly schema-enforced. We send a JSON array which will be serialized to string.",
+    "publishedEditable": "Published projects remain editable until hackathon end (March 22, 11:59pm PST).",
+    "apiKeyLocation": "Saved locally as sk-synth-... per progress.md. Do NOT hardcode in this file.",
+    "whatToRun": [
+      "1. Export SYNTHESIS_API_KEY=sk-synth-...",
+      "2. curl -X POST https://synthesis.devfolio.co/projects/44047eed8b3545f28c33779685d88e00 -H 'Content-Type: application/json' -H 'Authorization: Bearer $SYNTHESIS_API_KEY' -d '{\"trackUUIDs\": [\"ff26ab4933c84eea856a5c6bf513370b\", \"3bf41be958da497bbb69f1a150c76af9\", \"fdb76d08812b43f6a5f454744b66f590\"], \"conversationLog\": \"<stringified version of the conversationLog array above>\"}'",
+      "3. Verify response returns 200 with updated project object"
+    ]
+  }
+}

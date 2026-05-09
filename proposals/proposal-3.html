@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel8004 — ERC-8004 Trust Scoring</title>
+<meta name="description" content="Autonomous trust scoring for every AI agent on Celo's ERC-8004 registry. Scored. Verified. On-chain.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0d0c'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2335D07F' stroke-width='2.5'/%3E%3Cpath d='M12 16l3 3 5-6' fill='none' stroke='%2335D07F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════
+   Sentinel8004 — Proposal 3: Observatory
+   DNA: CLINICAL-GRID-PRECISE-BALANCED-SUBTLE
+   ══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-base: #0c0f0e;
+  --bg-surface: #141916;
+  --bg-elevated: #1c211e;
+  --celo: #35D07F;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --text-primary: #eef1ef;
+  --text-secondary: #a3a8a5;
+  --text-muted: #5c6360;
+  --border: rgba(238,241,239,0.06);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', monospace;
+  --max-width: 1120px;
+  --nav-height: 56px;
+  --radius: 12px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ── Skip link ── */
+.skip-link {
+  position: absolute; left: -9999px; top: auto;
+  padding: 8px 16px; background: var(--celo); color: var(--bg-base);
+  font-size: 13px; font-weight: 600; border-radius: 4px; z-index: 9999;
+}
+.skip-link:focus { left: 16px; top: 16px; }
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--nav-height);
+  background: rgba(12,15,14,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+}
+.nav-wordmark {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.nav-links { display: flex; gap: 28px; margin-left: 40px; }
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+.nav-link:hover, .nav-link.active { color: var(--text-primary); }
+.nav-left { display: flex; align-items: center; }
+.nav-right { display: flex; align-items: center; gap: 20px; }
+.nav-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--celo);
+  padding: 6px 14px;
+  border: 1px solid rgba(53,208,127,0.2);
+  border-radius: 6px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.nav-cta:hover {
+  background: rgba(53,208,127,0.06);
+  border-color: rgba(53,208,127,0.35);
+}
+.nav-toggle { display: none; }
+
+/* ── Reveal animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Section divider ── */
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════════════════ */
+.hero {
+  padding: calc(var(--nav-height) + 64px) 0 64px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.hero-left {}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--celo);
+  margin-bottom: 20px;
+}
+.hero-tag-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--celo);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text-primary);
+}
+.hero-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  line-height: 1.6;
+  max-width: 420px;
+}
+
+/* ── Stat cards 2x2 ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 32px;
+}
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.stat-card:hover {
+  box-shadow: 0 0 20px rgba(53,208,127,0.05);
+  border-color: rgba(238,241,239,0.1);
+}
+.stat-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.stat-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.text-celo { color: var(--celo); }
+.text-yellow { color: var(--yellow); }
+.text-red { color: var(--red); }
+.text-primary { color: var(--text-primary); }
+
+/* ── Donut chart ── */
+.hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.donut-wrap {
+  position: relative;
+  width: 280px;
+  height: 280px;
+}
+.donut-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(53,208,127,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.donut-chart {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: relative;
+  /* conic-gradient set via JS */
+}
+.donut-hole {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.donut-total {
+  font-family: var(--mono);
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+.donut-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+.donut-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PROBLEM — 3 diagnostic cards
+   ══════════════════════════════════════════════════════════════ */
+.problem-section {
+  padding: 80px 0;
+}
+.problem-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.section-heading {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 32px;
+  line-height: 1.2;
+}
+
+.diagnostic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.diagnostic-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 24px;
+}
+.diagnostic-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--red);
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+.diagnostic-value {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+.diagnostic-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PIPELINE — horizontal flow
+   ══════════════════════════════════════════════════════════════ */
+.pipeline-section {
+  padding: 80px 0;
+}
+.pipeline-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.pipeline {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  margin-top: 40px;
+  margin-bottom: 48px;
+}
+.pipe-line {
+  position: absolute;
+  top: 14px;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: var(--border);
+  z-index: 0;
+}
+.pipe-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.pipe-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg-base);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.3s ease;
+}
+.pipe-dot-inner {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: background 0.3s ease;
+}
+.pipe-step:last-child .pipe-dot { border-color: var(--celo); }
+.pipe-step:last-child .pipe-dot-inner { background: var(--celo); }
+.pipe-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pipe-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  text-align: center;
+  max-width: 90px;
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PROOF — clean card, zebra rows
+   ══════════════════════════════════════════════════════════════ */
+.proof-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 560px;
+  overflow: hidden;
+}
+.proof-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.proof-header-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--celo);
+}
+.proof-header-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.proof-body { padding: 0; }
+.proof-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+.proof-row:nth-child(odd) {
+  background: rgba(238,241,239,0.015);
+}
+.proof-key {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.proof-val {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.proof-val a {
+  color: var(--celo);
+  text-decoration: none;
+}
+.proof-val a:hover { text-decoration: underline; }
+
+/* ══════════════════════════════════════════════════════════════
+   INTEGRATION — tabbed code
+   ══════════════════════════════════════════════════════════════ */
+.integration-section {
+  padding: 80px 0;
+}
+.integration-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.code-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 640px;
+  overflow: hidden;
+  margin-top: 32px;
+}
+.code-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.code-tab {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color 0.2s, background 0.2s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.code-tab:hover { color: var(--text-secondary); }
+.code-tab.active {
+  color: var(--celo);
+  border-bottom-color: var(--celo);
+  background: rgba(53,208,127,0.03);
+}
+.code-panel {
+  display: none;
+  padding: 20px 24px;
+}
+.code-panel.active { display: block; }
+.code-panel pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre;
+  overflow-x: auto;
+}
+.code-panel pre .kw { color: var(--celo); }
+.code-panel pre .str { color: var(--yellow); }
+.code-panel pre .cmt { color: var(--text-muted); }
+.code-panel pre .num { color: var(--yellow); }
+
+/* ══════════════════════════════════════════════════════════════
+   CTA
+   ══════════════════════════════════════════════════════════════ */
+.cta-section {
+  text-align: center;
+  padding: 64px 0 96px;
+}
+.cta-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.cta-heading {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.cta-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+.btn-primary {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bg-base);
+  background: var(--celo);
+  padding: 12px 28px;
+  border-radius: 8px;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+/* ══════════════════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 20px 32px;
+}
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { color: var(--text-muted); transition: color 0.2s; }
+.footer-links a:hover { color: var(--text-secondary); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-toggle {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; background: none; border: none;
+    color: var(--text-muted); cursor: pointer; margin-left: 12px;
+  }
+  .nav-toggle svg { width: 20px; height: 20px; }
+  .nav-links.open {
+    display: flex; flex-direction: column;
+    position: absolute; top: var(--nav-height); left: 0; right: 0;
+    background: var(--bg-base); border-bottom: 1px solid var(--border);
+    padding: 16px 20px; gap: 12px;
+  }
+  .nav-right .nav-meta { display: none; }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: calc(var(--nav-height) + 40px);
+    padding-bottom: 40px;
+  }
+  .hero-title { font-size: 36px; }
+  .hero-right { justify-content: center; }
+  .donut-wrap { width: 220px; height: 220px; }
+  .donut-chart { width: 220px; height: 220px; }
+  .donut-hole { width: 140px; height: 140px; }
+  .donut-total { font-size: 28px; }
+
+  .diagnostic-grid { grid-template-columns: 1fr; }
+  .diagnostic-value { font-size: 28px; }
+
+  .pipeline { flex-wrap: wrap; justify-content: center; gap: 4px; }
+  .pipe-line { display: none; }
+  .pipe-step { flex: 0 0 30%; margin-bottom: 16px; }
+
+  .proof-card, .code-card { max-width: 100%; }
+
+  .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 30px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-value { font-size: 22px; }
+  .pipe-step { flex: 0 0 45%; }
+}
+</style>
+</head>
+<body data-page="home">
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-left">
+    <a href="index.html" class="nav-wordmark">Sentinel8004</a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active" data-page="home">Home</a>
+      <a href="registry.html" class="nav-link" data-page="registry">Registry</a>
+      <a href="methodology.html" class="nav-link" data-page="methodology">Methodology</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-meta" id="scan-date"></span>
+    <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer" class="nav-cta">Verify on CeloScan</a>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag reveal">
+      <span class="hero-tag-dot"></span>
+      ERC-8004 Trust Report
+    </div>
+    <h1 class="hero-title reveal">Sentinel8004</h1>
+    <p class="hero-subtitle reveal">Trust layer for ERC-8004 agents on Celo. Every agent scanned, scored across 5 layers, and written on-chain with IPFS proofs.</p>
+
+    <div class="stat-grid reveal">
+      <div class="stat-card">
+        <div class="stat-value text-primary" id="stat-total">--</div>
+        <div class="stat-label">Agents scanned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value text-celo" id="stat-trusted">--</div>
+        <div class="stat-label">Trusted (70+)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value text-yellow" id="stat-fair">--</div>
+        <div class="stat-label">Fair (30-69)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value text-red" id="stat-flagged">--</div>
+        <div class="stat-label">Flagged (&lt;30)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right reveal">
+    <div class="donut-wrap">
+      <div class="donut-glow"></div>
+      <div class="donut-chart" id="donut-chart">
+        <div class="donut-hole">
+          <div class="donut-total" id="donut-total">--</div>
+          <div class="donut-label">Total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- legend below hero -->
+<div style="max-width: var(--max-width); margin: -20px auto 0; padding: 0 32px;">
+  <div class="donut-legend reveal" style="justify-content: flex-end;">
+    <div class="legend-item">
+      <span class="legend-dot" style="background: var(--celo);"></span>
+      <span>Trusted</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background: var(--yellow);"></span>
+      <span>Fair</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-dot" style="background: var(--red);"></span>
+      <span>Flagged</span>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider" style="margin-top: 48px;"></div>
+
+<!-- ═══════════════════ PROBLEM ═══════════════════ -->
+<section class="problem-section">
+  <div class="problem-inner">
+    <div class="section-label reveal">The problem</div>
+    <div class="section-heading reveal">Most registered agents cannot be trusted.</div>
+
+    <div class="diagnostic-grid">
+      <div class="diagnostic-card reveal">
+        <div class="diagnostic-title">Spam Detection</div>
+        <div class="diagnostic-value" id="diag-spam">--</div>
+        <div class="diagnostic-desc">Clones from a single address mass-registering identical agents.</div>
+      </div>
+      <div class="diagnostic-card reveal">
+        <div class="diagnostic-title">Dead Endpoints</div>
+        <div class="diagnostic-value" id="diag-dead">--</div>
+        <div class="diagnostic-desc">Feedback clients unreachable. Services registered but not running.</div>
+      </div>
+      <div class="diagnostic-card reveal">
+        <div class="diagnostic-title">No Metadata</div>
+        <div class="diagnostic-value" id="diag-nometa">--</div>
+        <div class="diagnostic-desc">Placeholder names on registered agents. No description, no endpoints.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ PIPELINE + PROOF ═══════════════════ -->
+<section class="pipeline-section">
+  <div class="pipeline-inner">
+    <div class="section-label reveal">How it works</div>
+    <div class="section-heading reveal" style="max-width: 520px;">Five scoring layers. Circuit breakers. Every result on-chain.</div>
+
+    <div class="pipeline reveal" style="position: relative;">
+      <div class="pipe-line"></div>
+      <div class="pipe-step">
+        <div class="pipe-dot"><div class="pipe-dot-inner"></div></div>
+        <div class="pipe-name">Read</div>
+        <div class="pipe-desc">Registry data</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot"><div class="pipe-dot-inner"></div></div>
+        <div class="pipe-name">Probe</div>
+        <div class="pipe-desc">Endpoints</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot"><div class="pipe-dot-inner"></div></div>
+        <div class="pipe-name">Score</div>
+        <div class="pipe-desc">5 layers</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot"><div class="pipe-dot-inner"></div></div>
+        <div class="pipe-name">Breakers</div>
+        <div class="pipe-desc">Cap spam</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot"><div class="pipe-dot-inner"></div></div>
+        <div class="pipe-name">Compose</div>
+        <div class="pipe-desc">0-100</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-dot"><div class="pipe-dot-inner"></div></div>
+        <div class="pipe-name">Write</div>
+        <div class="pipe-desc">On-chain</div>
+      </div>
+    </div>
+
+    <div class="proof-card reveal">
+      <div class="proof-header">
+        <span class="proof-header-dot"></span>
+        <span class="proof-header-text">On-chain proof</span>
+      </div>
+      <div class="proof-body">
+        <div class="proof-row">
+          <span class="proof-key">contract</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">0x8004...9dE9b63</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">registry</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" target="_blank" rel="noopener noreferrer">0x8004...9a432</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">scored on-chain</span>
+          <span class="proof-val" id="proof-written">Loading...</span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">writer</span>
+          <span class="proof-val"><a href="https://celoscan.io/address/0xf9946775891a24462cD4ec885d0D4E2675C84355" target="_blank" rel="noopener noreferrer">0xf994...4355</a></span>
+        </div>
+        <div class="proof-row">
+          <span class="proof-key">cost/tx</span>
+          <span class="proof-val">~0.009 CELO</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ INTEGRATION ═══════════════════ -->
+<section class="integration-section">
+  <div class="integration-inner">
+    <div class="section-label reveal">Integration</div>
+    <div class="section-heading reveal" style="max-width: 520px;">Query trust scores from any agent or dApp.</div>
+
+    <div class="code-card reveal">
+      <div class="code-tabs">
+        <button class="code-tab active" data-tab="contract">Contract</button>
+        <button class="code-tab" data-tab="mcp">MCP</button>
+        <button class="code-tab" data-tab="json">JSON</button>
+      </div>
+      <div class="code-panel active" id="tab-contract">
+<pre><span class="cmt">// Solidity / viem — read trust score for any agent</span>
+<span class="kw">const</span> feedback = <span class="kw">await</span> registry.getFeedback(agentId);
+<span class="cmt">// => { value: 95n, tag1: "sentinel8004", feedbackURI: "ipfs://..." }</span>
+
+<span class="kw">if</span> (feedback.value &lt; <span class="num">30n</span>) {
+  <span class="kw">throw</span> <span class="str">"Agent untrusted — blocked by trust gate"</span>;
+}</pre>
+      </div>
+      <div class="code-panel" id="tab-mcp">
+<pre><span class="cmt">// MCP tool call — AI agents query trust directly</span>
+{
+  <span class="str">"tool"</span>: <span class="str">"check_agent_trust"</span>,
+  <span class="str">"input"</span>: { <span class="str">"agentId"</span>: <span class="num">1870</span> }
+}
+<span class="cmt">// => { score: 12, confidence: "high", flags: ["MASS_REGISTRATION"] }</span></pre>
+      </div>
+      <div class="code-panel" id="tab-json">
+<pre><span class="cmt">// Static JSON — lightweight reads for dashboards</span>
+<span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="str">"data/scores.json"</span>);
+<span class="kw">const</span> { reports } = <span class="kw">await</span> res.json();
+
+<span class="kw">const</span> agent = reports.find(r => r.agentId === <span class="num">132</span>);
+<span class="cmt">// => { agentId: 132, name: "Clenja", compositeScore: 57, ... }</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-heading reveal">Explore the full registry</div>
+    <p class="cta-sub reveal">Search, filter, and inspect all <span id="cta-total">--</span> agents.</p>
+    <a href="registry.html" class="btn-primary reveal">Open Registry &rarr;</a>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>Sentinel8004 v2 &middot; <span id="footer-attestations">--</span> attestations &middot; <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted);">ERC-8004</a> &middot; Built on Celo</div>
+    <div class="footer-links">
+      <a href="https://github.com/yonkoo11/sentinel8004" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63" target="_blank" rel="noopener noreferrer">CeloScan</a>
+    </div>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+(async function () {
+  // ── Tab switching ──
+  document.querySelectorAll('.code-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.code-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  try {
+    const res = await fetch('data/scores.json');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const reports = data.reports || [];
+
+    const total = reports.length;
+    const trusted = reports.filter(r => r.compositeScore >= 70).length;
+    const fair = reports.filter(r => r.compositeScore >= 30 && r.compositeScore < 70).length;
+    const flagged = reports.filter(r => r.compositeScore < 30).length;
+
+    // ── Stats ──
+    countUp(document.getElementById('stat-total'), total);
+    countUp(document.getElementById('stat-trusted'), trusted);
+    countUp(document.getElementById('stat-fair'), fair);
+    countUp(document.getElementById('stat-flagged'), flagged);
+
+    // ── Donut chart ──
+    const pctTrusted = total > 0 ? (trusted / total) * 100 : 0;
+    const pctFair = total > 0 ? (fair / total) * 100 : 0;
+    const pctFlagged = total > 0 ? (flagged / total) * 100 : 0;
+
+    const donut = document.getElementById('donut-chart');
+    const endTrusted = pctTrusted;
+    const endFair = endTrusted + pctFair;
+    // conic-gradient: green segment, yellow segment, red fills the rest
+    donut.style.background = 'conic-gradient(' +
+      'var(--celo) 0% ' + endTrusted.toFixed(2) + '%, ' +
+      'var(--yellow) ' + endTrusted.toFixed(2) + '% ' + endFair.toFixed(2) + '%, ' +
+      'var(--red) ' + endFair.toFixed(2) + '% 100%)';
+
+    document.getElementById('donut-total').textContent = total.toLocaleString();
+    document.getElementById('cta-total').textContent = total.toLocaleString();
+
+    // ── Diagnostics ──
+    // Spam: count agents from the largest mass-registrar
+    const ownerCounts = {};
+    for (const r of reports) {
+      ownerCounts[r.owner] = (ownerCounts[r.owner] || 0) + 1;
+    }
+    const maxSpam = Math.max(...Object.values(ownerCounts), 0);
+    document.getElementById('diag-spam').textContent = maxSpam.toLocaleString();
+
+    // Dead endpoints
+    let deadCount = 0;
+    for (const r of reports) {
+      const flags = r.layers ? r.layers.flatMap(l => l.flags || []) : [];
+      if (flags.some(f => f.startsWith('DEAD_ENDPOINT') || f === 'ALL_ENDPOINTS_DEAD')) {
+        deadCount++;
+      }
+    }
+    document.getElementById('diag-dead').textContent = deadCount + '+';
+
+    // No metadata
+    let noMetaCount = 0;
+    for (const r of reports) {
+      const flags = r.layers ? r.layers.flatMap(l => l.flags || []) : [];
+      if (flags.includes('NO_METADATA') || flags.includes('METADATA_CLONE') || !r.name || r.name === 'Unknown') {
+        noMetaCount++;
+      }
+    }
+    document.getElementById('diag-nometa').textContent = noMetaCount.toLocaleString();
+
+    // ── On-chain stats ──
+    const oc = data.onchainStats;
+    if (oc) {
+      const w = oc.written || 0;
+      const t = oc.total || total;
+      document.getElementById('proof-written').textContent = w.toLocaleString() + ' / ' + t.toLocaleString();
+    } else {
+      document.getElementById('proof-written').textContent = 'Pending';
+    }
+
+    // Footer
+    const footerEl = document.getElementById('footer-attestations');
+    if (footerEl) footerEl.textContent = (data.onchainStats?.written || total).toLocaleString();
+
+    // Scan date
+    if (data.scannedAt) {
+      const d = new Date(data.scannedAt);
+      document.getElementById('scan-date').textContent = 'Last scan: ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+  } catch (e) {
+    console.error('Failed to load data:', e);
+    document.getElementById('donut-total').textContent = '\u2014';
+    document.getElementById('stat-total').textContent = '\u2014';
+  }
+})();
+</script>
+</body>
+</html>
