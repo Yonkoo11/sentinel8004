@@ -14,7 +14,7 @@
     "network": "celo",
     "chainId": 42220,
     "registryAddress": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
-    "operatorWallet": "0x67FbCB8A3C9136eAA83A550ef0aA17a5549aFB52"
+    "operatorWallet": "0xf9946775891a24462cd4ec885d0d4e2675c84355"
   },
   "registries": {
     "identity": {
