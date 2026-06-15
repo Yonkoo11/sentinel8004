@@ -13,3 +13,10 @@ dashboard/proposal-*.html
 scripts/test-*.ts
 scripts/debug-*.ts
 scripts/check-balance.ts
+
+# Agent skill installs (celo-builders etc.)
+.agents/
+.claude/
+.hermes/
+skills/
+skills-lock.json

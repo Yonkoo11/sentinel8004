@@ -6,7 +6,8 @@ import { scoreRegistration } from './layers/registration.js';
 import { writeFeedback, revokeAllFeedback } from './writer.js';
 import { startMCPServer } from './mcp-server.js';
 import { generateEcosystemReport } from './reporter.js';
-import type { AgentRecord, TrustReport, LayerScore } from './types.js';
+import { createLimiter } from './utils.js';
+import type { AgentRecord, TrustReport } from './types.js';
 
 const RESULTS_DIR = 'data';
 
@@ -96,11 +97,16 @@ async function scan(args: string[]) {
         console.log('Smart mode: L2/L3 only for agents with metadata');
       }
 
-      // Score each agent sequentially (L2/L3 make network calls)
-      for (let i = 0; i < agents.length; i++) {
-        const agent = agents[i];
-        const progress = `[${i + 1}/${agents.length}]`;
-
+      // Score agents with bounded concurrency. L2/L3 are network-bound and
+      // dead-endpoint timeouts dominate, so sequential scoring is far too slow
+      // (~19s/agent). Scoring is order-independent: Sybil owner profiles are
+      // precomputed above and the on-chain layer shares a global rate limiter,
+      // so concurrency does not change any score.
+      const SCORING_CONCURRENCY = 12;
+      const limitScore = createLimiter(SCORING_CONCURRENCY);
+      const flushTarget = getArgString(args, '--output') || `${RESULTS_DIR}/scan-results.json`;
+      let completed = 0;
+      await Promise.all(agents.map(agent => limitScore(async () => {
         // In smart mode, skip expensive layers for agents without metadata
         const agentSkipLiveness = skipLiveness || (smart && !agent.metadata);
         const agentSkipOnchain = skipOnchain || (smart && !agent.metadata);
@@ -114,9 +120,9 @@ async function scan(args: string[]) {
           });
           reports.push(report);
           const flagCount = report.layers.reduce((sum, l) => sum + l.flags.length, 0);
-          console.log(`${progress} #${agent.agentId} "${report.name}" → ${report.compositeScore}/100${flagCount > 0 ? ` (${flagCount} flags)` : ''}`);
+          console.log(`[${++completed}/${agents.length}] #${agent.agentId} "${report.name}" → ${report.compositeScore}/100${flagCount > 0 ? ` (${flagCount} flags)` : ''}`);
         } catch (e) {
-          console.error(`${progress} #${agent.agentId} FAILED: ${(e as Error).message}`);
+          console.error(`[${++completed}/${agents.length}] #${agent.agentId} FAILED: ${(e as Error).message}`);
           // Push a minimal report so we don't lose the agent
           reports.push({
             agentId: agent.agentId,
@@ -131,7 +137,21 @@ async function scan(args: string[]) {
             errors: [(e as Error).message],
           });
         }
-      }
+
+        // Crash-safety: periodically flush partial results during long runs.
+        if (completed % 250 === 0) {
+          try {
+            mkdirSync(RESULTS_DIR, { recursive: true });
+            writeFileSync(flushTarget, JSON.stringify({
+              totalAgents: agents.length,
+              scannedAt: new Date().toISOString(),
+              scanMode: 'full-v2 (partial flush, in progress)',
+              reports,
+              ownerStats: ownerCounts,
+            }, null, 2));
+          } catch { /* best-effort */ }
+        }
+      })));
     }
 
     // Score distribution

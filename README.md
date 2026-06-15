@@ -2,22 +2,22 @@
 
 Infrastructure-grade trust layer for ERC-8004 agents on Celo.
 
-Sentinel8004 scans all 3,766 registered agents on Celo's IdentityRegistry, scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain with IPFS-pinned evidence reports. Any agent, dApp, or contract can query these scores to gate interactions without building their own trust evaluation.
+Sentinel8004 scans every agent registered on Celo's IdentityRegistry (9,400 as of the June 2026 scan), scores them across 5 deterministic layers with circuit breakers, and writes verifiable trust attestations to the ReputationRegistry on-chain with IPFS-pinned evidence reports. Any agent, dApp, or contract can query these scores to gate interactions without building their own trust evaluation.
 
 **Live dashboard**: [yonkoo11.github.io/sentinel8004](https://yonkoo11.github.io/sentinel8004/)
 
-**On-chain**: 3,300+ trust attestations on [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) (Celo mainnet). Sentinel8004 registered as agent [#1853](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f).
+**On-chain**: 3,541 trust attestations written to [ReputationRegistry](https://celoscan.io/address/0x8004BAa17C55a88189AE136b182e5fdA19dE9b63) (Celo mainnet), covering the first 3,766 agents (scored March 2026). The June 2026 rescan extended scoring to all 9,400 agents; on-chain attestations for the newly-scanned agents are pending. Sentinel8004 registered as agent [#1853](https://celoscan.io/tx/0x336764f2c9fd6d125ce57009b4fa04fa65d9794c36366b630b2a0108b0a0e47f).
 
 ## The Problem
 
-Celo's IdentityRegistry has 3,766 registered agents and growing. No quality layer exists. What we found:
+Celo's IdentityRegistry has 9,400 registered agents and growing. No quality layer exists. What we found:
 
 - **Sybil spam**: One address owns 991+ "babycaisubagent" clones with identical metadata
 - **Reputation gaming**: 1,797 sock puppet wallets across 3 agents were inflating their scores through the ReputationRegistry. Toppa (#1870) had 431 puppets, Loopuman (#17) had 936, Agent #1865 had 437.
 - **Dead endpoints**: Agents with 28+ feedback clients point to URLs that return nothing
 - **Placeholder metadata**: Agents registered with "YOUR_USER/YOUR_REPO" templates
 - **No trust signal**: Other agents and users have no way to evaluate quality before interacting
-- **97.6% of agents flagged** with at least one circuit breaker. 88% score below 10.
+- **78.5% of scanned agents trip at least one circuit breaker** (81.9% carry at least one flag); 76.4% score 15 or below.
 
 ## How It Works
 
@@ -224,11 +224,11 @@ npx tsx scripts/trust-gate.ts 50   # → DO NOT INTERACT (11/100, MASS_REGISTRAT
 
 ## Results
 
-- **3,766 agents scanned** across the full Celo IdentityRegistry
-- **3,300+ trust attestations written on-chain** with IPFS-backed reports
+- **9,400 agents scanned** across the full Celo IdentityRegistry (June 2026)
+- **3,541 trust attestations written on-chain** with IPFS-backed reports (covering the first 3,766 agents; attestations for the rest are pending)
 - **1,797 sock puppet wallets discovered** gaming the ReputationRegistry across 3 agents
 - **22 unit tests** (scorer, canonical JSON, Sybil detection) all passing
-- **Top 5 agents**: AgentDashboard (85), CRIA (77), Celo GovAI Hub (75), Fixr (74), OG_Bot (72)
+- **Top 5 agents**: MARKOV (90), Claudelance Protocol Agent (90), ChamaAgent (90), MasoMind Enterprise Agent (89), Remifi (89)
 
 ## Architecture Decisions
 
