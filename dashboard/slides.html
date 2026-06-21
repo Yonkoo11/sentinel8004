@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel8004 · Proof of Ship S8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#0c0f0e; --bg-surface:#141916; --bg-elevated:#1c211e;
+    --celo:#35D07F; --red:#ff5a5a; --amber:#f0b429;
+    --text-primary:#eef1ef; --text-secondary:#a3a8a5; --text-muted:#6b706d;
+    --border:rgba(238,241,239,0.09); --border-strong:rgba(238,241,239,0.14);
+    --mono:'JetBrains Mono','SF Mono',monospace;
+    --font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#000;font-family:var(--font);color:var(--text-primary);}
+  .slide{
+    width:1280px;height:720px;background:var(--bg-base);position:relative;
+    overflow:hidden;padding:72px 80px;display:flex;flex-direction:column;
+    margin:0 auto 28px;page-break-after:always;
+    border:1px solid var(--border);
+  }
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 100% 0%, rgba(53,208,127,0.07), transparent 60%);
+  }
+  .eyebrow{font-family:var(--mono);font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:22px;}
+  .eyebrow b{color:var(--celo);font-weight:500;}
+  h1{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1.04;}
+  h2{font-size:42px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:28px;}
+  .lede{font-size:24px;color:var(--text-secondary);line-height:1.45;max-width:980px;font-weight:400;}
+  .big{font-size:22px;line-height:1.5;color:var(--text-secondary);}
+  .foot{position:absolute;left:80px;right:80px;bottom:40px;display:flex;justify-content:space-between;
+    font-family:var(--mono);font-size:13px;color:var(--text-muted);border-top:1px solid var(--border);padding-top:16px;}
+  .foot .celo{color:var(--celo);}
+  .grid{display:grid;gap:18px;margin-top:8px;}
+  .g2{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:1fr 1fr 1fr;}
+  .g5{grid-template-columns:repeat(5,1fr);}
+  .card{background:var(--bg-surface);border:1px solid var(--border);border-radius:14px;padding:24px 26px;}
+  .card .k{font-family:var(--mono);font-size:13px;color:var(--celo);letter-spacing:.06em;margin-bottom:10px;text-transform:uppercase;}
+  .card .t{font-size:19px;font-weight:600;margin-bottom:6px;}
+  .card .d{font-size:15px;color:var(--text-secondary);line-height:1.4;}
+  .stat{display:flex;flex-direction:column;gap:6px;}
+  .stat .n{font-family:var(--mono);font-size:54px;font-weight:700;color:var(--text-primary);letter-spacing:-.02em;}
+  .stat .n.celo{color:var(--celo);} .stat .n.red{color:var(--red);}
+  .stat .l{font-size:16px;color:var(--text-secondary);line-height:1.35;}
+  .layer{display:flex;flex-direction:column;gap:8px;background:var(--bg-surface);border:1px solid var(--border);border-radius:12px;padding:20px 16px;}
+  .layer .ln{font-family:var(--mono);font-size:12px;color:var(--text-muted);}
+  .layer .lt{font-size:16px;font-weight:600;}
+  .layer .ld{font-size:13px;color:var(--text-secondary);line-height:1.35;}
+  .pill{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--celo);border:1px solid var(--border-strong);border-radius:999px;padding:5px 12px;margin-top:10px;}
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:16px;margin-top:6px;}
+  ul.clean li{font-size:21px;color:var(--text-secondary);line-height:1.4;padding-left:30px;position:relative;}
+  ul.clean li::before{content:"";position:absolute;left:0;top:11px;width:9px;height:9px;border-radius:2px;background:var(--celo);}
+  ul.clean li b{color:var(--text-primary);font-weight:600;}
+  .titlewrap{flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .mono{font-family:var(--mono);}
+  .link{color:var(--celo);}
+  .num{position:absolute;top:40px;right:80px;font-family:var(--mono);font-size:13px;color:var(--text-muted);}
+  @page{size:1280px 720px;margin:0;}
+  @media print{body{background:#fff;}.slide{margin:0;border:none;}}
+</style>
+</head>
+<body>
+
+<!-- 1. TITLE -->
+<section class="slide">
+  <span class="num">01 / 10</span>
+  <div class="titlewrap">
+    <div class="eyebrow">Celo <b>Proof of Ship</b> · Season 8</div>
+    <h1>Sentinel8004</h1>
+    <p class="lede" style="margin-top:24px;">The trust layer for Celo's ERC-8004 agent ecosystem. It scans every registered agent, scores it 0–100 on real signals, and writes verifiable attestations on-chain.</p>
+    <div style="margin-top:26px;display:flex;gap:12px;">
+      <span class="pill">9,400 agents scored</span>
+      <span class="pill">3,541 attestations on mainnet</span>
+      <span class="pill">deterministic · no LLM</span>
+    </div>
+  </div>
+  <div class="foot"><span>Sentinel8004 · ERC-8004 agent <span class="celo">#1853</span></span><span>yonkoo11.github.io/sentinel8004</span></div>
+</section>
+
+<!-- 2. PROBLEM -->
+<section class="slide">
+  <span class="num">02 / 10</span>
+  <div class="eyebrow">The problem</div>
+  <h2>Anyone can register an agent. Most register junk.</h2>
+  <p class="big" style="max-width:1000px;margin-bottom:30px;">Celo's ERC-8004 IdentityRegistry shipped with <b style="color:var(--text-primary)">no quality or anti-Sybil layer</b>. The ReputationRegistry is already being gamed by sock-puppet feedback. <span class="mono">getSummary</span> returns attacker-inflated numbers on mainnet today.</p>
+  <div class="grid g3">
+    <div class="card"><div class="k">Scale</div><div class="t">9,400 agents</div><div class="d">registered on the IdentityRegistry, growing weekly, with zero trust signal attached.</div></div>
+    <div class="card"><div class="k">Mass cloning</div><div class="t">991+ identical clones</div><div class="d">one address controls hundreds of copy-paste agents to farm presence.</div></div>
+    <div class="card"><div class="k">Reputation gaming</div><div class="t">1,797 sock puppets</div><div class="d">fake wallets inflating three agents' on-chain reputation scores.</div></div>
+  </div>
+  <div class="foot"><span>Before Sentinel8004, an app deciding whom to trust had <span class="celo">no quality signal</span>.</span><span class="mono">02</span></div>
+</section>
+
+<!-- 3. APPROACH -->
+<section class="slide">
+  <span class="num">03 / 10</span>
+  <div class="eyebrow">The approach</div>
+  <h2>Five deterministic scoring layers, 0–100</h2>
+  <div class="grid g5" style="margin-top:4px;">
+    <div class="layer"><span class="ln">L1 · 0–25</span><span class="lt">Registration</span><span class="ld">Metadata quality & completeness.</span></div>
+    <div class="layer"><span class="ln">L2 · 0–25</span><span class="lt">Liveness</span><span class="ld">Endpoint probes: is it reachable?</span></div>
+    <div class="layer"><span class="ln">L3 · 0–25</span><span class="lt">On-chain</span><span class="ld">Wallet behavior & transaction history.</span></div>
+    <div class="layer"><span class="ln">L4 · 0–25</span><span class="lt">Sybil</span><span class="ld">Spam & clone detection across owners.</span></div>
+    <div class="layer"><span class="ln">L5 · 0–15</span><span class="lt">Reputation</span><span class="ld">Existing on-chain feedback, Sybil-discounted.</span></div>
+  </div>
+  <p class="big" style="margin-top:34px;max-width:1000px;">Fully <b style="color:var(--text-primary)">deterministic</b>: no LLM, no randomness. Every score is reproducible and auditable, backed by an IPFS-pinned evidence report.</p>
+  <div class="foot"><span>Same inputs → same score, every run.</span><span class="mono">03</span></div>
+</section>
+
+<!-- 4. CIRCUIT BREAKERS -->
+<section class="slide">
+  <span class="num">04 / 10</span>
+  <div class="eyebrow">Why it can't be gamed</div>
+  <h2>Circuit breakers cap manipulators</h2>
+  <div class="grid g2" style="align-items:center;">
+    <div>
+      <ul class="clean">
+        <li>A <b>mass registrar can't score above 15</b>, no matter how polished its metadata looks.</li>
+        <li>Clone, dead-endpoint, and negative-reputation breakers each hard-cap the score.</li>
+        <li>Weight changes barely move outcomes: rankings hold at <b>Spearman ρ 0.944–0.997</b> across 5 configs.</li>
+      </ul>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr;gap:18px;">
+      <div class="card"><div class="stat"><span class="n red">78.5%</span><span class="l">of all 9,400 agents trip at least one circuit breaker.</span></div></div>
+      <div class="card"><div class="stat"><span class="n celo">≤ 15</span><span class="l">hard ceiling for a detected mass registrar.</span></div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Breakers, not weights, decide who is trusted.</span><span class="mono">04</span></div>
+</section>
+
+<!-- 5. WHAT WE FOUND -->
+<section class="slide">
+  <span class="num">05 / 10</span>
+  <div class="eyebrow">Measured on mainnet</div>
+  <h2>The fraud Sentinel8004 surfaced</h2>
+  <div class="grid g3">
+    <div class="card"><div class="stat"><span class="n red">991+</span><span class="l">identical clones controlled by a single address.</span></div></div>
+    <div class="card"><div class="stat"><span class="n red">1,797</span><span class="l">sock-puppet wallets inflating three agents' reputation.</span></div></div>
+    <div class="card"><div class="stat"><span class="n red">9,108</span><span class="l">of 9,400 agents score below 30/100 (avg score 17.7).</span></div></div>
+  </div>
+  <p class="big" style="margin-top:34px;max-width:1020px;">Concrete example: <b style="color:var(--text-primary)">Toppa (#1870)</b> presents clean metadata and a 95-style profile, but 431 sock puppets boosted it. Sentinel scores it <b style="color:var(--celo)">80</b> and flags the manipulation.</p>
+  <div class="foot"><span>Every finding is reproducible from the public scan data.</span><span class="mono">05</span></div>
+</section>
+
+<!-- 6. ON-CHAIN PROOF -->
+<section class="slide">
+  <span class="num">06 / 10</span>
+  <div class="eyebrow">On-chain proof</div>
+  <h2>3,541 trust attestations, live on Celo mainnet</h2>
+  <div class="grid g3">
+    <div class="card"><div class="stat"><span class="n celo">3,541</span><span class="l">attestations written to the ReputationRegistry, each IPFS-backed.</span></div></div>
+    <div class="card"><div class="stat"><span class="n">#1853</span><span class="l">Sentinel8004 is itself a registered ERC-8004 agent.</span></div></div>
+    <div class="card"><div class="stat"><span class="n">~0.009</span><span class="l">CELO per attestation write (gas-estimated, batched).</span></div></div>
+  </div>
+  <div class="card" style="margin-top:22px;">
+    <div class="k">ReputationRegistry · Celo mainnet</div>
+    <div class="mono" style="font-size:17px;color:var(--text-primary);margin-top:4px;">0x8004BAa17C55a88189AE136b182e5fdA19dE9b63</div>
+    <div class="d" style="margin-top:8px;">Every score is permanent, verifiable, and traceable to the exact evidence report that produced it.</div>
+  </div>
+  <div class="foot"><span>Covers the first 3,766 agents; newly-scanned set queued.</span><span class="mono">06</span></div>
+</section>
+
+<!-- 7. HOW OTHERS USE IT -->
+<section class="slide">
+  <span class="num">07 / 10</span>
+  <div class="eyebrow">Integration</div>
+  <h2>Three ways to consume a trust score</h2>
+  <div class="grid g3">
+    <div class="card"><div class="k">For agents</div><div class="t">MCP server</div><div class="d"><span class="mono">check_agent_trust</span>, <span class="mono">list_flagged_agents</span>, <span class="mono">get_agent_report</span>: query scores programmatically.</div></div>
+    <div class="card"><div class="k">For contracts</div><div class="t">On-chain read</div><div class="d">Read attestations straight from the ReputationRegistry to gate interactions, no extra infra.</div></div>
+    <div class="card"><div class="k">For humans</div><div class="t">Live dashboard</div><div class="d">Browse, search, and inspect every agent's 0–100 score and evidence at the public site.</div></div>
+  </div>
+  <p class="big" style="margin-top:34px;max-width:1000px;">Any app, agent, or contract can gate who it interacts with, <b style="color:var(--text-primary)">without building its own trust evaluation.</b></p>
+  <div class="foot"><span>Infrastructure, not a one-off app.</span><span class="mono">07</span></div>
+</section>
+
+<!-- 8. SHIPPED IN S8 -->
+<section class="slide">
+  <span class="num">08 / 10</span>
+  <div class="eyebrow">Shipped this season · Proof of Ship S8</div>
+  <h2>What's new in June 2026</h2>
+  <ul class="clean">
+    <li><b>Full-registry rescan: 3,766 → 9,400 agents.</b> Scoring coverage now spans the entire IdentityRegistry.</li>
+    <li><b>~14× faster scorer</b>, concurrent + checkpointed, resumable mid-scan.</li>
+    <li><b>Honest dashboard refresh</b>: every surface now reports the same verified numbers (9,400 / 3,541 / 78.5%).</li>
+    <li><b>Re-validated calibration</b> on the full set: rankings stable at ρ 0.944–0.997 across weight configs.</li>
+  </ul>
+  <div class="foot"><span>Milestones tracked on Karma GAP.</span><span class="mono">08</span></div>
+</section>
+
+<!-- 9. ROADMAP -->
+<section class="slide">
+  <span class="num">09 / 10</span>
+  <div class="eyebrow">Roadmap</div>
+  <h2>Next milestones</h2>
+  <div class="grid g3">
+    <div class="card"><div class="k">M2</div><div class="t">Attest the new set</div><div class="d">Write ReputationRegistry attestations for the ~5,600 newly-scanned agents in gas-estimated batches (test tx first).</div></div>
+    <div class="card"><div class="k">M3</div><div class="t">Public read API</div><div class="d">REST endpoints (<span class="mono">GET /agent/:id</span>, <span class="mono">/flagged</span>) so any app queries a score over HTTP, no local MCP server.</div></div>
+    <div class="card"><div class="k">Infra ask</div><div class="t">Whitelisted scorers</div><div class="d">A standard to identify legitimate scorers so registry reads aren't trivially Sybil-able.</div></div>
+  </div>
+  <p class="big" style="margin-top:34px;max-width:1000px;">Sentinel8004 measures the exact Sybil problem proof-of-humanity primitives are built to solve. It is the missing quality layer for the agent economy.</p>
+  <div class="foot"><span>Built for Celo's core agent infrastructure.</span><span class="mono">09</span></div>
+</section>
+
+<!-- 10. CLOSE -->
+<section class="slide">
+  <span class="num">10 / 10</span>
+  <div class="titlewrap">
+    <div class="eyebrow">Sentinel8004 · <b>The trust layer for Celo agents</b></div>
+    <h1 style="font-size:52px;">Scanned 9,400 agents.<br>Wrote 3,541 scores on-chain.<br><span style="color:var(--celo)">Caught the fraud nobody else flagged.</span></h1>
+    <div class="grid g2" style="margin-top:36px;max-width:980px;">
+      <div class="card"><div class="k">Dashboard</div><div class="mono" style="font-size:17px;color:var(--text-primary);">yonkoo11.github.io/sentinel8004</div></div>
+      <div class="card"><div class="k">Code</div><div class="mono" style="font-size:17px;color:var(--text-primary);">github.com/Yonkoo11/sentinel8004</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="celo">ReputationRegistry 0x8004BAa1…9b63 · agent #1853 · Celo mainnet</span><span>@soligxbt</span></div>
+</section>
+
+</body>
+</html>
