@@ -20,3 +20,8 @@ scripts/check-balance.ts
 .hermes/
 skills/
 skills-lock.json
+video/frames/
+video/clips/
+video/caps/
+video/audio/
+video/motion.mp4
