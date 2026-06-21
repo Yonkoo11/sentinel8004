@@ -566,7 +566,7 @@
 
       <!-- Weight Sensitivity -->
       <div class="heading-sm reveal mb-2">Weight Sensitivity</div>
-      <p class="body-sm reveal mb-4">We tested 5 weight configurations against all 2,902 agents. Spearman's rank correlation measures how much agent rankings change.</p>
+      <p class="body-sm reveal mb-4">We tested 5 weight configurations against all 9,400 agents. Spearman's rank correlation measures how much agent rankings change.</p>
 
       <div class="surface-card reveal" style="overflow-x: auto;">
         <table class="weight-table">
@@ -586,52 +586,52 @@
               <td>Current</td>
               <td class="mono">0.8</td>
               <td class="mono">1.0</td>
-              <td class="mono">7</td>
-              <td class="mono">24</td>
-              <td class="mono">2,871</td>
+              <td class="mono">34</td>
+              <td class="mono">258</td>
+              <td class="mono">9,108</td>
               <td class="mono" style="color: var(--celo);">1.0000</td>
             </tr>
             <tr>
               <td>Equal</td>
               <td class="mono">1.0</td>
               <td class="mono">1.0</td>
-              <td class="mono">17</td>
-              <td class="mono">14</td>
-              <td class="mono">2,871</td>
-              <td class="mono">0.9782</td>
+              <td class="mono">73</td>
+              <td class="mono">219</td>
+              <td class="mono">9,108</td>
+              <td class="mono">0.9685</td>
             </tr>
             <tr>
               <td>Sybil-heavy</td>
               <td class="mono">0.6</td>
               <td class="mono">1.0</td>
-              <td class="mono">2</td>
-              <td class="mono">29</td>
-              <td class="mono">2,871</td>
-              <td class="mono">0.9698</td>
+              <td class="mono">11</td>
+              <td class="mono">276</td>
+              <td class="mono">9,113</td>
+              <td class="mono">0.9438</td>
             </tr>
             <tr>
               <td>Metadata-heavy</td>
               <td class="mono">1.0/0.8</td>
               <td class="mono">0.8</td>
-              <td class="mono">7</td>
-              <td class="mono">24</td>
-              <td class="mono">2,871</td>
-              <td class="mono">0.9778</td>
+              <td class="mono">34</td>
+              <td class="mono">258</td>
+              <td class="mono">9,108</td>
+              <td class="mono">0.9649</td>
             </tr>
             <tr>
               <td>Liveness-heavy</td>
               <td class="mono">0.8/1.0</td>
               <td class="mono">0.8</td>
-              <td class="mono">5</td>
-              <td class="mono">26</td>
-              <td class="mono">2,871</td>
-              <td class="mono">0.9995</td>
+              <td class="mono">31</td>
+              <td class="mono">256</td>
+              <td class="mono">9,113</td>
+              <td class="mono">0.9966</td>
             </tr>
           </tbody>
         </table>
       </div>
       <p class="body-sm reveal mt-4" style="color: var(--celo);">
-        All rank correlations exceed 0.96. Circuit breakers dominate rankings; the specific weight values have minimal impact on which agents are trusted vs. flagged. The flagged count (2,871) is identical across all configs because circuit breakers, not weights, determine which agents fall below 30.
+        Rank correlations range 0.944-0.997. Circuit breakers dominate rankings; weight values shift the small trusted/fair tier but barely move the flagged set. The flagged count moves only between 9,108 and 9,113 across all five configs because circuit breakers, not weights, determine which agents fall below 30.
       </p>
 
       <!-- Threshold Justification -->
