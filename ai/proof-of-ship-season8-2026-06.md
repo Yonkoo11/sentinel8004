@@ -60,8 +60,8 @@ Write ReputationRegistry attestations (with IPFS reports) for the ~5,600 agents 
 Deploy a simple REST API (GET /agent/:id, GET /flagged) so any app/agent can query a trust score over HTTP without running the MCP server locally. End date: end of S8 window.
 
 ## Final submission assets (needed at step 7)
-- **Video ≤4 min:** money shot = open dashboard → search an agent → show its 0–100 score + the on-chain attestation tx + IPFS report; then show the MCP query returning the same score. (Use /demo-video pipeline.)
-- **Slides ≤10:** problem (no quality layer on 9,400 agents) → approach (5 deterministic layers + circuit breakers) → on-chain proof (3,541 attestations) → what shipped in S8 (rescan to 9,400) → roadmap.
+- **Video ≤4 min:** ✅ BUILT — `video/sentinel8004-demo.mp4` (61s, 1080p). Real dashboard motion: hero "Most failed" → 6,934 clone finding → on-chain proof panel (3,541) → 5-layer methodology → live registry search surfacing the 7,039 clone army all capped at 15 → close on real hero. Captions byte-for-byte from `video/VOICEOVER_CLIPS.md`, no music, no synthetic end-card. CAVEAT: captions-only, no voiceover — ElevenLabs is blocked by an account billing issue (failed/incomplete invoice). Once that's settled, run `video/gen_audio.sh` then mux to add the Brian voice.
+- **Slides ≤10:** ✅ BUILT — `sentinel8004-slides.pdf` (10 slides, 16:9) + live at `dashboard/slides.html`. problem (no quality layer on 9,400 agents) → 5 layers + circuit breakers → on-chain proof (3,541) → fraud found (6,934 one owner, 1,797 sock puppets) → what shipped in S8 → roadmap. Verified numbers only, slop-free.
 
 ## X post draft (current numbers)
 Sentinel8004 — the trust layer for Celo's ERC-8004 agents.
